@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" data-change="1">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trang quản lý</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="/css/pages__parity.css">
+  <link rel="stylesheet" href="/css/vantjs.css">
+  <link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/css/admin.css">
+  
+  <style>
+    .box-xs {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      width: 18px!important;
+      height: 18px;
+      border: 1px solid #bbb;
+      border-radius: 18px;
+      margin-right: 4px;
+      color: #bbb;
+      background-color: #fff;
+    }
+    .active {
+      background-color: #007bff !important;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    #list-orders .item {
+      padding: 5px 0;
+      text-align: center;
+    }
+
+    .box .li[data-v-a9660e98] {
+      display: block;
+      height: 13px;
+      width: 13px;
+      border-radius: 50%;
+      margin: 0 0.13333rem;
+    }
+
+    .block-click {
+      pointer-events: none;
+    }
+
+    .van-col .goItem .c-tc .green {
+      background-color: #5cba47;
+    }
+
+    .van-col .goItem .c-tc .red {
+      background-color: #fb4e4e;
+    }
+
+    .van-col .goItem .c-tc .violet {
+      background-color: #eb43dd;
+    }
+
+    .van-col .c-tc .green {
+      color: #5cba47;
+    }
+
+    .van-col .c-tc .red {
+      color: #fb4e4e;
+    }
+
+    .van-col .c-tc .violet {
+      color: #eb43dd;
+    }
+
+    .goItem .c-row-center {
+      display: flex;
+      justify-content: center;
+    }
+
+    .game {
+      background-color: #e67e22 !important;
+      cursor: pointer;
+    }
+
+    .cursor-pointer {
+      cursor: pointer;
+    }
+
+    .active-game {
+      color: rgb(230, 126, 34);
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+  <div class="wrapper">
+    <%- include('nav') %>
+    <div class="content-wrapper">
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">Dashboard V5</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      <section class="content">
+        <div class="container-fluid">
+          <div class="row info-box" id="manage">
+            <div class="col-12 col-sm-6 col-md-3 cursor-pointer block-click" data="1">
+              <div class="info-box mb-3">
+                <span class="info-box-icon elevation-1 bg-primary game">1M</span>
+
+                <div class="info-box-content active-game">
+                  <span class="info-box-text">K3 1P</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3 cursor-pointer" data="3">
+              <div class="info-box mb-3">
+                <span class="info-box-icon elevation-1 bg-primary game">3M</span>
+
+                <div class="info-box-content">
+                  <span class="info-box-text">K3 3P</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3 cursor-pointer" data="5">
+              <div class="info-box mb-3">
+                <span class="info-box-icon elevation-1 bg-primary game">5M</span>
+
+                <div class="info-box-content">
+                  <span class="info-box-text">K3 5P</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3 cursor-pointer" data="10">
+              <div class="info-box">
+                <span class="info-box-icon elevation-1 bg-primary game">10M</span>
+                <div class="info-box-content">
+                  <span class="info-box-text">K3 10P</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="info-box mb-3">
+                <span class="info-box-icon bg-danger elevation-1">
+                  <i class="fas fa-shopping-cart"></i>
+                </span>
+ 
+                <div class="info-box-content">
+                  <span class="info-box-text">Tổng số</span>
+                  <span totalMoney="0" class="info-box-number" id="total">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="clearfix hidden-md-up"></div>
+
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="info-box mb-3">
+                <span class="info-box-icon elevation-1" style="background-color: #8e44ad;"><i class="fas fa-shopping-cart"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">2 số trùng</span>
+                  <span totalMoney="0" class="info-box-number"id="2-so-trung">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="info-box mb-3">
+                <span class="info-box-icon bg-success elevation-1">
+                  <i class="fas fa-shopping-cart"></i>
+                </span>
+
+                <div class="info-box-content">
+                  <span class="info-box-text">3 số trùng</span>
+                  <span totalMoney="0" class="info-box-number" id="3-so-trung">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1">
+                  <i class="fas fa-shopping-cart"></i>
+                </span>
+
+                <div class="info-box-content">
+                  <span class="info-box-text">Khác số</span>
+                  <span totalMoney="0" class="info-box-number" id="khac-so">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Main row -->
+          <div class="row">
+            <!-- Left col -->
+            <div class="col-md-12">
+              <!-- MAP & BOX PANE -->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card direct-chat direct-chat-warning">
+                    <div class="card-header">
+                      <h3 class="card-title">Thống kê đặt cược</h3>
+
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                          <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <div class="direct-chat-messages" style="min-height: 520px;">
+                        <div class="direct-chat-msg">
+                          <!---->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="display: none;">
+                <div class="col-md-12">
+                  <div class="card card-primary">
+                    <div class="card-header" style="text-align: center;">
+                      <div data-v-04e3b381="" class="reservation-chunk-sub-num"> Loading... </div>
+                      <div data-v-7d40872f="" class="time" style="font-size: 23px;border-radius: none;">
+                        <span data-v-7d40872f="" class="time-sub" style="border-radius: 0;">0</span>
+                        <span data-v-7d40872f="" class="time-sub" style="border-radius: 0;">0</span>
+                        <span data-v-7d40872f="" class="">:</span>
+                        <span data-v-7d40872f="" class="time-sub" style="border-radius: 0;">4</span>
+                        <span data-v-7d40872f="" class="time-sub" style="border-radius: 0;">7</span>
+                      </div>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                      <div class="form-group">
+                        <div data-v-a9660e98="" class="wrap">
+                          <div data-v-a9660e98="" class="c-tc van-row" style="text-align: center;border-bottom: 1px solid;padding: 6px">
+                            <div data-v-a9660e98="" class="van-col van-col--8">Giai đoạn</div>
+                            <div data-v-a9660e98="" class="van-col van-col--5">Kết quả</div>
+                            <div data-v-a9660e98="" class="van-col van-col--5">Lớn nhỏ</div>
+                            <div data-v-a9660e98="" class="van-col van-col--5">Chẵn lẻ</div>
+                          </div>
+                        </div>
+                        <div id="list-orders">
+                          <!---->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="display: none;">
+                <div class="col-md-12">
+                  <div class="card card-primary">
+                    <div class="card-header">
+                      <h3 class="card-title">Điều chỉnh kết quả</h3>
+                    </div>
+                    <div class="card-body">
+                      <div class="form-group">
+                        <b> Nhập 5 số (VD: 152)</p>
+                          <label for="editResult" id="ketQua">kết quả tiếp theo: Random</label>
+                          <input type="text" class="form-control" id="editResult" value="" placeholder="Nhập kết quả (VD: 631)">
+                      </div>
+                    </div>
+                    <div class="card-footer" style="text-align: center;">
+                      <button type="submit" class="btn btn-primary start-order">Triển
+                        khai</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <a id="back-to-tops" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+      <i class="fas fa-chevron-up"></i>
+    </a> 
+  </div>
+  <script src="/plugins/jquery/jquery.min.js"></script>
+  <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+  <script src="/dist/js/adminlte.js"></script>
+  <script src="/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
+  <script src="/plugins/raphael/raphael.min.js"></script>
+  <script>
+    $(".start-order").click(function (e) { 
+      e.preventDefault();
+      let game = $('html').attr('data-change');
+      let value = $('#editResult').val().trim();
+      let arr = value.split('|');
+      for (let i = 0; i < arr.length; i++) {
+          let check = isNumber(arr[i]);
+          if (arr[i] == "" || arr[i].length != 3 || !check) {
+              alert("Vui lòng nhập đúng định dạng (VD: 123)");
+              return false;
+          }
+      }
+      $.ajax({
+        type: "POST",
+        url: "/api/webapi/admin/k3/editResult",
+        data: {
+          game: game,
+          list: value,
+        },
+        dataType: "json",
+        success: function (response) {
+          Swal.fire(
+              'Good job!',
+              `${response.message}`,
+              'success'
+          );
+          $('#ketQua').text(`kết quả tiếp theo: ${value}`);
+        }
+      });
+    });
+
+    //main
+const socket = io();
+
+$(window).on('load', function () {
+    setTimeout(() => {
+        $('#preloader').fadeOut(0);
+    }, 100);
+})
+$(document).ready(function () {
+    $(`a[href="${window.location.pathname}"]`).addClass('active');
+    $(`a[href="${window.location.pathname}"]`).css('pointerEvents', 'none');
+});
+ 
+$('.back-to-tops').click(function() {
+    $('html, body').animate({
+      scrollTop: 0
+    }, 800);
+    return false;
+});
+
+const isNumber = (params) => {
+    let pattern = /^[0-9]*\d$/;
+    return pattern.test(params);
+}
+
+function formatMoney(money) {
+    return String(money).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+}
+
+function cownDownTimer() {
+    var countDownDate = new Date("2030-07-16T23:59:59.9999999+01:00").getTime();
+    setInterval(function () {
+        let checkID = $('html').attr('data-change');
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var minute = Math.ceil(minutes % Number(checkID));
+        var seconds1 = Math.floor((distance % (1000 * 60)) / 10000);
+        var seconds2 = Math.floor(((distance % (1000 * 60)) / 1000) % 10);
+        if(checkID != 1) {
+            $(".time .time-sub:eq(1)").text(minute);
+        }
+
+        $(".time .time-sub:eq(2)").text(seconds1);
+        $(".time .time-sub:eq(3)").text(seconds2);
+    }, 0);
+}
+
+cownDownTimer();
+
+// -------------------------------------------------------------------------------------
+
+function showListOrder(datas) {
+    let html = '';
+
+    datas.map((data) => {
+        let list_kq = '';
+        let total = 0;
+        String(data.result).split('').forEach((e) => {
+            total += Number(e);
+            list_kq += `<span data-v-a9660e98="" class="red box-xs"> ${e} </span>`;
+        });
+        html += 
+        `
+        <div data-v-a9660e98="" class="c-tc item van-row">
+            <div data-v-a9660e98="" class="van-col van-col--8">
+                <div data-v-a9660e98="" class="c-tc goItem">${data.period}</div>
+            </div>
+            <div data-v-a9660e98="" class="van-col van-col--5">
+                <div data-v-a9660e98="" class="c-tc goItem" style="display: flex;justify-content: center;">
+                    <!---->
+                    ${list_kq}
+                    <span data-v-a9660e98="" class="red box-xs"> = </span>
+                    <span data-v-a9660e98="" class="red box-xs" style="font-size: 14px"> ${total} </span>
+                </div>
+            </div>
+            <div data-v-a9660e98="" class="van-col van-col--5">
+                <div data-v-a9660e98="" class="c-tc goItem">
+                    <span data-v-a9660e98=""> ${(total >= 3 && total <= 10) ? "Nhỏ" : "Lớn"} </span>
+                </div>
+            </div>
+            <div data-v-a9660e98="" class="van-col van-col--5">
+                <div data-v-a9660e98="" class="c-tc goItem">
+                    <span data-v-a9660e98=""> ${(total % 2 == 0) ? "Chẵn" : "Lẻ"} </span>
+                </div>
+            </div>
+        </div>
+        `;
+    });
+    $('#list-orders').html(html);
+}
+
+function messNewJoin2(datas) {
+  //var data = datas;
+    let result = '';
+    let listT = datas.listJoin.split(',');
+    listT.map((item) => {
+      //console.log(item);
+        let list_join = item; // là người dùng tham gia đặt cược
+        let list_join2 = datas.bet; // là người dùng tham gia đặt cược
+        let x = datas.xvalue; // là người dùng tham gia đặt cược
+    
+        let total_money = (Number(datas.money) * Number(x));
+        let money = formatMoney(total_money, ',');
+        
+        result += `
+        <div class="direct-chat-infos clearfix mt-2">
+            <span class="direct-chat-name float-left"></span>
+        </div>
+        <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
+        <div class="direct-chat-text" style="background-color: #1eb93d">User: ${datas.phone} -> Tham gia ${(isNumber(list_join2)) ? "( " + list_join2 + " )" : (list_join2 == 'b') ? 'Lớn' : (list_join2 == 's') ? 'Nhỏ' : (list_join2 == 'c') ? 'Chẵn' : 'Lẻ'} ${money} </div>
+        `; 
+    });
+    $('.direct-chat-msg').html(result);
+    $(".direct-chat-warning .direct-chat-messages").animate({
+        scrollTop: $(".direct-chat-msg").prop("scrollHeight")
+    }, 750);
+}
+
+function messNewJoin3(datas) {
+    datas.map((data) => {
+        console.log('newjohn3'+data);
+        let typeGame = data.typeGame;
+        if (typeGame == "total") {
+            let game = 0;
+            console.log(datas[i].money);
+            for (let i = 0; i < data.length; i++) {
+                game += datas[i].money
+            }
+            console.log(game);
+            $(`#total`).attr('totalMoney', data.price);
+            $(`#total`).text(data.price);
+        }
+    });
+}
+
+function callListOrder() {
+    let game = $('html').attr('data-change');
+    
+    $.ajax({
+        type: "POST",
+        url: "/api/webapi/admin/k3/listOrders",
+        data: {
+            gameJoin: game,
+        },
+        dataType: "json",
+        success: function (response) {
+            showListOrder(response.data.gameslist);
+            messNewJoin2(response.bet);
+            messNewJoin3(response.bet);
+            let settings = response.settings[0];
+            if(game == 1) $('#ketQua').text('kết quả tiếp theo: ' + `${(settings.k5d == '-1') ? 'Random' : settings.k5d}`);
+            if(game == 3) $('#ketQua').text('kết quả tiếp theo: ' + `${(settings.k5d3 == '-1') ? 'Random' : settings.k5d3}`);
+            if(game == 5) $('#ketQua').text('kết quả tiếp theo: ' + `${(settings.k5d5 == '-1') ? 'Random' : settings.k5d5}`);
+            if(game == 10) $('#ketQua').text('kết quả tiếp theo: ' + `${(settings.k5d10 == '-1') ? 'Random' : settings.k5d10}`);
+            $(".reservation-chunk-sub-num").text(response.period);
+            $('#preloader').fadeOut(0);
+        }
+    });
+}
+callListOrder();
+
+function clearT(data){
+  let game = $('html').attr('data-change');
+  if(data.game == game){
+    $('.direct-chat-msg').html('');
+    $('#total').text('0');
+    $(`#total`).attr('totalMoney', 0);
+  }
+}
+
+socket.on("data-server-k3", function (msg) {
+    if (msg) {
+        callListOrder();
+        clearT(msg);
+        
+    }
+});
+
+function messNewJoin(data) {
+    //console.log('messnewjohn'+JSON.stringify(data));
+    let game = $('html').attr('data-change');
+    if (data.change == 1) return;
+    if (data.game != game) return;
+
+    let bet = data.game; // tham gia game ví dụ a b c d e tổng
+    let listT = data.listJoin.split(',');
+    listT.map((item) => {
+
+    
+      //let list_join = item; // là người dùng tham gia đặt cược
+      let list_join2 = item; // là người dùng tham gia đặt cược
+      let x = data.xvalue; // là người dùng tham gia đặt cược
+
+      let total_money = (Number(data.money) * Number(x));
+      let money = formatMoney(total_money, ',');
+      let result = '';
+      result += `
+          <div class="direct-chat-infos clearfix mt-2">
+          <span class="direct-chat-name float-left"></span>
+          </div>
+          <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
+          <div class="direct-chat-text" style="background-color: #1eb93d">
+          User: ${data.phone} -> Tham gia ${(isNumber(list_join2)) ? "( " + list_join2 + " )" : (list_join2 == 'b') ? 'Lớn' : (list_join2 == 's') ? 'Nhỏ' : (list_join2 == 'c') ? 'Chẵn' : 'Lẻ'} ${money}
+          </div>
+          `;
+      $('.direct-chat-msg').append(result);
+      $(".direct-chat-warning .direct-chat-messages").animate({
+          scrollTop: $(".direct-chat-msg").prop("scrollHeight")
+      }, 750);
+    });
+}
+
+function messNewJoin5(data) {
+    //console.log('newjohn5'+JSON.stringify(data));
+    let game = $('html').attr('data-change');
+    if (data.chane == 1) return;
+    if (data.game != game) return;
+
+    let total = Number($(`#total`).attr('totalMoney'));
+    console.log(total);
+
+    let bet = data.listJoin.split(','); // là người dùng tham gia đặt cược
+    let tong = Number(total) + (Number(data.money*data.xvalue) * bet.length);
+    $('#total').text(tong);
+    $(`#total`).attr('totalMoney', tong);
+    //for (let i = 0; i < bet.length; i++) {
+    //    let money = Number(data.money);
+    //    let totalM = Number($(`#${bet[i]}`).attr('totalMoney'));
+    //    $(`#${bet[i]}`).attr('totalMoney', totalM + money);
+    //    $(`#${bet[i]}`).text(totalM + money);
+        
+    //}
+}
+const ctv = '<%= idUser %>';
+socket.on("data-server-3", function (msg) {
+    if(msg.ctv == ctv){
+    messNewJoin(msg);
+    //console.log(msg);
+    messNewJoin5(msg);
+    }
+});
+
+$('#manage .col-12').click(async function (e) { 
+    e.preventDefault();
+    //$('#preloader').fadeIn(0);
+    $('#preloader').fadeIn(0);
+    setTimeout(() => {
+       $('#preloader').fadeOut(0);
+    },200)
+    $('#total').text('0');
+    $('#total').attr('totalMoney', '0');
+    let game = $(this).attr('data');
+    $('html').attr('data-change', game);
+    $('.direct-chat-msg').html('');
+    await callListOrder();
+    $('#manage .col-12').removeClass('block-click');
+    $(this).addClass('block-click');
+    $('#manage .col-12').find('.info-box-content').removeClass('active-game');
+    $(this).find('.info-box-content').addClass('active-game');
+});
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1 @@
+pm2 start npm --name "lucky86" -- run start
