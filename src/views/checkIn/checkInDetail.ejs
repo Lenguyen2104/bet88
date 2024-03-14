@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html translate="no" data-dpr="1" style="font-size: 48.24px">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+      name="viewport"
+    />
+    <title>KIKI79</title>
+    <link href="/css/checkIn/chunk-vendors.css" rel="stylesheet" />
+    <link href="/css/checkIn/app.css" rel="stylesheet" />
+    <link href="/css/checkIn/chunk.css" rel="stylesheet" />
+    <link
+      rel="shortcut icon"
+      href="/images/bitbug_favicon.ico"
+      type="image/x-icon"
+    />
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        background-color: #9195a3;
+        padding: 0;
+        margin: 0;
+      }
+      .block-click {
+        pointer-events: none;
+      }
+    </style>
+  </head>
+
+  <body style="font-size: 12px">
+    <div id="app">
+      <div data-v-11ffe290="" class="mian">
+        <div data-v-106b99c8="" data-v-11ffe290="" class="navbar action">
+          <div
+            data-v-106b99c8=""
+            class="navbar-left"
+            onclick="location.href='/checkIn'"
+          >
+            <img
+              alt=""
+              data-v-106b99c8=""
+              src="/images/back.c3244ab0.png"
+              class="navbar-back"
+            />
+          </div>
+          <div
+            data-v-106b99c8=""
+            class="navbar-title"
+            style="font-weight: bold"
+          >
+            Chi tiết hoạt động
+          </div>
+          <div
+            data-v-106b99c8=""
+            class="navbar-right"
+            onclick="location.href='/keFuMenu'"
+          >
+            <div data-v-11ffe290="" data-v-106b99c8="" class="c-row"></div>
+          </div>
+        </div>
+        <div data-v-11ffe290="" class="check-box">
+          <div data-v-11ffe290="" class="check-header c-tc">
+            <div
+              data-v-11ffe290=""
+              class="c-row c-row-middle-center p-l-20 p-r-20"
+            ></div>
+          </div>
+          <div data-v-11ffe290="" class="list c-row c-flex-warp"></div>
+        </div>
+        <div
+          data-v-7692a079=""
+          data-v-432e6ed0=""
+          class="Loading c-row c-row-middle-center"
+        >
+          <div data-v-7692a079="" class="van-loading van-loading--circular">
+            <span
+              data-v-7692a079=""
+              class="van-loading__spinner van-loading__spinner--circular"
+              style="color: rgb(242, 65, 59)"
+            >
+              <svg
+                data-v-7692a079=""
+                viewBox="25 25 50 50"
+                class="van-loading__circular"
+              >
+                <circle
+                  data-v-7692a079=""
+                  cx="50"
+                  cy="50"
+                  r="20"
+                  fill="none"
+                ></circle>
+              </svg>
+            </span>
+          </div>
+        </div>
+        <div data-v-11ffe290="" class="check-header c-tc">
+          <h4 data-v-11ffe290="" class="tit m-b-5">Đã ký ngày hôm nay</h4>
+        </div>
+        <p class="MsoNormal">
+          <img
+            src="/images/sukien1.png"
+            style="width: 100%"
+            data-filename="下载.png"
+          /><span style="font-family: 'Times New Roman'; font-size: 12pt"
+            ><br
+          /></span>
+        </p>
+
+        <%- include('../nav') -%>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/js/client.js"></script>
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get("id");
+      const name = urlParams.get("name");
+      const imageName = urlParams.get("imageName");
+
+      const h4Element = document.querySelector('h4[data-v-11ffe290=""]');
+
+      if (h4Element) {
+        h4Element.innerText = name || "Đã ký ngày hôm nay";
+      }
+      const imgElements = document.querySelectorAll("img");
+      imgElements.forEach((imgElement) => {
+        if (imgElement.getAttribute("src") === "/images/sukien1.png") {
+          const newPath = imageName
+            ? `/images/${imageName}`
+            : "/images/sukien1.png";
+          imgElement.src = newPath;
+        }
+      });
+    </script>
+    <script>
+      $(window).on("load", function () {
+        $(".Loading").fadeOut(0);
+      });
+    </script>
+  </body>
+</html>

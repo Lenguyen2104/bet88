@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  translate="no"
+  data-dpr="1"
+  style="font-size: 48.16px"
+  style="min-height: 100vh"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>KiKi79</title>
+    <link href="/css/member/main.css" rel="stylesheet" />
+    <link href="/css/member/chunk-1.css" rel="stylesheet" />
+    <link href="/css/member/chunk-2.css" rel="stylesheet" />
+    <link href="/css/member/chunk-3.css" rel="stylesheet" />
+    <link href="/css/member/chunk-4.css" rel="stylesheet" />
+    <link href="/css/member/chunk-5.css" rel="stylesheet" />
+    <link href="/css/member/chunk-6.css" rel="stylesheet" />
+    <link href="/css/member/chunk-7.css" rel="stylesheet" />
+    <link
+      rel="shortcut icon"
+      href="/images/bitbug_favicon.ico"
+      type="image/x-icon"
+    />
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        background-color: #9195a3;
+        padding: 0;
+        margin: 0;
+      }
+
+      .block-click {
+        pointer-events: none;
+      }
+      .mian[data-v-51f72da1] {
+        min-height: 100vh;
+        background-color: #fbfcfd;
+      }
+      .mian .audio[data-v-51f72da1] {
+        width: 0.66667rem;
+        height: 0.66667rem;
+      }
+      .input-container {
+        margin-top: 20px;
+        margin-left: 12px;
+        margin-right: 12px;
+      }
+
+      .input-container input {
+        border-radius: 12px;
+        border-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        height: 53px;
+        box-sizing: border-box;
+        outline: 0;
+        padding: 0.75rem;
+        position: relative;
+        width: 100%;
+      }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      background: transparent;
+      bottom: 0;
+      color: transparent;
+      cursor: pointer;
+      height: auto;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: auto;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div data-v-51f72da1="" class="mian forgot">
+        <div data-v-106b99c8="" data-v-51f72da1="" class="navbar">
+          <div
+            data-v-106b99c8=""
+            class="navbar-left"
+            onclick="location.href='/promotion'"
+          >
+            <div data-v-106b99c8="" class="bank c-row c-row-middle-center">
+              <img
+                alt=""
+                data-v-106b99c8=""
+                src="/images/back.c3244ab0.png"
+                class="navbar-back"
+              />
+            </div>
+          </div>
+          <div
+            data-v-106b99c8=""
+            class="navbar-title"
+            style="font-weight: bold"
+          >
+            Chi tiết hoa hồng
+          </div>
+          <div data-v-106b99c8="" class="navbar-right">
+            <div data-v-51f72da1="" data-v-106b99c8="" class="c-row"></div>
+          </div>
+        </div>
+        <div class="input-container">
+          <input
+              data-v-0ff6946a=""
+              type="date"
+              maxlength="5"
+              placeholder="UID"
+              oninput="value=value.replace(/\D/g,'')"
+              class="ipt"
+              id="dateInput"
+            />
+        </div>
+      </div>
+    </div
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="/js/client.js"></script>
+  <script>
+      document.getElementById('dateInput').valueAsDate = new Date();
+  </script>
+</html>
