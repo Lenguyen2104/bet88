@@ -1,11 +1,5 @@
 <!DOCTYPE html>
-<html
-  lang="en"
-  translate="no"
-  data-dpr="1"
-  style="font-size: 48.16px"
-  style="min-height: 100vh"
->
+<html lang="en" translate="no" data-dpr="1" style="font-size: 48.16px">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -41,14 +35,17 @@
       .block-click {
         pointer-events: none;
       }
+
       .mian[data-v-51f72da1] {
         min-height: 100vh;
-        background-color: #fbfcfd;
+        background-color: #f7f8ff;
       }
+
       .mian .audio[data-v-51f72da1] {
         width: 0.66667rem;
         height: 0.66667rem;
       }
+
       .input-container {
         margin-top: 20px;
         margin-left: 12px;
@@ -66,24 +63,11 @@
         position: relative;
         width: 100%;
       }
-
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      background: transparent;
-      bottom: 0;
-      color: transparent;
-      cursor: pointer;
-      height: auto;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: auto;
-    }
     </style>
   </head>
   <body>
     <div id="app">
-      <div data-v-51f72da1="" class="mian forgot">
+      <div data-v-51f72da1="" class="mian">
         <div data-v-106b99c8="" data-v-51f72da1="" class="navbar">
           <div
             data-v-106b99c8=""
@@ -112,21 +96,44 @@
         </div>
         <div class="input-container">
           <input
-              data-v-0ff6946a=""
-              type="date"
-              maxlength="5"
-              placeholder="UID"
-              oninput="value=value.replace(/\D/g,'')"
-              class="ipt"
-              id="dateInput"
-            />
+            data-v-0ff6946a=""
+            type="date"
+            placeholder="Chọn ngày"
+            class="ipt"
+            id="dateInput"
+          />
+        </div>
+        <div style="margin-top: 20px">
+          <img
+            src="/images/NoDataCalander.png"
+            alt="noData"
+            style="width: 100%; height: auto"
+          />
         </div>
       </div>
-    </div
+    </div>
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="/js/client.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://npmcdn.com/flatpickr/dist/themes/material_red.css"
+  />
   <script>
-      document.getElementById('dateInput').valueAsDate = new Date();
+    const currentDate = new Date().toISOString().split("T")[0];
+    document.getElementById("dateInput").value = currentDate;
+    flatpickr("#dateInput", {
+      dateFormat: "d-m-Y",
+      locale: "vn",
+      weekNumbers: true,
+    });
   </script>
 </html>

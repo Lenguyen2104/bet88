@@ -243,27 +243,27 @@ const checkInHandling = async (req, res) => {
       let point_list = point_lists[0];
       let get = 100000;
       if (point_list?.total1) {
-        if (check >= data && point_list.total1 != 0) {
+        if (check >= data && point_list?.total1 != 0) {
           await connection.query(
             "UPDATE users SET money = money + ? WHERE phone = ? ",
-            [point_list.total1, rows[0].phone]
+            [point_list?.total1, rows[0].phone]
           );
           await connection.query(
             "UPDATE point_list SET total1 = ? WHERE phone = ? ",
             [0, rows[0].phone]
           );
           return res.status(200).json({
-            message: `Bạn vừa nhận được ${point_list.total1}.00₫`,
+            message: `Bạn vừa nhận được ${point_list?.total1}.00₫`,
             status: true,
             timeStamp: timeNow,
           });
-        } else if (check < get && point_list.total1 != 0) {
+        } else if (check < get && point_list?.total1 != 0) {
           return res.status(200).json({
             message: "Bạn chưa đủ điều kiện để nhận quà",
             status: false,
             timeStamp: timeNow,
           });
-        } else if (point_list.total1 == 0) {
+        } else if (point_list?.total1 == 0) {
           return res.status(200).json({
             message: "Bạn đã nhận phần quà này rồi",
             status: false,
@@ -280,27 +280,27 @@ const checkInHandling = async (req, res) => {
       let check = rows[0].total_money;
       let point_list = point_lists[0];
       let get = 200000;
-      if (check >= get && point_list.total2 != 0) {
+      if (check >= get && point_list?.total2 != 0) {
         await connection.query(
           "UPDATE users SET money = money + ? WHERE phone = ? ",
-          [point_list.total2, rows[0].phone]
+          [point_list?.total2, rows[0].phone]
         );
         await connection.query(
           "UPDATE point_list SET total2 = ? WHERE phone = ? ",
           [0, rows[0].phone]
         );
         return res.status(200).json({
-          message: `Bạn vừa nhận được ${point_list.total2}.00₫`,
+          message: `Bạn vừa nhận được ${point_list?.total2}.00₫`,
           status: true,
           timeStamp: timeNow,
         });
-      } else if (check < get && point_list.total2 != 0) {
+      } else if (check < get && point_list?.total2 != 0) {
         return res.status(200).json({
           message: "Bạn chưa đủ điều kiện để nhận quà",
           status: false,
           timeStamp: timeNow,
         });
-      } else if (point_list.total2 == 0) {
+      } else if (point_list?.total2 == 0) {
         return res.status(200).json({
           message: "Bạn đã nhận phần quà này rồi",
           status: false,
@@ -316,27 +316,27 @@ const checkInHandling = async (req, res) => {
       let check = rows[0].total_money;
       let point_list = point_lists[0];
       let get = 500000;
-      if (check >= get && point_list.total3 != 0) {
+      if (check >= get && point_list?.total3 != 0) {
         await connection.query(
           "UPDATE users SET money = money + ? WHERE phone = ? ",
-          [point_list.total3, rows[0].phone]
+          [point_list?.total3, rows[0].phone]
         );
         await connection.query(
           "UPDATE point_list SET total3 = ? WHERE phone = ? ",
           [0, rows[0].phone]
         );
         return res.status(200).json({
-          message: `Bạn vừa nhận được ${point_list.total3}.00₫`,
+          message: `Bạn vừa nhận được ${point_list?.total3}.00₫`,
           status: true,
           timeStamp: timeNow,
         });
-      } else if (check < get && point_list.total3 != 0) {
+      } else if (check < get && point_list?.total3 != 0) {
         return res.status(200).json({
           message: "Bạn chưa đủ điều kiện để nhận quà",
           status: false,
           timeStamp: timeNow,
         });
-      } else if (point_list.total3 == 0) {
+      } else if (point_list?.total3 == 0) {
         return res.status(200).json({
           message: "Bạn đã nhận phần quà này rồi",
           status: false,
@@ -352,27 +352,27 @@ const checkInHandling = async (req, res) => {
       let check = rows[0].total_money;
       let point_list = point_lists[0];
       let get = 2000000;
-      if (check >= get && point_list.total4 != 0) {
+      if (check >= get && point_list?.total4 != 0) {
         await connection.query(
           "UPDATE users SET money = money + ? WHERE phone = ? ",
-          [point_list.total4, rows[0].phone]
+          [point_list?.total4, rows[0].phone]
         );
         await connection.query(
           "UPDATE point_list SET total4 = ? WHERE phone = ? ",
           [0, rows[0].phone]
         );
         return res.status(200).json({
-          message: `Bạn vừa nhận được ${point_list.total4}.00₫`,
+          message: `Bạn vừa nhận được ${point_list?.total4}.00₫`,
           status: true,
           timeStamp: timeNow,
         });
-      } else if (check < get && point_list.total4 != 0) {
+      } else if (check < get && point_list?.total4 != 0) {
         return res.status(200).json({
           message: "Bạn chưa đủ điều kiện để nhận quà",
           status: false,
           timeStamp: timeNow,
         });
-      } else if (point_list.total4 == 0) {
+      } else if (point_list?.total4 == 0) {
         return res.status(200).json({
           message: "Bạn đã nhận phần quà này rồi",
           status: false,
@@ -389,27 +389,27 @@ const checkInHandling = async (req, res) => {
       let point_list = point_lists[0];
       let get = 5000000;
       if (point_list?.total5) {
-        if (check >= get && point_list.total5 != 0) {
+        if (check >= get && point_list?.total5 != 0) {
           await connection.query(
             "UPDATE users SET money = money + ? WHERE phone = ? ",
-            [point_list.total5, rows[0].phone]
+            [point_list?.total5, rows[0].phone]
           );
           await connection.query(
             "UPDATE point_list SET total5 = ? WHERE phone = ? ",
             [0, rows[0].phone]
           );
           return res.status(200).json({
-            message: `Bạn vừa nhận được ${point_list.total5}.00₫`,
+            message: `Bạn vừa nhận được ${point_list?.total5}.00₫`,
             status: true,
             timeStamp: timeNow,
           });
-        } else if (check < get && point_list.total5 != 0) {
+        } else if (check < get && point_list?.total5 != 0) {
           return res.status(200).json({
             message: "Bạn chưa đủ điều kiện để nhận quà",
             status: false,
             timeStamp: timeNow,
           });
-        } else if (point_list.total5 == 0) {
+        } else if (point_list?.total5 == 0) {
           return res.status(200).json({
             message: "Bạn đã nhận phần quà này rồi",
             status: false,
@@ -426,27 +426,27 @@ const checkInHandling = async (req, res) => {
       let check = rows[0].total_money;
       let point_list = point_lists[0];
       let get = 10000000;
-      if (check >= get && point_list.total6 != 0) {
+      if (check >= get && point_list?.total6 != 0) {
         await connection.query(
           "UPDATE users SET money = money + ? WHERE phone = ? ",
-          [point_list.total6, rows[0].phone]
+          [point_list?.total6, rows[0].phone]
         );
         await connection.query(
           "UPDATE point_list SET total6 = ? WHERE phone = ? ",
           [0, rows[0].phone]
         );
         return res.status(200).json({
-          message: `Bạn vừa nhận được ${point_list.total6}.00₫`,
+          message: `Bạn vừa nhận được ${point_list?.total6}.00₫`,
           status: true,
           timeStamp: timeNow,
         });
-      } else if (check < get && point_list.total6 != 0) {
+      } else if (check < get && point_list?.total6 != 0) {
         return res.status(200).json({
           message: "Bạn chưa đủ điều kiện để nhận quà",
           status: false,
           timeStamp: timeNow,
         });
-      } else if (point_list.total6 == 0) {
+      } else if (point_list?.total6 == 0) {
         return res.status(200).json({
           message: "Bạn đã nhận phần quà này rồi",
           status: false,
@@ -462,17 +462,17 @@ const checkInHandling = async (req, res) => {
       let check = rows[0].total_money;
       let point_list = point_lists[0];
       let get = 20000000;
-      if (check >= get && point_list.total7 != 0) {
+      if (check >= get && point_list?.total7 != 0) {
         await connection.query(
           "UPDATE users SET money = money + ? WHERE phone = ? ",
-          [point_list.total7, rows[0].phone]
+          [point_list?.total7, rows[0].phone]
         );
         await connection.query(
           "UPDATE point_list SET total7 = ? WHERE phone = ? ",
           [0, rows[0].phone]
         );
         return res.status(200).json({
-          message: `Bạn vừa nhận được ${point_list.total7}.00₫`,
+          message: `Bạn vừa nhận được ${point_list?.total7}.00₫`,
           status: true,
           timeStamp: timeNow,
         });
@@ -482,7 +482,7 @@ const checkInHandling = async (req, res) => {
           status: false,
           timeStamp: timeNow,
         });
-      } else if (point_list.total7 == 0) {
+      } else if (point_list?.total7 == 0) {
         return res.status(200).json({
           message: "Bạn đã nhận phần quà này rồi",
           status: false,

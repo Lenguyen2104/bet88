@@ -97,6 +97,36 @@ body {
     border: 1px solid #ccc;  
   }
 }
+
+.input-container {
+        margin-top: 20px;
+        margin-left: 12px;
+        margin-right: 12px;
+      }
+
+      .input-container input {
+        /* border-radius: 12px;
+        border-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        height: 53px;
+        box-sizing: border-box;
+        outline: 0;
+        padding: 0.75rem;
+        position: relative;
+        width: 100%; */
+        
+      }
+      .pet-select-container {
+        border-radius: 12px;
+        border-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* height: 53px; */
+        /* box-sizing: border-box; */
+        /* outline: 0; */
+        /* padding: 0.75rem; */
+        /* position: relative; */
+        width: 48%;
+      }
     </style>
   </head>
   <body>
@@ -142,10 +172,37 @@ body {
                 />
               </div>
 
+            
+
               <div data-v-0ff6946a="" class="btn c-tc" style="display: flex; justify-content: center; align-items: center; border-radius: 18px; height: 32px; margin-top: 2px;  background-image: linear-gradient(to right, yellow,#fcc419);background-color: #fcc419;">
                 <img src="/images/IconSearchGray.png" alt="Magnifying Glass" style="width: 25px; height: 25px;">
               </div>
             </div>
+
+            <div style="border-color: #ed0; display: flex; align-items: center; justify-content: space-between;">
+              <select name="pets" id="pet-select" class="pet-select-container" style="margin-top: 20px;height: 53px; margin-left: 12px;">
+                  <option value="" >Toàn bộ</option>
+                  <option value="dog">F1</option>
+                  <option value="cat">F2</option>
+                  <option value="hamster">F3</option>
+                  <option value="parrot">F4</option>
+                  <option value="spider">F5</option>
+                  <option value="goldfish">F5</option>
+              </select>
+              <div class="input-container" style="height: 53px;">
+                  <input
+                      style="border-color: #fff; height:53px; width: 100%; border-radius: 12px;
+                      border-color: #fff;
+                      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); font-weight: 600;"
+                      data-v-0ff6946a=""
+                      type="date"
+                      placeholder="Chọn ngày"
+                      class="ipt"
+                      id="dateInput"
+                  />
+              </div>
+          </div>
+                 
 
             <div class="center" style="display: flex; margin-top: 20px; background-image: linear-gradient(to right, yellow,#fcc419); margin-left: 12px; margin-right: 12px; border-radius: 8px; justify-content: center;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
               <table style="background-color: transparent; width: 100%; border-radius: 8px; text-align: center;">
@@ -339,5 +396,26 @@ body {
         },
       });
     </script>
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://npmcdn.com/flatpickr/dist/themes/material_red.css"
+  />
+  <script>
+    const currentDate = new Date().toISOString().split("T")[0];
+    document.getElementById("dateInput").value = currentDate;
+    flatpickr("#dateInput", {
+      dateFormat: "d-m-Y",
+      locale: "vn",
+      weekNumbers: true,
+    });
+  </script>
   </body>
 </html>
