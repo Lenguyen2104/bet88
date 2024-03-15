@@ -804,7 +804,7 @@ function showListOrder(list_orders, x) {
                         <div data-v-a9660e98="" class="van-col van-col--5">
                             <div data-v-a9660e98="" class="c-tc goItem">
                                 <!---->
-                                <span data-v-a9660e98="" style="font-size: 120%" class="${
+                                <span data-v-a9660e98="" style="font-size: .55999rem; font-weight:bold; line-height: .55999rem; " class="${
                                   list_orders.amount % 2 == 0 ? "red" : "green"
                                 }"> ${list_orders.amount} </span>
                             </div>
