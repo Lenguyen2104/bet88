@@ -804,7 +804,7 @@ function showListOrder(list_orders, x) {
                         <div data-v-a9660e98="" class="van-col van-col--5">
                             <div data-v-a9660e98="" class="c-tc goItem">
                                 <!---->
-                                <span data-v-a9660e98="" class="${
+                                <span data-v-a9660e98="" style="font-size: 120%" class="${
                                   list_orders.amount % 2 == 0 ? "red" : "green"
                                 }"> ${list_orders.amount} </span>
                             </div>
@@ -820,7 +820,7 @@ function showListOrder(list_orders, x) {
                         <div data-v-a9660e98="" class="van-col van-col--6">
                             <div data-v-a9660e98="" class="goItem c-row c-tc c-row-center">
                                 <div data-v-a9660e98="" class="c-tc c-row box c-row-center">
-                                    <span data-v-a9660e98="" class="li ${
+                                    <span data-v-a9660e98="" class="li zoom ${
                                       list_orders.amount % 2 == 0
                                         ? "red"
                                         : "green"
@@ -828,7 +828,7 @@ function showListOrder(list_orders, x) {
                                     ${
                                       list_orders.amount == 0 ||
                                       list_orders.amount == 5
-                                        ? '<span data-v-a9660e98="" class="li violet"></span>'
+                                        ? '<span data-v-a9660e98="" class="li violet zoom"></span>'
                                         : ""
                                     }
                                 </div>
