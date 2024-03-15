@@ -99,7 +99,31 @@
             </span>
           </div>
         </div>
-        <div data-v-11ffe290="" class="check-header c-tc">
+
+        <div
+          onclick="redirectToCheckInDetail(2,'HOA HỒNG DÀNH CHO ĐẠI LÝ','BANNERBIG02.jpeg','KIKIBANER05.jpeg')"
+          style="
+            margin-left: 12px;
+            margin-right: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            height: 180px;
+            background-color: #fff;
+          "
+        >
+          <img
+            alt=""
+            src="/images/KIKIBANER05.jpeg"
+            style="width: 100%; border-radius: 8px"
+            data-filename="下载.png"
+          />
+        </div>
+
+        <div
+          data-v-11ffe290=""
+          class="check-header c-tc"
+          style="margin-top: 22px"
+        >
           <h4 data-v-11ffe290="" class="tit m-b-5">Đã ký ngày hôm nay</h4>
         </div>
         <p class="MsoNormal">
@@ -122,6 +146,7 @@
       const id = urlParams.get("id");
       const name = urlParams.get("name");
       const imageName = urlParams.get("imageName");
+      const imageNameSmall = urlParams.get("imageNameSmall");
 
       const h4Element = document.querySelector('h4[data-v-11ffe290=""]');
 
@@ -135,6 +160,18 @@
             ? `/images/${imageName}`
             : "/images/sukien1.png";
           imgElement.src = newPath;
+        }
+      });
+
+      const imgSmallElements = document.querySelectorAll("img");
+      imgSmallElements.forEach((imgSmallElement) => {
+        if (
+          imgSmallElement.getAttribute("src") === "/images/KIKIBANER05.jpeg"
+        ) {
+          const newPath = imageNameSmall
+            ? `/images/${imageNameSmall}`
+            : "/images/KIKIBANER05.jpeg";
+          imgSmallElement.src = newPath;
         }
       });
     </script>
