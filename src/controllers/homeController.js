@@ -39,7 +39,7 @@ const checkRecord = async (req, res) => {
 };
 
 const checkInDetail = async (req, res) => {
-  return res.render("checkIn/checkinDetail.ejs");
+  return res.render("checkIn/checkInDetail.ejs");
 };
 
 const checkAttendance = async (req, res) => {
