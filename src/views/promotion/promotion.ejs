@@ -109,7 +109,7 @@
                 <td style="font-size: 12px; color:#888888;font-weight: 600;">Số người đăng ký</td>
             </tr>
             <tr style="background-color: #fff;">
-              <td data-v-7c8bbbf4="" class="napdau" style="font-size: 12px; color:#6fd8b0;font-weight: 600;padding-top: 8px;">0</td>
+              <td data-v-7c8bbbf4="" id="napdau" style="font-size: 12px; color:#6fd8b0;font-weight: 600;padding-top: 8px;">0</td>
               <td data-v-7c8bbbf4="" class="numberOfPeopleDeposit" style="font-size: 12px; color:#6fd8b0;font-weight: 600;padding-top: 8px;">0</td>
             </tr>
             <tr style="background-color: #fff;">
@@ -125,7 +125,7 @@
               <td style="font-size: 12px; color:#888888;font-weight: 600;">Số tiền nạp</td>
             </tr>
             <tr style="background-color: #fff; ">
-              <td data-v-7c8bbbf4="" class="napdau" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
+              <td data-v-7c8bbbf4="" id="napdau1" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
               <td data-v-7c8bbbf4="" class="numberOfPeopleDeposit" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
             </tr>
             <tr style="background-color: #fff;">
@@ -637,7 +637,12 @@
         data: {},
         dataType: "json",
         success: function (response) {
-          console.log('>>>>>',response.invite);
+          console.log('>>>>>',response);
+          $("#napdau").text(response.info[0].napdau);
+          $("#napdau1").text(response.info[0].napdau);
+          $("#money").text(formatM(response.info[0].money));
+
+          //
           $(".Loading").fadeOut(0);
           $(".num").text(response.invite.f1);
           $(".txt").text(response.invite.f1);
