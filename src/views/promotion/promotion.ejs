@@ -156,7 +156,7 @@
       <p id="clipboard-element" style="margin-left: 10px; margin-right: 10px; font-size: 14px; font-weight: 600; color:#333;">Sao chép mã mời</p>
     </button>
     <div style="display: flex; align-items: center; padding-right: 12px;">
-      <p data-clipboard-text="kiki79" style="margin-left: 10px; margin-right: 10px; font-size: 10px; font-weight: 600; color:#caccda;">Kiki79</p>
+      <p id="clipboard-text" style="margin-left: 10px; margin-right: 10px; font-size: 10px; font-weight: 600; color:#caccda;"></p>
       <img src="/images/nextrighticon.png" alt="Hình ảnh" style="width: 20px; height: 20px;">
     </div>
   </div>
@@ -639,6 +639,8 @@
           // console.log('>>>>>',response.info[0].code);
           
           $("#code").text(response.info[0].code);
+          $("#clipboard-text").prop("data-clipboard-text", response.info[0].code);
+
           $("#clipboard-element").attr("data-clipboard-text", response.info[0].code);
           $("#clipboard-element").click(function() {
               var clipboardText = $(this).attr("data-clipboard-text");
