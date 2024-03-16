@@ -520,6 +520,7 @@ function timerJoin(params = "") {
 }
 
 const promotion = async (req, res) => {
+  debugger
   let auth = req.cookies.auth;
   if (!auth) {
     return res.status(200).json({
@@ -630,17 +631,30 @@ const promotion = async (req, res) => {
 
   // Tổng số f2
   let f2 = 0;
+  let array12 = [];
   for (let i = 0; i < f1s.length; i++) {
     const f1_code = f1s[i].code; // Mã giới thiệu f1
+
     const [f2s] = await connection.query(
       "SELECT `phone`, `code`,`invite` FROM users WHERE `invite` = ? ",
       [f1_code]
     );
-    f2 += f2s.length;
+    const [f2s1] = await connection.query(
+      "SELECT * FROM users WHERE `code` = ? ",
+      [f1s[i].code]
+    );
+    console.log(f2s1);
+    array12.push(f2s1);
+    
+    // f2 += f2s.length;
+    // array12.push(f2s);
+    // console.log(array12);
+    // f2 = f2s;
   }
 
   // Tổng số f3
   let f3 = 0;
+  let array13 = []
   for (let i = 0; i < f1s.length; i++) {
     const f1_code = f1s[i].code; // Mã giới thiệu f1
     const [f2s] = await connection.query(
@@ -653,6 +667,12 @@ const promotion = async (req, res) => {
         "SELECT `phone`, `code`,`invite` FROM users WHERE `invite` = ? ",
         [f2_code]
       );
+      const [f2s1] = await connection.query(
+        "SELECT * FROM users WHERE `code` = ? ",
+        [f2s[i].code]
+      );
+      console.log(f2s1);
+      array13.push(f2s1);
       if (f3s.length > 0) f3 += f3s.length;
     }
   }
@@ -690,6 +710,9 @@ const promotion = async (req, res) => {
     invite: {
       f1: f1s.length,
       total_f: f1s.length + f2 + f3 + f4,
+      f2: array12,
+      f3: array13,
+      f4:f4,
       f1_today: f1_today,
       f_all_today: f_all_today,
       roses_f1: userInfo.roses_f1,
