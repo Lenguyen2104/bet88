@@ -10,7 +10,7 @@ const connection = mysql.createPool({
 //   host: "localhost",
 //   user: "root",
 //   password: "",
-//   database: "wingo6868",
+//   database: "wingo68",
 // });
 
 export default connection;
