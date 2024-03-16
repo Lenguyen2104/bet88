@@ -530,7 +530,7 @@ const promotion = async (req, res) => {
   }
   const [user] = await connection.query(
     'SELECT `phone`, `napdau`, `tongcuoc`,`money`,`code`,`invite`, `roses_f`, `roses_f1`, `roses_today` FROM users WHERE `token` = ? ',
-    [auth.token]
+    [auth]
   );
 
   const [rechargeLowerGrade] = await connection.query(
