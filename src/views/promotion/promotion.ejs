@@ -153,7 +153,7 @@
   <div data-v-7c8bbbf4="" class="btn-box" style="display: flex; justify-content: space-between; align-items: center; margin-left: 12px; margin-right: 12px; margin-top: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 53px;">
     <button id="clipboard-element" style="display: flex; align-items: center; padding-left: 12px; background-color: #FFF; border: none;">
       <img src="/images/IconCopy.png" alt="Hình ảnh" style="width: 30px; height: 30px;">
-      <p id="clipboard-element" style="margin-left: 10px; margin-right: 10px; font-size: 14px; font-weight: 600; color:#333;">Sao chép mã mời</p>
+      <p  style="margin-left: 10px; margin-right: 10px; font-size: 14px; font-weight: 600; color:#333;">Sao chép mã mời</p>
     </button>
     <div style="display: flex; align-items: center; padding-right: 12px;">
       <p id="clipboard-text" style="margin-left: 10px; margin-right: 10px; font-size: 10px; font-weight: 600; color:#caccda;"></p>
@@ -639,8 +639,9 @@
           // console.log('>>>>>',response.info[0].code);
           
           $("#code").text(response.info[0].code);
-          $("#clipboard-text").prop("data-clipboard-text", response.info[0].code);
+          $("#clipboard-text").text(response.info[0].code);
 
+          $("#clipboard-text").prop("data-clipboard-text", response.info[0].code);
           $("#clipboard-element").attr("data-clipboard-text", response.info[0].code);
           $("#clipboard-element").click(function() {
               var clipboardText = $(this).attr("data-clipboard-text");
