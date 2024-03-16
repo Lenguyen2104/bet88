@@ -81,6 +81,7 @@ const userInfo = async (req, res) => {
     "SELECT * FROM recharge WHERE `phone` = ? AND status = 1",
     [rows[0].phone]
   );
+
   let totalRecharge = 0;
   recharge.forEach((data) => {
     totalRecharge += data.money;
@@ -528,9 +529,37 @@ const promotion = async (req, res) => {
     });
   }
   const [user] = await connection.query(
-    "SELECT `phone`, `code`,`invite`, `roses_f`, `roses_f1`, `roses_today` FROM users WHERE `token` = ? ",
+    "SELECT `phone`, `napdau`, `tongcuoc`,`money`,`code`,`invite`, `roses_f`, `roses_f1`, `roses_today` FROM users WHERE `token` = ? ",
     [auth]
   );
+
+  const [rechargeLowerGrade] = await connection.query(
+    "SELECT * FROM `recharge` ORDER BY `recharge`.`today` ASC"
+  );
+  // console.log(">>>>Lower grade", rechargeLowerGrade);
+  // Lấy thời điểm hiện tại
+  const currentTime = Date.now();
+
+  // Tạo thời điểm 24 giờ trước đó
+  const twentyFourHoursAgo = currentTime - 24 * 60 * 60 * 1000;
+
+  // Lọc ra các mục trong mảng có trường 'time' trong khoảng thời gian 24 giờ trở lại đây
+  const recentItems = rechargeLowerGrade.filter((item) => {
+    return parseInt(item.time) >= twentyFourHoursAgo;
+  });
+
+  // Tính tổng của các giá trị trong trường 'money'
+  const totalMoney = recentItems.reduce((accumulator, currentValue) => {
+    return accumulator + currentValue.money;
+  }, 0);
+
+  // console.log("Mảng các mục gần nhất trong 24 giờ:", recentItems.length);
+  // console.log("Tổng tiền của các mục gần nhất trong 24 giờ:", totalMoney);
+
+  const napdauValue = user[0].napdau;
+  const tongcuocValue = user[0].tongcuoc;
+  const moneyValue = user[0].money;
+
   const [level] = await connection.query("SELECT * FROM level");
   if (!user) {
     return res.status(200).json({
@@ -667,6 +696,11 @@ const promotion = async (req, res) => {
       roses_f: userInfo.roses_f,
       roses_all: userInfo.roses_f,
       roses_today: userInfo.roses_today,
+      napdau: napdauValue,
+      tongcuoc: tongcuocValue,
+      money: moneyValue,
+      numberOfPeopleDeposit: recentItems.length,
+      amountMoney: totalMoney,
     },
     timeStamp: timeNow,
   });
