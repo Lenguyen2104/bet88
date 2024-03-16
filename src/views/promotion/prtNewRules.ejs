@@ -251,6 +251,14 @@
     </script>
     <script>
       function formatM(params) {
+        if (
+          isNaN(params) ||
+          params === null ||
+          params === undefined ||
+          params === 0
+        ) {
+          return 0; // Nếu đúng, trả về 0
+        }
         var money = params;
         var config = {
           style: "currency",
