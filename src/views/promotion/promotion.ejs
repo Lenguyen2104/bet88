@@ -151,10 +151,10 @@
   </div>
 
   <div data-v-7c8bbbf4="" class="btn-box" style="display: flex; justify-content: space-between; align-items: center; margin-left: 12px; margin-right: 12px; margin-top: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 53px;">
-    <div data-v-7c8bbbf4="" class="btn m-b-10 c-row c-row-middle-center tag-read" data-clipboard-text="kiki79" style="display: flex; align-items: center; padding-left: 12px;">
-        <img src="/images/IconCopy.png" alt="Hình ảnh" style="width: 30px; height: 30px;">
-        <p data-clipboard-text="kiki79" style="margin-left: 10px; margin-right: 10px; font-size: 14px; font-weight: 600; color:#333;">Sao chép mã mời</p>
-    </div>
+    <button id="clipboard-element" style="display: flex; align-items: center; padding-left: 12px; background-color: #FFF; border: none;">
+      <img src="/images/IconCopy.png" alt="Hình ảnh" style="width: 30px; height: 30px;">
+      <p id="clipboard-element" style="margin-left: 10px; margin-right: 10px; font-size: 14px; font-weight: 600; color:#333;">Sao chép mã mời</p>
+    </button>
     <div style="display: flex; align-items: center; padding-right: 12px;">
       <p data-clipboard-text="kiki79" style="margin-left: 10px; margin-right: 10px; font-size: 10px; font-weight: 600; color:#caccda;">Kiki79</p>
       <img src="/images/nextrighticon.png" alt="Hình ảnh" style="width: 20px; height: 20px;">
@@ -229,7 +229,6 @@
       </table>
     </div>
   
-      
         <!--NEW CODE promotion-->
         <!-- <div data-v-7c8bbbf4="" class="promotion">
           <div data-v-7c8bbbf4="" class="tab">
@@ -637,7 +636,19 @@
         data: {},
         dataType: "json",
         success: function (response) {
-          console.log('>>>>>',response);
+          // console.log('>>>>>',response.info[0].code);
+          
+          $("#code").text(response.info[0].code);
+          $("#clipboard-element").attr("data-clipboard-text", response.info[0].code);
+          $("#clipboard-element").click(function() {
+              var clipboardText = $(this).attr("data-clipboard-text");
+              navigator.clipboard.writeText(clipboardText).then(function() {
+                  alert("Đã sao chép mã mời!");
+              }).catch(function(err) {
+                  console.error('Lỗi khi sao chép:', err);
+              });
+          });
+
           $("#napdau").text(response.info[0].napdau);
           $("#napdau1").text(response.info[0].napdau);
           $("#money").text(formatM(response.info[0].money));

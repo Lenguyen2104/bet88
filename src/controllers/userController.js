@@ -529,7 +529,7 @@ const promotion = async (req, res) => {
     });
   }
   const [user] = await connection.query(
-    'SELECT * FROM users WHERE token = ? ',
+    "SELECT * FROM users WHERE token = ? ",
     [auth]
   );
 
