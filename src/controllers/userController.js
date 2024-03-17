@@ -884,66 +884,6 @@ const promotion = async (req, res) => {
 
   const uniqueData = [...new Set(allData.map(JSON.stringify))].map(JSON.parse);
 
-  function getSummaryData(dataArray) {
-    const currentDateDay = new Date().toISOString().slice(0, 10);
-
-    const numDepositUsers = dataArray.filter((user) => user.money !== 0).length;
-    const totalDepositAmount = dataArray.reduce(
-      (total, user) => total + user.money,
-      0
-    );
-    const numBetUsers = dataArray.filter((user) => user.tongcuoc !== 0).length;
-    const totalBetAmount = dataArray.reduce(
-      (total, user) => total + user.tongcuoc,
-      0
-    );
-
-    // Handling invalid time values
-    const numFirstDepositUsers = dataArray.filter((user) => {
-      try {
-        return (
-          user.money !== 0 &&
-          new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
-            currentDateDay
-        );
-      } catch (error) {
-        return false;
-      }
-    }).length;
-
-    const totalFirstDepositAmount = dataArray
-      .filter((user) => {
-        try {
-          return (
-            user.money !== 0 &&
-            new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
-              currentDateDay
-          );
-        } catch (error) {
-          return false;
-        }
-      })
-      .reduce((total, user) => total + user.money, 0);
-
-    return {
-      num_deposit_users: numDepositUsers,
-      total_deposit_amount: totalDepositAmount,
-      num_bet_users: numBetUsers,
-      total_bet_amount: totalBetAmount,
-      num_first_deposit_users: numFirstDepositUsers,
-      total_first_deposit_amount: totalFirstDepositAmount,
-    };
-  }
-
-  const summary_table = {
-    summary_f_all: [getSummaryData(allData)],
-    summary_f_0: [getSummaryData(sf0)],
-    summary_f_1: [getSummaryData(array_sf1)],
-    summary_f_2: [getSummaryData(array_sf2)],
-    summary_f_3: [getSummaryData(array_sf3)],
-    summary_f_4: [getSummaryData(array_sf4)],
-  };
-
   const matchingInviteAndDifferentCode = sf0.filter(
     (data) => data.invite === userInfo.code && data.code !== userInfo.code
   );
@@ -986,6 +926,169 @@ const promotion = async (req, res) => {
     first_deposit_users_direct_subordinates: dataWithCurrentDate.length,
   };
 
+  //
+  const [userAll] = await connection.query("SELECT * FROM `users`");
+  const codeUser = userInfo.code;
+  const invitedUsersF1 = userAll.filter(
+    (user) => user.invite === codeUser && user.code !== userInfo.code
+  ); //F1 Array
+  const invitedUserCodesF2 = invitedUsersF1.map((user) => user.code);
+  const usersWithSameInviteF2 = userAll.filter((user) =>
+    invitedUserCodesF2.includes(user.invite)
+  ); //F2 Array
+  const userCodesWithSameInviteF3 = usersWithSameInviteF2.map(
+    (user) => user.code
+  );
+  const usersWithSameInviteAsCodeF3 = userAll.filter((user) =>
+    userCodesWithSameInviteF3.includes(user.invite)
+  ); //F3 Array
+  const invitedUserCodesF4 = usersWithSameInviteAsCodeF3.map(
+    (user) => user.code
+  );
+  const usersWithSameInviteAsCodeF4 = userAll.filter((user) =>
+    invitedUserCodesF4.includes(user.invite)
+  ); //F4 Array
+  const invitedUserCodesF5 = usersWithSameInviteAsCodeF4.map(
+    (user) => user.code
+  );
+  const usersWithSameInviteAsCodeF5 = userAll.filter((user) =>
+    invitedUserCodesF5.includes(user.invite)
+  ); //F5 Array
+
+  const allDataMySubordinates = [
+    ...invitedUsersF1,
+    ...usersWithSameInviteF2,
+    ...usersWithSameInviteAsCodeF3,
+    ...usersWithSameInviteAsCodeF4,
+    ...usersWithSameInviteAsCodeF5,
+  ];
+
+  const dataWithNonZeroTotalMoneyMySubordinates = allDataMySubordinates.filter(
+    (data) => data.total_money !== 0
+  );
+
+  const totalMoneySumMySubordinates = allDataMySubordinates.reduce(
+    (accumulator, currentValue) => accumulator + currentValue.total_money,
+    0
+  );
+
+  const phonesToMatMySubordinates = allDataMySubordinates.map(
+    (data) => data.phone
+  );
+
+  const matchingPhonesMySubordinates = rechargeLowerGrade.filter((data) =>
+    phonesToMatMySubordinates.includes(data.phone)
+  );
+
+  const uniquePhonesMySubordinates = [];
+  const uniqueMatchingPhonesMySubordinates =
+    matchingPhonesMySubordinates.filter((data) => {
+      if (!uniquePhonesMySubordinates.includes(data.phone)) {
+        uniquePhonesMySubordinates.push(data.phone);
+        return true;
+      }
+      return false;
+    });
+
+  const currentDateDirectSubordinatesMySubordinates = new Date()
+    .toISOString()
+    .slice(0, 10);
+  const dataWithCurrentDateMySubordinates =
+    uniqueMatchingPhonesMySubordinates.filter(
+      (data) => data.today === currentDateDirectSubordinatesMySubordinates
+    );
+
+  const dataMySubordinates = {
+    registered_users_my_subordinates: allDataMySubordinates.length,
+    depositing_users_my_subordinates:
+      dataWithNonZeroTotalMoneyMySubordinates.length,
+    deposited_amount_my_subordinates: totalMoneySumMySubordinates,
+    first_deposit_users_my_subordinates:
+      dataWithCurrentDateMySubordinates.length,
+  };
+
+  //F1
+  const newArrayF1 = sf0.filter((item) => item.code !== item.invite);
+  //F2
+  const newArrayF2 = userAll.filter((user) => {
+    return newArrayF1.some((newItem) => newItem.code === user.invite);
+  });
+  //F3
+  const newArrayF3 = userAll.filter((user) => {
+    return newArrayF2.some((newItem) => newItem.code === user.invite);
+  });
+  //F4
+  const newArrayF4 = userAll.filter((user) => {
+    return newArrayF3.some((newItem) => newItem.code === user.invite);
+  });
+
+  function getSummaryData(dataArray) {
+    const currentDateDay = new Date().toISOString().slice(0, 10);
+
+    const numDepositUsers = rechargeLowerGrade.filter((user) => {
+      return dataArray.some((newItem) => newItem.phone == user.phone);
+    });
+
+    // const numDepositUsers = dataArray.filter((user) => user.money !== 0).length;
+
+    const totalDepositAmount = numDepositUsers.reduce(
+      (total, user) => total + user.money,
+      0
+    );
+
+    const numBetUsers = dataArray.filter((user) => user.tongcuoc !== 0).length;
+    const totalBetAmount = dataArray.reduce(
+      (total, user) => total + user.tongcuoc,
+      0
+    );
+
+    // Handling invalid time values
+    const numFirstDepositUsers = numDepositUsers.filter((user) => {
+      try {
+        return (
+          user.money !== 0 &&
+          new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
+            currentDateDay
+        );
+      } catch (error) {
+        return false;
+      }
+    }).length;
+
+    const totalFirstDepositAmount = numDepositUsers
+      .filter((user) => {
+        try {
+          return (
+            user.money !== 0 &&
+            new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
+              currentDateDay
+          );
+        } catch (error) {
+          return false;
+        }
+      })
+      .reduce((total, user) => total + user.money, 0);
+
+    return {
+      num_deposit_users: numDepositUsers.length,
+      total_deposit_amount: totalDepositAmount,
+      num_bet_users: numBetUsers,
+      total_bet_amount: totalBetAmount,
+      num_first_deposit_users: numFirstDepositUsers,
+      total_first_deposit_amount: totalFirstDepositAmount,
+    };
+  }
+
+  const summary_table = {
+    summary_f_all: [getSummaryData(uniqueData)],
+    summary_f_1: [getSummaryData(newArrayF1)],
+    summary_f_2: [getSummaryData(newArrayF2)],
+    summary_f_3: [getSummaryData(newArrayF3)],
+    summary_f_4: [getSummaryData(newArrayF4)],
+  };
+
+  // console.log("Kết quả tìm kiếm:", totalDepositAmount123);
+
   return res.status(200).json({
     message: "Nhận thành công",
     level: level,
@@ -993,12 +1096,12 @@ const promotion = async (req, res) => {
     status: true,
     invite: {
       select_f_all: uniqueData,
-      select_f0: sf0,
-      select_f1: array_sf1,
-      select_f2: array_sf2,
-      select_f3: array_sf3,
-      select_f4: array_sf4,
+      select_f1: newArrayF1,
+      select_f2: newArrayF2,
+      select_f3: newArrayF3,
+      select_f4: newArrayF4,
       data_direct_subordinates: dataDirectSubordinatesData,
+      data_my_subordinates: dataMySubordinates,
       summary: summary_table,
       f1: f1s.length,
       total_f: f1s.length + f2 + f3 + f4,

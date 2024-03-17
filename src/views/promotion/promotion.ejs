@@ -102,7 +102,7 @@
             </tr>
             <tr style="background-color: #fff;">
               <td data-v-7c8bbbf4="" id="registered_users_direct_subordinates" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
-              <td data-v-7c8bbbf4="" class="txt" id="f_total" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
+              <td data-v-7c8bbbf4="" class="" id="registered_users_my_subordinates" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
             </tr>
             <tr style="background-color: #fff;">
                 <td style="font-size: 12px; color:#888888;font-weight: 600;">Số người đăng ký</td>
@@ -110,7 +110,7 @@
             </tr>
             <tr style="background-color: #fff;">
               <td data-v-7c8bbbf4="" id="depositing_users_direct_subordinates" style="font-size: 12px; color:#6fd8b0;font-weight: 600;padding-top: 8px;">0</td>
-              <td data-v-7c8bbbf4="" id="number_of_people_deposit" style="font-size: 12px; color:#6fd8b0;font-weight: 600;padding-top: 8px;">0</td>
+              <td data-v-7c8bbbf4="" id="depositing_users_my_subordinates" style="font-size: 12px; color:#6fd8b0;font-weight: 600;padding-top: 8px;">0</td>
             </tr>
             <tr style="background-color: #fff;">
               <td style="font-size: 12px; color:#888888;font-weight: 600;">Số người nạp tiền</td>
@@ -118,7 +118,7 @@
             </tr>
             <tr style="background-color: #fff;">
               <td data-v-7c8bbbf4="" id="deposited_amount_direct_subordinates" style="font-size: 12px; color:#ff8617;font-weight: 600;padding-top: 8px;">0</td>
-              <td id="total_of_money" style="font-size: 12px; color:#ff8617;font-weight: 600;padding-top: 8px;">0</td>
+              <td id="deposited_amount_my_subordinates" style="font-size: 12px; color:#ff8617;font-weight: 600;padding-top: 8px;">0</td>
             </tr>
             <tr style="background-color: #fff;">
               <td style="font-size: 12px; color:#888888;font-weight: 600;">Số tiền nạp</td>
@@ -126,7 +126,7 @@
             </tr>
             <tr style="background-color: #fff; ">
               <td data-v-7c8bbbf4="" id="first_deposit_users_direct_subordinates" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
-              <td data-v-7c8bbbf4="" id="number_of_people_deposit_today" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
+              <td data-v-7c8bbbf4="" id="first_deposit_users_my_subordinates" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
             </tr>
             <tr style="background-color: #fff;">
               <td style="font-size: 12px; color:#888888;font-weight: 600;">Số người nạp đầu</td>
@@ -215,8 +215,8 @@
             <td style="font-size: 12px; color:#888888;font-weight: 600;">Tổng hoa hồng</td>
           </tr>
           <tr style="background-color: #fff; ">
-            <td data-v-7c8bbbf4="" class="num f1" style="font-size: 16px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
-            <td data-v-7c8bbbf4="" class="numtotal_f total_f" style="font-size: 16px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
+            <td data-v-7c8bbbf4="" id="registered_users_direct_subordinatesKM" style="font-size: 16px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
+            <td data-v-7c8bbbf4="" id="registered_users_my_subordinatesKM" style="font-size: 16px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
           </tr>
           <tr style="background-color: #fff;">
             <td style="font-size: 12px; color:#888888;font-weight: 600;border-right: 1px solid #ccc;">Cấp dưới trực tiếp</td>
@@ -636,9 +636,14 @@
         data: {},
         dataType: "json",
         success: function (response) {
-          console.log("🚀 ~ response:", response.invite.data_direct_subordinates.depositing_users_direct_subordinates)
+          $("#registered_users_my_subordinates").text(response.invite.data_my_subordinates.registered_users_my_subordinates);
+          $("#registered_users_my_subordinatesKM").text(response.invite.data_my_subordinates.registered_users_my_subordinates);
+          $("#depositing_users_my_subordinates").text(response.invite.data_my_subordinates.depositing_users_my_subordinates);
+          $("#deposited_amount_my_subordinates").text(formatM(response.invite.data_my_subordinates.deposited_amount_my_subordinates));
+          $("#first_deposit_users_my_subordinates").text(response.invite.data_my_subordinates.first_deposit_users_my_subordinates);
           
           $("#registered_users_direct_subordinates").text(response.invite.data_direct_subordinates.registered_users_direct_subordinates);
+          $("#registered_users_direct_subordinatesKM").text(response.invite.data_direct_subordinates.registered_users_direct_subordinates);
           $("#depositing_users_direct_subordinates").text(response.invite.data_direct_subordinates.depositing_users_direct_subordinates);
           $("#deposited_amount_direct_subordinates").text(formatM(response.invite.data_direct_subordinates.deposited_amount_direct_subordinates));
           $("#first_deposit_users_direct_subordinates").text(response.invite.data_direct_subordinates.first_deposit_users_direct_subordinates);

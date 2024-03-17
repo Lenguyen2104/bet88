@@ -185,7 +185,6 @@ body {
                   <option value="F2">F2</option>
                   <option value="F3">F3</option>
                   <option value="F4">F4</option>
-                  <option value="F5">F5</option>
               </select>
               <div class="input-container" style="height: 53px;">
                   <input
@@ -211,15 +210,15 @@ body {
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;border-right: 1px solid #fff;">Số người nạp tiền</td>
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;">Số tiền nạp</td>
                   </tr>            
-                  <tr style="background-color: transparent; ">
+                  <!-- <tr style="background-color: transparent; ">
                     <td data-v-7c8bbbf4="" id="num_bet_users" style="font-size: 16px; color:#b13c4c;font-weight: 600;padding-top: 8px;">0</td>
                     <td data-v-7c8bbbf4="" id="total_bet_amount" style="font-size: 16px; color:#b13c4c;font-weight: 600;padding-top: 8px;">0</td>
-                  </tr>
-                  <tr style="background-color: transparent;">
+                  </tr> -->
+                  <!-- <tr style="background-color: transparent;">
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;border-right: 1px solid #fff;">Số người cược</td>
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;">Số tiền cược</td>
-                  </tr>
-                  <tr style="background-color: transparent; ">
+                  </tr> -->
+                  <tr style="background-color: transparent;">
                     <td data-v-7c8bbbf4="" id="num_first_deposit_users" style="font-size: 16px; color:#b13c4c;font-weight: 600;padding-top: 8px;">0</td>
                     <td data-v-7c8bbbf4="" id="total_first_deposit_amount" style="font-size: 16px; color:#b13c4c;font-weight: 600;padding-top: 8px;">0</td>
                   </tr>
@@ -477,24 +476,21 @@ body {
         data: { selectedValue: selectedValue, selectedDate: selectedDate },
         dataType: "json",
         success: function (response) {
-          console.log('>>>>selectedValue',selectedValue);
-          console.log('selectedDate>>>>',selectedDate);
+          
           
           var swlength = 0
           
           if (selectedValue == undefined || selectedValue == "FAll") {
             swlength = response.invite.select_f_all.length
           } else if (selectedValue == "F1") {
-            swlength = response.invite.select_f0.length
-          } else if (selectedValue == "F2") {
             swlength = response.invite.select_f1.length
-          } else if (selectedValue == "F3") {
+          } else if (selectedValue == "F2") {
             swlength = response.invite.select_f2.length
-          } else if (selectedValue == "F4") {
+          } else if (selectedValue == "F3") {
             swlength = response.invite.select_f3.length
-          } else if (selectedValue == "F5") {
+          } else if (selectedValue == "F4") {
             swlength = response.invite.select_f4.length
-          } else if (selectedValue == undefined ) {
+          }  else {
             swlength = response.invite.select_f_all.length
           } 
 
@@ -502,7 +498,7 @@ body {
             `Đội trực tiếp (${swlength} người)`
           );
 
-          let swDataF;
+            let swDataF;
 
             if ((selectedValue === undefined || selectedValue === "FAll") && selectedDate === undefined) {
                 swDataF = response.invite.select_f_all;
@@ -517,9 +513,9 @@ body {
                     return formattedItemDate === selectedDate;
                 });
             } else if ((selectedValue === "F1" ) && selectedDate === undefined) {
-                swDataF = response.invite.select_f0;
+                swDataF = response.invite.select_f1;
             } else if ((selectedValue === "F1" ) && selectedDate !== undefined) {
-                swDataF = response.invite.select_f0.filter(item => {
+                swDataF = response.invite.select_f1.filter(item => {
                     const itemDate = new Date(parseInt(item.time));
                     const day = ("0" + itemDate.getDate()).slice(-2);
                     const month = itemDate.getMonth() + 1;
@@ -529,9 +525,9 @@ body {
                     return formattedItemDate === selectedDate;
                 });
             } else if ((selectedValue === "F2" ) && selectedDate === undefined) {
-                swDataF = response.invite.select_f1.flat();
+                swDataF = response.invite.select_f2;
             } else if ((selectedValue === "F2" ) && selectedDate !== undefined) {
-                swDataF = response.invite.select_f1.flat().filter(item => {
+                swDataF = response.invite.select_f2.filter(item => {
                     const itemDate = new Date(parseInt(item.time));
                     const day = ("0" + itemDate.getDate()).slice(-2);
                     const month = itemDate.getMonth() + 1;
@@ -541,9 +537,9 @@ body {
                     return formattedItemDate === selectedDate;
                 });
             } else if ((selectedValue === "F3" ) && selectedDate === undefined) {
-                swDataF = response.invite.select_f2.flat();
+                swDataF = response.invite.select_f3;
             } else if ((selectedValue === "F3" ) && selectedDate !== undefined) {
-                swDataF = response.invite.select_f2.flat().filter(item => {
+                swDataF = response.invite.select_f3.filter(item => {
                     const itemDate = new Date(parseInt(item.time));
                     const day = ("0" + itemDate.getDate()).slice(-2);
                     const month = itemDate.getMonth() + 1;
@@ -553,9 +549,9 @@ body {
                     return formattedItemDate === selectedDate;
                 });
             } else if ((selectedValue === "F4" ) && selectedDate === undefined) {
-                swDataF = response.invite.select_f3.flat();
+                swDataF = response.invite.select_f4;
             } else if ((selectedValue === "F4" ) && selectedDate !== undefined) {
-                swDataF = response.invite.select_f3.flat().filter(item => {
+                swDataF = response.invite.select_f4.filter(item => {
                     const itemDate = new Date(parseInt(item.time));
                     const day = ("0" + itemDate.getDate()).slice(-2);
                     const month = itemDate.getMonth() + 1;
@@ -564,38 +560,26 @@ body {
                     const formattedItemDate = `${day}-${formattedMonth}-${year}`;
                     return formattedItemDate === selectedDate;
                 });
-            } else if ((selectedValue === "F5" ) && selectedDate === undefined) {
-                swDataF = response.invite.select_f4.flat();
-            } else if ((selectedValue === "F5" ) && selectedDate !== undefined) {
-                swDataF = response.invite.select_f4.flat().filter(item => {
-                    const itemDate = new Date(parseInt(item.time));
-                    const day = ("0" + itemDate.getDate()).slice(-2);
-                    const month = itemDate.getMonth() + 1;
-                    const formattedMonth = month < 10 ? "0" + month : month;
-                    const year = itemDate.getFullYear();
-                    const formattedItemDate = `${day}-${formattedMonth}-${year}`;
-                    return formattedItemDate === selectedDate;
-                });
-            } else {
+            }  else {
                 swDataF = response.invite.select_f_all;
             }
 
           DataFRender(swDataF);
           
           // var swDataF = response.invite.select_f_all
-          // // console.log("🚀 ~ fetchData ~ swDataF:", swDataF)
-          // if (selectedValue == undefined) {
+          
+          // if (selectedValue == undefined || selectedValue == "FAll") {
           //   swDataF = response.invite.select_f_all
           // } else if (selectedValue == "F1") {
-          //   swDataF = response.invite.select_f0
+          //   swDataF = response.invite.select_f1
           // } else if (selectedValue == "F2") {
-          //   swDataF = response.invite.select_f1.flat()
+          //   swDataF = response.invite.select_f2
           // } else if (selectedValue == "F3") {
-          //   swDataF = response.invite.select_f2.flat()
+          //   swDataF = response.invite.select_f3
           // } else if (selectedValue == "F4") {
-          //   swDataF = response.invite.select_f3.flat()
-          // } else if (selectedValue == "F5") {
-          //   swDataF = response.invite.select_f4.flat()
+          //   swDataF = response.invite.select_f4
+          // } else {
+          //   swDataF = response.invite.select_f_all
           // } 
           // DataFRender(swDataF);
 
@@ -606,19 +590,19 @@ body {
               case undefined:
                   swSummaryF = response.invite.summary.summary_f_all;
                   break;
-              case "F1":
-                  swSummaryF = response.invite.summary.summary_f_0;
+              case "FAll":
+                  swSummaryF = response.invite.summary.summary_f_all;
                   break;
-              case "F2":
+              case "F1":
                   swSummaryF = response.invite.summary.summary_f_1;
                   break;
-              case "F3":
+              case "F2":
                   swSummaryF = response.invite.summary.summary_f_2;
                   break;
-              case "F4":
+              case "F3":
                   swSummaryF = response.invite.summary.summary_f_3;
                   break;
-              case "F5":
+              case "F4":
                   swSummaryF = response.invite.summary.summary_f_4;
                   break;
               default:
@@ -630,7 +614,7 @@ body {
           $("#num_first_deposit_users").text(swSummaryF[0].num_first_deposit_users);
           $("#total_bet_amount").text(formatM(swSummaryF[0].total_bet_amount));
           $("#total_deposit_amount").text(formatM(swSummaryF[0].total_deposit_amount));
-          $("#total_first_deposit_amount").text(swSummaryF[0].total_first_deposit_amount);
+          $("#total_first_deposit_amount").text(formatM(swSummaryF[0].total_first_deposit_amount));
 
         },
       });
