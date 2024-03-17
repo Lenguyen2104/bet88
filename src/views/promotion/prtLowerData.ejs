@@ -477,11 +477,12 @@ body {
         data: { selectedValue: selectedValue, selectedDate: selectedDate },
         dataType: "json",
         success: function (response) {
-          console.log('>>>>',selectedDate);
+          console.log('>>>>selectedValue',selectedValue);
+          console.log('selectedDate>>>>',selectedDate);
           
           var swlength = 0
           
-          if (selectedValue == undefined) {
+          if (selectedValue == undefined || selectedValue == "FAll") {
             swlength = response.invite.select_f_all.length
           } else if (selectedValue == "F1") {
             swlength = response.invite.select_f0.length
@@ -501,41 +502,102 @@ body {
             `Đội trực tiếp (${swlength} người)`
           );
 
-          // let swDataF = response.invite.select_f_all;
+          let swDataF;
 
-          //   if (selectedValue === "F1" && selectedDate !== undefined) {
-          //       // Chuyển đổi selectedDate thành định dạng Unix timestamp
-          //       const selectedDateTimeStamp = new Date(selectedDate).getTime();
-          //       console.log("🚀 ~ fetchData ~ selectedDateTimeStamp:", selectedDateTimeStamp)
-                
-          //       // Lọc dữ liệu theo thời gian
-          //       swDataF = response.invite.select_f_all.filter(item => {
-          //           const itemTimeStamp = parseInt(item.time);
-          //           console.log("🚀 ~ fetchData ~ itemTimeStamp:", itemTimeStamp)
-          //           // Kiểm tra xem time của mỗi item có bằng với selectedDateTimeStamp không
-          //           return itemTimeStamp === selectedDateTimeStamp;
-          //       });
-          //   } else if (selectedValue && (selectedValue === "F2" || selectedValue === "F3" || selectedValue === "F4" || selectedValue === "F5")) {
-          //       // Chuyển đổi các mảng con thành mảng 1 chiều
-          //       swDataF = response.invite[`select_f${selectedValue[1]}`].flat();
-          //   }
-          
-          var swDataF = response.invite.select_f_all
-          // console.log("🚀 ~ fetchData ~ swDataF:", swDataF)
-          if (selectedValue == undefined) {
-            swDataF = response.invite.select_f_all
-          } else if (selectedValue == "F1") {
-            swDataF = response.invite.select_f0
-          } else if (selectedValue == "F2") {
-            swDataF = response.invite.select_f1.flat()
-          } else if (selectedValue == "F3") {
-            swDataF = response.invite.select_f2.flat()
-          } else if (selectedValue == "F4") {
-            swDataF = response.invite.select_f3.flat()
-          } else if (selectedValue == "F5") {
-            swDataF = response.invite.select_f4.flat()
-          } 
+            if ((selectedValue === undefined || selectedValue === "FAll") && selectedDate === undefined) {
+                swDataF = response.invite.select_f_all;
+            } else if ((selectedValue === undefined || selectedValue === "FAll") && selectedDate !== undefined) {
+                swDataF = response.invite.select_f_all.filter(item => {
+                    const itemDate = new Date(parseInt(item.time));
+                    const day = ("0" + itemDate.getDate()).slice(-2);
+                    const month = itemDate.getMonth() + 1;
+                    const formattedMonth = month < 10 ? "0" + month : month;
+                    const year = itemDate.getFullYear();
+                    const formattedItemDate = `${day}-${formattedMonth}-${year}`;
+                    return formattedItemDate === selectedDate;
+                });
+            } else if ((selectedValue === "F1" ) && selectedDate === undefined) {
+                swDataF = response.invite.select_f0;
+            } else if ((selectedValue === "F1" ) && selectedDate !== undefined) {
+                swDataF = response.invite.select_f0.filter(item => {
+                    const itemDate = new Date(parseInt(item.time));
+                    const day = ("0" + itemDate.getDate()).slice(-2);
+                    const month = itemDate.getMonth() + 1;
+                    const formattedMonth = month < 10 ? "0" + month : month;
+                    const year = itemDate.getFullYear();
+                    const formattedItemDate = `${day}-${formattedMonth}-${year}`;
+                    return formattedItemDate === selectedDate;
+                });
+            } else if ((selectedValue === "F2" ) && selectedDate === undefined) {
+                swDataF = response.invite.select_f1.flat();
+            } else if ((selectedValue === "F2" ) && selectedDate !== undefined) {
+                swDataF = response.invite.select_f1.flat().filter(item => {
+                    const itemDate = new Date(parseInt(item.time));
+                    const day = ("0" + itemDate.getDate()).slice(-2);
+                    const month = itemDate.getMonth() + 1;
+                    const formattedMonth = month < 10 ? "0" + month : month;
+                    const year = itemDate.getFullYear();
+                    const formattedItemDate = `${day}-${formattedMonth}-${year}`;
+                    return formattedItemDate === selectedDate;
+                });
+            } else if ((selectedValue === "F3" ) && selectedDate === undefined) {
+                swDataF = response.invite.select_f2.flat();
+            } else if ((selectedValue === "F3" ) && selectedDate !== undefined) {
+                swDataF = response.invite.select_f2.flat().filter(item => {
+                    const itemDate = new Date(parseInt(item.time));
+                    const day = ("0" + itemDate.getDate()).slice(-2);
+                    const month = itemDate.getMonth() + 1;
+                    const formattedMonth = month < 10 ? "0" + month : month;
+                    const year = itemDate.getFullYear();
+                    const formattedItemDate = `${day}-${formattedMonth}-${year}`;
+                    return formattedItemDate === selectedDate;
+                });
+            } else if ((selectedValue === "F4" ) && selectedDate === undefined) {
+                swDataF = response.invite.select_f3.flat();
+            } else if ((selectedValue === "F4" ) && selectedDate !== undefined) {
+                swDataF = response.invite.select_f3.flat().filter(item => {
+                    const itemDate = new Date(parseInt(item.time));
+                    const day = ("0" + itemDate.getDate()).slice(-2);
+                    const month = itemDate.getMonth() + 1;
+                    const formattedMonth = month < 10 ? "0" + month : month;
+                    const year = itemDate.getFullYear();
+                    const formattedItemDate = `${day}-${formattedMonth}-${year}`;
+                    return formattedItemDate === selectedDate;
+                });
+            } else if ((selectedValue === "F5" ) && selectedDate === undefined) {
+                swDataF = response.invite.select_f4.flat();
+            } else if ((selectedValue === "F5" ) && selectedDate !== undefined) {
+                swDataF = response.invite.select_f4.flat().filter(item => {
+                    const itemDate = new Date(parseInt(item.time));
+                    const day = ("0" + itemDate.getDate()).slice(-2);
+                    const month = itemDate.getMonth() + 1;
+                    const formattedMonth = month < 10 ? "0" + month : month;
+                    const year = itemDate.getFullYear();
+                    const formattedItemDate = `${day}-${formattedMonth}-${year}`;
+                    return formattedItemDate === selectedDate;
+                });
+            } else {
+                swDataF = response.invite.select_f_all;
+            }
+
           DataFRender(swDataF);
+          
+          // var swDataF = response.invite.select_f_all
+          // // console.log("🚀 ~ fetchData ~ swDataF:", swDataF)
+          // if (selectedValue == undefined) {
+          //   swDataF = response.invite.select_f_all
+          // } else if (selectedValue == "F1") {
+          //   swDataF = response.invite.select_f0
+          // } else if (selectedValue == "F2") {
+          //   swDataF = response.invite.select_f1.flat()
+          // } else if (selectedValue == "F3") {
+          //   swDataF = response.invite.select_f2.flat()
+          // } else if (selectedValue == "F4") {
+          //   swDataF = response.invite.select_f3.flat()
+          // } else if (selectedValue == "F5") {
+          //   swDataF = response.invite.select_f4.flat()
+          // } 
+          // DataFRender(swDataF);
 
           var swSummaryF =  response.invite.summary.summary_f_all
           // console.log("🚀 ~ fetchData ~ swSummaryF:", swSummaryF)
