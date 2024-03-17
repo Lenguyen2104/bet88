@@ -110,7 +110,7 @@
             </tr>
             <tr style="background-color: #fff;">
               <td data-v-7c8bbbf4="" id="napdau" style="font-size: 12px; color:#6fd8b0;font-weight: 600;padding-top: 8px;">0</td>
-              <td data-v-7c8bbbf4="" class="numberOfPeopleDeposit" style="font-size: 12px; color:#6fd8b0;font-weight: 600;padding-top: 8px;">0</td>
+              <td data-v-7c8bbbf4="" id="number_of_people_deposit" style="font-size: 12px; color:#6fd8b0;font-weight: 600;padding-top: 8px;">0</td>
             </tr>
             <tr style="background-color: #fff;">
               <td style="font-size: 12px; color:#888888;font-weight: 600;">Số người nạp tiền</td>
@@ -118,7 +118,7 @@
             </tr>
             <tr style="background-color: #fff;">
               <td data-v-7c8bbbf4="" id="money" style="font-size: 12px; color:#ff8617;font-weight: 600;padding-top: 8px;">0</td>
-              <td id="amountMoney" style="font-size: 12px; color:#ff8617;font-weight: 600;padding-top: 8px;">0</td>
+              <td id="total_of_money" style="font-size: 12px; color:#ff8617;font-weight: 600;padding-top: 8px;">0</td>
             </tr>
             <tr style="background-color: #fff;">
               <td style="font-size: 12px; color:#888888;font-weight: 600;">Số tiền nạp</td>
@@ -126,7 +126,7 @@
             </tr>
             <tr style="background-color: #fff; ">
               <td data-v-7c8bbbf4="" id="napdau1" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
-              <td data-v-7c8bbbf4="" class="numberOfPeopleDeposit" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
+              <td data-v-7c8bbbf4="" id="number_of_people_deposit_today" style="font-size: 12px; color:#000;font-weight: 600;padding-top: 8px;">0</td>
             </tr>
             <tr style="background-color: #fff;">
               <td style="font-size: 12px; color:#888888;font-weight: 600;">Số người nạp đầu</td>
@@ -658,6 +658,10 @@
 
           //
           $(".Loading").fadeOut(0);
+          $("#number_of_people_deposit").text(response.invite.number_of_people_deposit);
+          $("#number_of_people_deposit_today").text(response.invite.number_of_people_deposit_today);
+          $("#total_of_money").text(formatM(response.invite.total_of_money));
+          
           $(".num").text(response.invite.f1);
           $(".txt").text(response.invite.f1);
           $("#f1").text(response.invite.f1);

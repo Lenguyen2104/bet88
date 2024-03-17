@@ -520,7 +520,7 @@ function timerJoin(params = "") {
 }
 
 const promotion = async (req, res) => {
-  debugger
+  debugger;
   let auth = req.cookies.auth;
   if (!auth) {
     return res.status(200).json({
@@ -537,7 +537,23 @@ const promotion = async (req, res) => {
   const [rechargeLowerGrade] = await connection.query(
     "SELECT * FROM `recharge` ORDER BY `recharge`.`today` ASC"
   );
-  // console.log(">>>>Lower grade", rechargeLowerGrade);
+
+  // Khởi tạo biến để lưu tổng tiền
+  let totalOfMoney = 0;
+  // Lặp qua từng phần tử trong mảng rechargeLowerGrade
+  for (let i = 0; i < rechargeLowerGrade.length; i++) {
+    // Lấy giá trị của trường money từ mỗi phần tử và cộng vào tổng tiền
+    totalOfMoney += rechargeLowerGrade[i].money;
+  }
+
+  // Lấy ngày hiện tại
+  const currentDate = new Date().toISOString().split("T")[0];
+
+  // Lọc ra những đối tượng trong mảng có trường today bằng ngày hiện tại
+  const todayRecharges = rechargeLowerGrade.filter(
+    (item) => item.today === currentDate
+  );
+
   // Lấy thời điểm hiện tại
   const currentTime = Date.now();
 
@@ -587,6 +603,51 @@ const promotion = async (req, res) => {
   }
 
   // tất cả cấp dưới hôm nay
+  // let f_all_today = 0;
+  // for (let i = 0; i < f1s.length; i++) {
+  //   const f1_code = f1s[i].code; // Mã giới thiệu f1
+  //   const f1_time = f1s[i].time; // time f1
+  //   let check_f1 = timerJoin(f1_time) == timerJoin() ? true : false;
+  //   if (check_f1) f_all_today += 1;
+  //   // tổng f1 mời đc hôm nay
+  //   const [f2s] = await connection.query(
+  //     "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
+  //     [f1_code]
+  //   );
+  //   for (let i = 0; i < f2s.length; i++) {
+  //     const f2_code = f2s[i].code; // Mã giới thiệu f2
+  //     const f2_time = f2s[i].time; // time f2
+  //     let check_f2 = timerJoin(f2_time) == timerJoin() ? true : false;
+  //     if (check_f2) f_all_today += 1;
+  //     // tổng f2 mời đc hôm nay
+  //     const [f3s] = await connection.query(
+  //       "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
+  //       [f2_code]
+  //     );
+  //     for (let i = 0; i < f3s.length; i++) {
+  //       const f3_code = f3s[i].code; // Mã giới thiệu f3
+  //       const f3_time = f3s[i].time; // time f3
+  //       let check_f3 = timerJoin(f3_time) == timerJoin() ? true : false;
+  //       if (check_f3) f_all_today += 1;
+  //       const [f4s] = await connection.query(
+  //         "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
+  //         [f3_code]
+  //       );
+  //       // // tổng f3 mời đc hôm nay
+  //       // for (let i = 0; i < f4s.length; i++) {
+  //       //   const f4_code = f4s[i].code; // Mã giới thiệu f4
+  //       //   const f4_time = f4s[i].time; // time f4
+  //       //   let check_f4 = timerJoin(f4_time) == timerJoin() ? true : false;
+  //       //   if (check_f4) f_all_today += 1;
+  //       //   const [f4s] = await connection.query(
+  //       //     "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
+  //       //     [f4_code]
+  //       //   );
+  //       // }
+  //     }
+  //   }
+  // }
+
   let f_all_today = 0;
   for (let i = 0; i < f1s.length; i++) {
     const f1_code = f1s[i].code; // Mã giới thiệu f1
@@ -598,9 +659,9 @@ const promotion = async (req, res) => {
       "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
       [f1_code]
     );
-    for (let i = 0; i < f2s.length; i++) {
-      const f2_code = f2s[i].code; // Mã giới thiệu f2
-      const f2_time = f2s[i].time; // time f2
+    for (let j = 0; j < f2s.length; j++) {
+      const f2_code = f2s[j].code; // Mã giới thiệu f2
+      const f2_time = f2s[j].time; // time f2
       let check_f2 = timerJoin(f2_time) == timerJoin() ? true : false;
       if (check_f2) f_all_today += 1;
       // tổng f2 mời đc hôm nay
@@ -608,22 +669,31 @@ const promotion = async (req, res) => {
         "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
         [f2_code]
       );
-      for (let i = 0; i < f3s.length; i++) {
-        const f3_code = f3s[i].code; // Mã giới thiệu f3
-        const f3_time = f3s[i].time; // time f3
+      for (let k = 0; k < f3s.length; k++) {
+        const f3_code = f3s[k].code; // Mã giới thiệu f3
+        const f3_time = f3s[k].time; // time f3
         let check_f3 = timerJoin(f3_time) == timerJoin() ? true : false;
         if (check_f3) f_all_today += 1;
         const [f4s] = await connection.query(
           "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
           [f3_code]
         );
-        // tổng f3 mời đc hôm nay
-        for (let i = 0; i < f4s.length; i++) {
-          const f4_code = f4s[i].code; // Mã giới thiệu f4
-          const f4_time = f4s[i].time; // time f4
+        for (let l = 0; l < f4s.length; l++) {
+          const f4_code = f4s[l].code; // Mã giới thiệu f4
+          const f4_time = f4s[l].time; // time f4
           let check_f4 = timerJoin(f4_time) == timerJoin() ? true : false;
           if (check_f4) f_all_today += 1;
-          // tổng f3 mời đc hôm nay
+          const [f5s] = await connection.query(
+            "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
+            [f4_code]
+          );
+          for (let m = 0; m < f5s.length; m++) {
+            const f5_code = f5s[m].code; // Mã giới thiệu f5
+            const f5_time = f5s[m].time; // time f5
+            let check_f5 = timerJoin(f5_time) == timerJoin() ? true : false;
+            if (check_f5) f_all_today += 1;
+            // Handle f5 if needed
+          }
         }
       }
     }
@@ -639,13 +709,14 @@ const promotion = async (req, res) => {
       "SELECT `phone`, `code`,`invite` FROM users WHERE `invite` = ? ",
       [f1_code]
     );
+    // console.log("🚀 ~ promotion ~ f2s:", f2s);
     const [f2s1] = await connection.query(
       "SELECT * FROM users WHERE `code` = ? ",
       [f1s[i].code]
     );
-    console.log(f2s1);
+    // console.log(f2s1);
     array12.push(f2s1);
-    
+
     // f2 += f2s.length;
     // array12.push(f2s);
     // console.log(array12);
@@ -654,13 +725,14 @@ const promotion = async (req, res) => {
 
   // Tổng số f3
   let f3 = 0;
-  let array13 = []
+  let array13 = [];
   for (let i = 0; i < f1s.length; i++) {
     const f1_code = f1s[i].code; // Mã giới thiệu f1
     const [f2s] = await connection.query(
       "SELECT `phone`, `code`,`invite` FROM users WHERE `invite` = ? ",
       [f1_code]
     );
+    // console.log("🚀 ~ promotion ~ f2s:", f2s);
     for (let i = 0; i < f2s.length; i++) {
       const f2_code = f2s[i].code;
       const [f3s] = await connection.query(
@@ -671,7 +743,7 @@ const promotion = async (req, res) => {
         "SELECT * FROM users WHERE `code` = ? ",
         [f2s[i].code]
       );
-      console.log(f2s1);
+      // console.log(f2s1);
       array13.push(f2s1);
       if (f3s.length > 0) f3 += f3s.length;
     }
@@ -679,6 +751,7 @@ const promotion = async (req, res) => {
 
   // Tổng số f4
   let f4 = 0;
+  let array14 = [];
   for (let i = 0; i < f1s.length; i++) {
     const f1_code = f1s[i].code; // Mã giới thiệu f1
     const [f2s] = await connection.query(
@@ -697,10 +770,462 @@ const promotion = async (req, res) => {
           "SELECT `phone`, `code`,`invite` FROM users WHERE `invite` = ? ",
           [f3_code]
         );
+        array13.push(f4s);
         if (f4s.length > 0) f4 += f4s.length;
       }
     }
   }
+
+  // SELECT F0 -> F4
+  // Tổng số f0
+  const [sf0] = await connection.query(
+    "SELECT * FROM users WHERE `invite` = ? ",
+    [userInfo.code]
+  );
+  // console.log("🚀 ~ promotion ~ sf0:", sf0);
+
+  // Tổng số f1
+  let sf1 = 0;
+  let array_sf1 = [];
+  // Tìm các bản ghi trong bảng users có invite giá trị bằng với mã từ sf0
+  for (let i = 0; i < sf0.length; i++) {
+    const inviteCode = sf0[i].code;
+    const [result] = await connection.query(
+      "SELECT * FROM users WHERE `invite` = ? AND `code` != ?",
+      [inviteCode, userInfo.code] // Mã giới thiệu của f1 khác với mã giới thiệu của sf0
+    );
+    array_sf1.push(result);
+    sf1 += result.length; // Cập nhật tổng số f1
+  }
+
+  // console.log("🚀 ~ promotion ~ array_sf1:", array_sf1);
+
+  // Tổng số f2
+  let sf2 = 0;
+  let array_sf2 = [];
+  // Lấy mã giới thiệu của tất cả f1 và kiểm tra mã khác với f0
+  const f1Codes = [];
+  for (let i = 0; i < array_sf1.length; i++) {
+    const f1Data = array_sf1[i];
+    for (let j = 0; j < f1Data.length; j++) {
+      const f1 = f1Data[j];
+      if (f1.code !== userInfo.code) {
+        f1Codes.push(f1.code);
+      }
+    }
+  }
+  // Lấy dữ liệu của f2 cho từng mã giới thiệu f1
+  for (let i = 0; i < f1Codes.length; i++) {
+    const f1_code = f1Codes[i];
+    const [result_f2] = await connection.query(
+      "SELECT * FROM users WHERE `invite` = ? AND `code` != ?",
+      [f1_code, userInfo.code] // Mã giới thiệu của f2 khác với mã giới thiệu của f1
+    );
+    array_sf2.push(result_f2);
+    sf2 += result_f2.length; // Cập nhật tổng số f2
+  }
+
+  // console.log("🚀 ~ promotion ~ array_sf2:", array_sf2);
+
+  // Tổng số f3
+  let sf3 = 0;
+  let array_sf3 = [];
+  // Lấy mã giới thiệu của tất cả f2 và kiểm tra mã khác với f1
+  const f2Codes = [];
+  for (let i = 0; i < array_sf2.length; i++) {
+    const f2Data = array_sf2[i];
+    for (let j = 0; j < f2Data.length; j++) {
+      const f2 = f2Data[j];
+      if (!f1Codes.includes(f2.code)) {
+        f2Codes.push(f2.code);
+      }
+    }
+  }
+  // Lấy dữ liệu của f3 cho từng mã giới thiệu f2
+  for (let i = 0; i < f2Codes.length; i++) {
+    const f2_code = f2Codes[i];
+    const [result_f3] = await connection.query(
+      "SELECT * FROM users WHERE `invite` = ? AND `code` != ?",
+      [f2_code, userInfo.code] // Mã giới thiệu của f3 khác với mã giới thiệu của f2
+    );
+    array_sf3.push(result_f3);
+    sf3 += result_f3.length; // Cập nhật tổng số f3
+  }
+
+  // console.log("🚀 ~ promotion ~ array_sf3:", array_sf3);
+
+  // Tổng số f4
+  let sf4 = 0;
+  let array_sf4 = [];
+  // Lấy mã giới thiệu của tất cả f2 và kiểm tra mã khác với f1
+  const f3Codes = [];
+  for (let i = 0; i < array_sf2.length; i++) {
+    const f2Data = array_sf2[i];
+    for (let j = 0; j < f2Data.length; j++) {
+      const f2 = f2Data[j];
+      if (!f1Codes.includes(f2.code)) {
+        f3Codes.push(f2.code);
+      }
+    }
+  }
+  // Lấy dữ liệu của f4 cho từng mã giới thiệu f2
+  for (let i = 0; i < f3Codes.length; i++) {
+    const f2_code = f3Codes[i];
+    const [result_f4] = await connection.query(
+      "SELECT * FROM users WHERE `invite` = ? AND `code` != ?",
+      [f2_code, userInfo.code] // Mã giới thiệu của f4 khác với mã giới thiệu của f2
+    );
+    array_sf4.push(result_f4);
+    sf4 += result_f4.length; // Cập nhật tổng số f4
+  }
+
+  // Tạo một mảng mới để chứa tất cả các dữ liệu
+  let allData = [];
+
+  // Nối mảng sf0 vào mảng allData
+  allData = allData.concat(sf0);
+
+  // Nối từng phần tử của mảng array_sf1 vào mảng allData
+  for (let i = 0; i < array_sf1.length; i++) {
+    allData = allData.concat(array_sf1[i]);
+  }
+
+  // Nối từng phần tử của mảng array_sf2 vào mảng allData
+  for (let i = 0; i < array_sf2.length; i++) {
+    allData = allData.concat(array_sf2[i]);
+  }
+
+  // Nối từng phần tử của mảng array_sf3 vào mảng allData
+  for (let i = 0; i < array_sf3.length; i++) {
+    allData = allData.concat(array_sf3[i]);
+  }
+
+  // Nối từng phần tử của mảng array_sf4 vào mảng allData
+  for (let i = 0; i < array_sf4.length; i++) {
+    allData = allData.concat(array_sf4[i]);
+  }
+
+  // Tạo một đối tượng Set từ mảng allData để loại bỏ các phần tử trùng lặp
+  const uniqueData = [...new Set(allData.map(JSON.stringify))].map(JSON.parse);
+
+  // In ra mảng uniqueData sau khi loại bỏ các phần tử trùng lặp
+  // console.log("🚀 ~ uniqueData:", uniqueData);
+
+  // // Tính số người nạp tiền
+  // const numDepositUsers = allData.filter((user) => user.money !== 0).length;
+  // // Tính tổng số tiền nạp
+  // const totalDepositAmount = allData.reduce(
+  //   (total, user) => total + user.money,
+  //   0
+  // );
+  // // Tính số người cược
+  // const numBetUsers = allData.filter((user) => user.tongcuoc !== 0).length;
+  // // Tính tổng số tiền cược
+  // const totalBetAmount = allData.reduce(
+  //   (total, user) => total + user.tongcuoc,
+  //   0
+  // );
+  // // Lấy ngày hiện tại
+  // const currentDateDay = new Date().toISOString().slice(0, 10);
+  // // Tính số người nạp đầu và tổng nạp đầu
+  // const numFirstDepositUsers = allData.filter(
+  //   (user) =>
+  //     user.money !== 0 &&
+  //     new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
+  //       currentDateDay
+  // ).length;
+  // const totalFirstDepositAmount = allData
+  //   .filter(
+  //     (user) =>
+  //       user.money !== 0 &&
+  //       new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
+  //         currentDateDay
+  //   )
+  //   .reduce((total, user) => total + user.money, 0);
+
+  // // Số người nạp tiền
+  // const numDepositUsersF0 = sf0.filter((data) => data.money !== 0).length;
+  // // Tổng số tiền nạp
+  // const totalDepositAmountF0 = sf0.reduce(
+  //   (total, data) => total + data.money,
+  //   0
+  // );
+  // // Số người cược
+  // const numBetUsersF0 = sf0.filter((data) => data.tongcuoc !== 0).length;
+
+  // // Tổng số tiền cược
+  // const totalBetAmountF0 = sf0.reduce(
+  //   (total, data) => total + data.tongcuoc,
+  //   0
+  // );
+  // // Số người nạp đầu trong ngày hiện tại
+  // const numFirstDepositUsersF0 = sf0.filter((data) => {
+  //   const currentTime = new Date();
+  //   const dataTime = new Date(parseInt(data.time));
+  //   return (
+  //     data.money !== 0 && currentTime.toDateString() === dataTime.toDateString()
+  //   );
+  // }).length;
+  // // Tổng số tiền nạp đầu trong ngày hiện tại
+  // const totalFirstDepositAmountF0 = array_sf1.reduce((total, data) => {
+  //   const currentTime = new Date();
+  //   const dataTime = new Date(parseInt(data.time));
+  //   return currentTime.toDateString() === dataTime.toDateString()
+  //     ? total + data.money
+  //     : total;
+  // }, 0);
+
+  // // Số người nạp tiền
+  // const numDepositUsersF1 = array_sf1.filter((data) => data.money !== 0).length;
+  // // Tổng số tiền nạp
+  // const totalDepositAmountF1 = array_sf1.reduce(
+  //   (total, data) => total + data.money,
+  //   0
+  // );
+  // // Số người cược
+  // const numBetUsersF1 = array_sf1.filter((data) => data.tongcuoc !== 0).length;
+  // // Tổng số tiền cược
+  // const totalBetAmountF1 = array_sf1.reduce(
+  //   (total, data) => total + data.tongcuoc,
+  //   0
+  // );
+  // // Số người nạp đầu trong ngày hiện tại
+  // const numFirstDepositUsersF1 = array_sf1.filter((data) => {
+  //   const currentTime = new Date();
+  //   const dataTime = new Date(parseInt(data.time));
+  //   return (
+  //     data.money !== 0 && currentTime.toDateString() === dataTime.toDateString()
+  //   );
+  // }).length;
+  // // Tổng số tiền nạp đầu trong ngày hiện tại
+  // const totalFirstDepositAmountF1 = array_sf1.reduce((total, data) => {
+  //   const currentTime = new Date();
+  //   const dataTime = new Date(parseInt(data.time));
+  //   return currentTime.toDateString() === dataTime.toDateString()
+  //     ? total + data.money
+  //     : total;
+  // }, 0);
+
+  // // Số người nạp tiền
+  // const numDepositUsersF2 = array_sf2.filter((data) => data.money !== 0).length;
+  // // Tổng số tiền nạp
+  // const totalDepositAmountF2 = array_sf2.reduce(
+  //   (total, data) => total + data.money,
+  //   0
+  // );
+  // // Số người cược
+  // const numBetUsersF2 = array_sf2.filter((data) => data.tongcuoc !== 0).length;
+  // // Tổng số tiền cược
+  // const totalBetAmountF2 = array_sf2.reduce(
+  //   (total, data) => total + data.tongcuoc,
+  //   0
+  // );
+  // // Số người nạp đầu trong ngày hiện tại
+  // const numFirstDepositUsersF2 = array_sf2.filter((data) => {
+  //   const currentTime = new Date();
+  //   const dataTime = new Date(parseInt(data.time));
+  //   return (
+  //     data.money !== 0 && currentTime.toDateString() === dataTime.toDateString()
+  //   );
+  // }).length;
+  // // Tổng số tiền nạp đầu trong ngày hiện tại
+  // const totalFirstDepositAmountF2 = array_sf2.reduce((total, data) => {
+  //   const currentTime = new Date();
+  //   const dataTime = new Date(parseInt(data.time));
+  //   return currentTime.toDateString() === dataTime.toDateString()
+  //     ? total + data.money
+  //     : total;
+  // }, 0);
+
+  // // Số người nạp tiền
+  // const numDepositUsersF3 = array_sf3.filter((data) => data.money !== 0).length;
+  // // Tổng số tiền nạp
+  // const totalDepositAmountF3 = array_sf3.reduce(
+  //   (total, data) => total + data.money,
+  //   0
+  // );
+  // // Số người cược
+  // const numBetUsersF3 = array_sf3.filter((data) => data.tongcuoc !== 0).length;
+  // // Tổng số tiền cược
+  // const totalBetAmountF3 = array_sf3.reduce(
+  //   (total, data) => total + data.tongcuoc,
+  //   0
+  // );
+  // // Số người nạp đầu trong ngày hiện tại
+  // const numFirstDepositUsersF3 = array_sf3.filter((data) => {
+  //   const currentTime = new Date();
+  //   const dataTime = new Date(parseInt(data.time));
+  //   return (
+  //     data.money !== 0 && currentTime.toDateString() === dataTime.toDateString()
+  //   );
+  // }).length;
+  // // Tổng số tiền nạp đầu trong ngày hiện tại
+  // const totalFirstDepositAmountF3 = array_sf3.reduce((total, data) => {
+  //   const currentTime = new Date();
+  //   const dataTime = new Date(parseInt(data.time));
+  //   return currentTime.toDateString() === dataTime.toDateString()
+  //     ? total + data.money
+  //     : total;
+  // }, 0);
+
+  //  // Số người nạp tiền
+  //  const numDepositUsersF4 = array_sf4.filter((data) => data.money !== 0).length;
+  //  // Tổng số tiền nạp
+  //  const totalDepositAmountF4 = array_sf4.reduce(
+  //    (total, data) => total + data.money,
+  //    0
+  //  );
+  //  // Số người cược
+  //  const numBetUsersF4 = array_sf4.filter((data) => data.tongcuoc !== 0).length;
+  //  // Tổng số tiền cược
+  //  const totalBetAmountF4 = array_sf4.reduce(
+  //    (total, data) => total + data.tongcuoc,
+  //    0
+  //  );
+  //  // Số người nạp đầu trong ngày hiện tại
+  //  const numFirstDepositUsersF4 = array_sf4.filter((data) => {
+  //    const currentTime = new Date();
+  //    const dataTime = new Date(parseInt(data.time));
+  //    return (
+  //      data.money !== 0 && currentTime.toDateString() === dataTime.toDateString()
+  //    );
+  //  }).length;
+  //  // Tổng số tiền nạp đầu trong ngày hiện tại
+  //  const totalFirstDepositAmountF4 = array_sf4.reduce((total, data) => {
+  //    const currentTime = new Date();
+  //    const dataTime = new Date(parseInt(data.time));
+  //    return currentTime.toDateString() === dataTime.toDateString()
+  //      ? total + data.money
+  //      : total;
+  //  }, 0);
+
+  // // Tạo mảng tổng hợp
+  // const summary_table = [
+  //   {
+  //     summary_f_all: [
+  //       {
+  //         num_deposit_users: numDepositUsers,
+  //         total_deposit_amount: totalDepositAmount,
+  //         num_bet_users: numBetUsers,
+  //         total_bet_amount: totalBetAmount,
+  //         num_first_deposit_users: numFirstDepositUsers,
+  //         total_first_deposit_amount: totalFirstDepositAmount,
+  //       },
+  //     ],
+  //     summary_f_0: [
+  //       {
+  //         num_deposit_users: numDepositUsersF0,
+  //         total_deposit_amount: totalDepositAmountF0,
+  //         num_bet_users: numBetUsersF0,
+  //         total_bet_amount: totalBetAmountF0,
+  //         num_first_deposit_users: numFirstDepositUsersF0,
+  //         total_first_deposit_amount: totalFirstDepositAmountF0,
+  //       },
+  //     ],
+  //     summary_f_1: [
+  //       {
+  //         num_deposit_users: numDepositUsersF1,
+  //         total_deposit_amount: totalDepositAmountF1,
+  //         num_bet_users: numBetUsersF1,
+  //         total_bet_amount: totalBetAmountF1,
+  //         num_first_deposit_users: numFirstDepositUsersF1,
+  //         total_first_deposit_amount: totalFirstDepositAmountF1,
+  //       },
+  //     ],
+  //     summary_f_2: [
+  //       {
+  //         num_deposit_users: numDepositUsersF2,
+  //         total_deposit_amount: totalDepositAmountF2,
+  //         num_bet_users: numBetUsersF2,
+  //         total_bet_amount: totalBetAmountF2,
+  //         num_first_deposit_users: numFirstDepositUsersF2,
+  //         total_first_deposit_amount: totalFirstDepositAmountF2,
+  //       },
+  //     ],
+  //     summary_f_3: [
+  //       {
+  //         num_deposit_users: numDepositUsersF3,
+  //         total_deposit_amount: totalDepositAmountF3,
+  //         num_bet_users: numBetUsersF3,
+  //         total_bet_amount: totalBetAmountF3,
+  //         num_first_deposit_users: numFirstDepositUsersF3,
+  //         total_first_deposit_amount: totalFirstDepositAmountF3,
+  //       },
+  //     ],
+  //     summary_f_4: [
+  //         {
+  //           num_deposit_users: numDepositUsersF4,
+  //           total_deposit_amount: totalDepositAmountF4,
+  //           num_bet_users: numBetUsersF4,
+  //           total_bet_amount: totalBetAmountF4,
+  //           num_first_deposit_users: numFirstDepositUsersF4,
+  //           total_first_deposit_amount: totalFirstDepositAmountF4,
+  //         },
+  //     ],
+  //   },
+  // ];
+
+  function getSummaryData(dataArray) {
+    const currentDateDay = new Date().toISOString().slice(0, 10);
+
+    const numDepositUsers = dataArray.filter((user) => user.money !== 0).length;
+    const totalDepositAmount = dataArray.reduce(
+      (total, user) => total + user.money,
+      0
+    );
+    const numBetUsers = dataArray.filter((user) => user.tongcuoc !== 0).length;
+    const totalBetAmount = dataArray.reduce(
+      (total, user) => total + user.tongcuoc,
+      0
+    );
+
+    // Handling invalid time values
+    const numFirstDepositUsers = dataArray.filter((user) => {
+      try {
+        return (
+          user.money !== 0 &&
+          new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
+            currentDateDay
+        );
+      } catch (error) {
+        return false;
+      }
+    }).length;
+
+    const totalFirstDepositAmount = dataArray
+      .filter((user) => {
+        try {
+          return (
+            user.money !== 0 &&
+            new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
+              currentDateDay
+          );
+        } catch (error) {
+          return false;
+        }
+      })
+      .reduce((total, user) => total + user.money, 0);
+
+    return {
+      num_deposit_users: numDepositUsers,
+      total_deposit_amount: totalDepositAmount,
+      num_bet_users: numBetUsers,
+      total_bet_amount: totalBetAmount,
+      num_first_deposit_users: numFirstDepositUsers,
+      total_first_deposit_amount: totalFirstDepositAmount,
+    };
+  }
+
+  const summary_table = {
+    summary_f_all: [getSummaryData(allData)],
+    summary_f_0: [getSummaryData(sf0)],
+    summary_f_1: [getSummaryData(array_sf1)],
+    summary_f_2: [getSummaryData(array_sf2)],
+    summary_f_3: [getSummaryData(array_sf3)],
+    summary_f_4: [getSummaryData(array_sf4)],
+  };
+
+  // console.log("🚀 ~ summary_table:", summary_table);
 
   return res.status(200).json({
     message: "Nhận thành công",
@@ -708,11 +1233,18 @@ const promotion = async (req, res) => {
     info: user,
     status: true,
     invite: {
+      select_f_all: uniqueData,
+      select_f0: sf0,
+      select_f1: array_sf1,
+      select_f2: array_sf2,
+      select_f3: array_sf3,
+      select_f4: array_sf4,
+      summary: summary_table,
       f1: f1s.length,
       total_f: f1s.length + f2 + f3 + f4,
-      f2: array12,
-      f3: array13,
-      f4:f4,
+      // f2: array12,
+      // f3: array13,
+      // f4: array14,
       f1_today: f1_today,
       f_all_today: f_all_today,
       roses_f1: userInfo.roses_f1,
@@ -722,8 +1254,9 @@ const promotion = async (req, res) => {
       napdau: napdauValue,
       tongcuoc: tongcuocValue,
       money: moneyValue,
-      numberOfPeopleDeposit: recentItems.length,
-      amountMoney: totalMoney,
+      number_of_people_deposit: rechargeLowerGrade.length,
+      number_of_people_deposit_today: todayRecharges.length,
+      total_of_money: totalOfMoney + moneyValue,
     },
     timeStamp: timeNow,
   });
@@ -780,10 +1313,12 @@ const listMyTeam = async (req, res) => {
     });
   }
   let userInfo = user[0];
+
   const [f1] = await connection.query(
     "SELECT `id_user`, `name_user`,`status`, `time` FROM users WHERE `invite` = ? ORDER BY id DESC",
     [userInfo.code]
   );
+
   const [mem] = await connection.query(
     "SELECT `id_user`, `phone`, `time` FROM users WHERE `invite` = ? ORDER BY id DESC LIMIT 100",
     [userInfo.code]
