@@ -538,6 +538,8 @@ const promotion = async (req, res) => {
     "SELECT * FROM `recharge` ORDER BY `recharge`.`today` ASC"
   );
 
+  // console.log(">>>>rechargeLowerGrade:", rechargeLowerGrade);
+
   let totalOfMoney = 0;
 
   for (let i = 0; i < rechargeLowerGrade.length; i++) {
@@ -919,12 +921,7 @@ const promotion = async (req, res) => {
     (data) => data.today === currentDateDirectSubordinates
   );
 
-  const dataDirectSubordinatesData = {
-    registered_users_direct_subordinates: matchingInviteAndDifferentCode.length,
-    depositing_users_direct_subordinates: dataWithNonZeroTotalMoney.length,
-    deposited_amount_direct_subordinates: totalMoneySum,
-    first_deposit_users_direct_subordinates: dataWithCurrentDate.length,
-  };
+  // ---
 
   //
   const [userAll] = await connection.query("SELECT * FROM `users`");
@@ -932,6 +929,7 @@ const promotion = async (req, res) => {
   const invitedUsersF1 = userAll.filter(
     (user) => user.invite === codeUser && user.code !== userInfo.code
   ); //F1 Array
+  // console.log(">>> invitedUsersF1:", invitedUsersF1);
   const invitedUserCodesF2 = invitedUsersF1.map((user) => user.code);
   const usersWithSameInviteF2 = userAll.filter((user) =>
     invitedUserCodesF2.includes(user.invite)
@@ -998,15 +996,6 @@ const promotion = async (req, res) => {
       (data) => data.today === currentDateDirectSubordinatesMySubordinates
     );
 
-  const dataMySubordinates = {
-    registered_users_my_subordinates: allDataMySubordinates.length,
-    depositing_users_my_subordinates:
-      dataWithNonZeroTotalMoneyMySubordinates.length,
-    deposited_amount_my_subordinates: totalMoneySumMySubordinates,
-    first_deposit_users_my_subordinates:
-      dataWithCurrentDateMySubordinates.length,
-  };
-
   //F1
   const newArrayF1 = sf0.filter((item) => item.code !== item.invite);
   //F2
@@ -1053,7 +1042,12 @@ const promotion = async (req, res) => {
       } catch (error) {
         return false;
       }
-    }).length;
+    });
+
+    const uniqueNumFirstDepositUsers = numFirstDepositUsers.filter(
+      (user, index, self) =>
+        index === self.findIndex((t) => t.phone === user.phone)
+    );
 
     const totalFirstDepositAmount = numDepositUsers
       .filter((user) => {
@@ -1069,12 +1063,27 @@ const promotion = async (req, res) => {
       })
       .reduce((total, user) => total + user.money, 0);
 
+    // Handling invalid time values
+    const numFirstDepositUsersMyFirst = uniqueNumFirstDepositUsers.filter(
+      (user) => {
+        try {
+          return (
+            user.money !== 0 &&
+            new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
+              currentDateDay
+          );
+        } catch (error) {
+          return false;
+        }
+      }
+    );
+
     return {
-      num_deposit_users: numDepositUsers.length,
+      num_deposit_users: uniqueNumFirstDepositUsers.length,
       total_deposit_amount: totalDepositAmount,
       num_bet_users: numBetUsers,
       total_bet_amount: totalBetAmount,
-      num_first_deposit_users: numFirstDepositUsers,
+      num_first_deposit_users: numFirstDepositUsersMyFirst.length,
       total_first_deposit_amount: totalFirstDepositAmount,
     };
   }
@@ -1087,7 +1096,48 @@ const promotion = async (req, res) => {
     summary_f_4: [getSummaryData(newArrayF4)],
   };
 
-  // console.log("Kết quả tìm kiếm:", totalDepositAmount123);
+  const filteredDataRechargeLowerGradeMatchingInvitedUsersF1 =
+    rechargeLowerGrade.filter((item) =>
+      invitedUsersF1.some((user) => user.phone === item.phone)
+    );
+
+  const totalMoneySumMoneyDataRechargeLowerF1 =
+    filteredDataRechargeLowerGradeMatchingInvitedUsersF1.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.money,
+      0
+    );
+
+  const dataDirectSubordinatesData = {
+    registered_users_direct_subordinates: matchingInviteAndDifferentCode.length,
+    depositing_users_direct_subordinates: dataWithNonZeroTotalMoney.length,
+    deposited_amount_direct_subordinates: totalMoneySumMoneyDataRechargeLowerF1,
+    first_deposit_users_direct_subordinates: dataWithCurrentDate.length,
+  };
+
+  const phonesToFilter = [...newArrayF2, ...newArrayF3, ...newArrayF4].map(
+    (item) => item.phone
+  );
+
+  const filteredDataDepositedAmountMySubordinates = rechargeLowerGrade.filter(
+    (item) => phonesToFilter.includes(item.phone)
+  );
+
+  const totalMoneySumMoneyMySubordinates =
+    filteredDataDepositedAmountMySubordinates.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.money,
+      0
+    );
+
+  const dataMySubordinates = {
+    registered_users_my_subordinates: allDataMySubordinates.length,
+    depositing_users_my_subordinates:
+      dataWithNonZeroTotalMoneyMySubordinates.length,
+    deposited_amount_my_subordinates: totalMoneySumMoneyMySubordinates,
+    first_deposit_users_my_subordinates:
+      dataWithCurrentDateMySubordinates.length,
+  };
+
+  // console.log("Kết quả tìm kiếm:", totalMoneySumMoneyMySubordinates);
 
   return res.status(200).json({
     message: "Nhận thành công",
