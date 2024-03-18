@@ -1114,9 +1114,12 @@ const promotion = async (req, res) => {
     first_deposit_users_direct_subordinates: dataWithCurrentDate.length,
   };
 
-  const phonesToFilter = [...newArrayF2, ...newArrayF3, ...newArrayF4].map(
-    (item) => item.phone
-  );
+  const phonesToFilter = [
+    ...newArrayF1,
+    ...newArrayF2,
+    ...newArrayF3,
+    ...newArrayF4,
+  ].map((item) => item.phone);
 
   const filteredDataDepositedAmountMySubordinates = rechargeLowerGrade.filter(
     (item) => phonesToFilter.includes(item.phone)
