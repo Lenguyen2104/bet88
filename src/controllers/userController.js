@@ -1011,6 +1011,19 @@ const promotion = async (req, res) => {
     return newArrayF3.some((newItem) => newItem.code === user.invite);
   });
 
+  //BET
+  const [minutes_1] = await connection.query("SELECT * FROM `minutes_1`");
+  const newDataMinutes_1 = minutes_1.map((item) => ({
+    ...item,
+    money: item.money + item.fee,
+  }));
+  const [result_5d] = await connection.query("SELECT * FROM `result_5d`");
+  const [result_k3] = await connection.query("SELECT * FROM `result_k3`");
+
+  const sumPersonBet = [...newDataMinutes_1, ...result_5d, ...result_k3];
+
+  // console.log(">>>>", matchedItems);
+
   function getSummaryData(dataArray) {
     const currentDateDay = new Date().toISOString().slice(0, 10);
 
@@ -1019,6 +1032,20 @@ const promotion = async (req, res) => {
     });
 
     // const numDepositUsers = dataArray.filter((user) => user.money !== 0).length;
+    //BET
+
+    const matchedItemsBet = sumPersonBet.filter((item) =>
+      dataArray.some((user) => user.phone == item.phone)
+    );
+    const totalMoneyBet = matchedItemsBet.reduce(
+      (total, item) => total + item.money,
+      0
+    );
+    const filteredItemsBet = matchedItemsBet.filter(
+      (item, index, array) =>
+        array.findIndex((el) => el.phone === item.phone) === index
+    );
+    //BET
 
     const totalDepositAmount = numDepositUsers.reduce(
       (total, user) => total + user.money,
@@ -1081,8 +1108,8 @@ const promotion = async (req, res) => {
     return {
       num_deposit_users: uniqueNumFirstDepositUsers.length,
       total_deposit_amount: totalDepositAmount,
-      num_bet_users: numBetUsers,
-      total_bet_amount: totalBetAmount,
+      num_bet_users: filteredItemsBet.length,
+      total_bet_amount: totalMoneyBet,
       num_first_deposit_users: numFirstDepositUsersMyFirst.length,
       total_first_deposit_amount: totalFirstDepositAmount,
     };
@@ -1094,6 +1121,7 @@ const promotion = async (req, res) => {
     summary_f_2: [getSummaryData(newArrayF2)],
     summary_f_3: [getSummaryData(newArrayF3)],
     summary_f_4: [getSummaryData(newArrayF4)],
+    summary_f_no_data: [getSummaryData([])],
   };
 
   const filteredDataRechargeLowerGradeMatchingInvitedUsersF1 =
@@ -1101,8 +1129,13 @@ const promotion = async (req, res) => {
       invitedUsersF1.some((user) => user.phone === item.phone)
     );
 
+  const filteredDataWithStatusOne =
+    filteredDataRechargeLowerGradeMatchingInvitedUsersF1.filter(
+      (item) => item.status === 1
+    );
+
   const totalMoneySumMoneyDataRechargeLowerF1 =
-    filteredDataRechargeLowerGradeMatchingInvitedUsersF1.reduce(
+    filteredDataWithStatusOne.reduce(
       (accumulator, currentValue) => accumulator + currentValue.money,
       0
     );
@@ -1125,8 +1158,13 @@ const promotion = async (req, res) => {
     (item) => phonesToFilter.includes(item.phone)
   );
 
+  const filteredDataWithStatusOneMySubordinates =
+    filteredDataDepositedAmountMySubordinates.filter(
+      (item) => item.status === 1
+    );
+
   const totalMoneySumMoneyMySubordinates =
-    filteredDataDepositedAmountMySubordinates.reduce(
+    filteredDataWithStatusOneMySubordinates.reduce(
       (accumulator, currentValue) => accumulator + currentValue.money,
       0
     );
@@ -1140,7 +1178,7 @@ const promotion = async (req, res) => {
       dataWithCurrentDateMySubordinates.length,
   };
 
-  // console.log("Kết quả tìm kiếm:", totalMoneySumMoneyMySubordinates);
+  // console.log("Kết quả tìm kiếm:", filteredDataDepositedAmountMySubordinates);
 
   return res.status(200).json({
     message: "Nhận thành công",

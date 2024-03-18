@@ -185,6 +185,9 @@ body {
                   <option value="F2">F2</option>
                   <option value="F3">F3</option>
                   <option value="F4">F4</option>
+                  <option value="FNoData">F5</option>
+                  <option value="FNoData">F6</option>
+                  <option value="FNoData">F7</option>
               </select>
               <div class="input-container" style="height: 53px;">
                   <input
@@ -210,14 +213,14 @@ body {
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;border-right: 1px solid #fff;">Số người nạp tiền</td>
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;">Số tiền nạp</td>
                   </tr>            
-                  <!-- <tr style="background-color: transparent; ">
+                  <tr style="background-color: transparent; ">
                     <td data-v-7c8bbbf4="" id="num_bet_users" style="font-size: 16px; color:#b13c4c;font-weight: 600;padding-top: 8px;">0</td>
                     <td data-v-7c8bbbf4="" id="total_bet_amount" style="font-size: 16px; color:#b13c4c;font-weight: 600;padding-top: 8px;">0</td>
-                  </tr> -->
-                  <!-- <tr style="background-color: transparent;">
+                  </tr> 
+                  <tr style="background-color: transparent;">
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;border-right: 1px solid #fff;">Số người cược</td>
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;">Số tiền cược</td>
-                  </tr> -->
+                  </tr>
                   <tr style="background-color: transparent;">
                     <td data-v-7c8bbbf4="" id="num_first_deposit_users" style="font-size: 16px; color:#b13c4c;font-weight: 600;padding-top: 8px;">0</td>
                     <td data-v-7c8bbbf4="" id="total_first_deposit_amount" style="font-size: 16px; color:#b13c4c;font-weight: 600;padding-top: 8px;">0</td>
@@ -490,6 +493,8 @@ body {
             swlength = response.invite.select_f3.length
           } else if (selectedValue == "F4") {
             swlength = response.invite.select_f4.length
+          } else if (selectedValue == "FNoData") {
+            swlength = 0
           }  else {
             swlength = response.invite.select_f_all.length
           } 
@@ -560,7 +565,9 @@ body {
                     const formattedItemDate = `${day}-${formattedMonth}-${year}`;
                     return formattedItemDate === selectedDate;
                 });
-            }  else {
+            }  else if ((selectedValue === "FNoData" ) && selectedDate === undefined){
+                swDataF = [];
+            } else {
                 swDataF = response.invite.select_f_all;
             }
 
@@ -604,6 +611,9 @@ body {
                   break;
               case "F4":
                   swSummaryF = response.invite.summary.summary_f_4;
+                  break;
+              case "FNoData":
+                  swSummaryF = response.invite.summary.summary_f_no_data;
                   break;
               default:
                   swSummaryF = response.invite.summary.summary_f_all;
