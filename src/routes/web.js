@@ -718,7 +718,17 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.editResultK3
   ); // edit ket qua k3
-
+  router.post(
+    '/admin/manager/settings/deleteuser',
+    adminController.middlewareAdminController,
+    adminController.deleteUser
+  );
+  router.post(
+    '/admin/manager/settings/increasebet',
+    adminController.middlewareAdminController,
+    adminController.increaseBet
+  );
+  
   return app.use("/", router);
 };
 
