@@ -2155,6 +2155,79 @@ return res.status(200).json({
     })
 }
 
+const deleteUser = async (req, res) => {
+    let phone = req.body.phone;
+  
+    if (!phone) {
+      return res.status(200).json({
+        message: 'Vui lòng nhập dữ liệu',
+        status: false,
+        timeStamp: timeNow
+      });
+    }
+  
+    const [user_id] = await connection.query(
+      `SELECT * FROM users WHERE phone = ?`,
+      [phone]
+    );
+  
+    if (user_id.length > 0) {
+      await connection.query(`DELETE FROM users WHERE phone = ?`, [phone]);
+      return res.status(200).json({
+        message: 'Xoá thành công',
+        status: true
+      });
+    } else {
+      return res.status(200).json({
+        message: 'User không tồn tại',
+        status: false
+      });
+    }
+};
+
+const increaseBet = async (req, res) => {
+let phone = req.body.phone;
+let betNumber = req.body.betNumber;
+
+if (!phone && !betNumber) {
+    return res.status(200).json({
+    message: 'Vui lòng nhập dữ liệu',
+    status: false,
+    timeStamp: timeNow
+    });
+}
+
+if (betNumber < 0) {
+    return res.status(200).json({
+    message: 'Số nhập vào phải lớn hơn 0',
+    status: false,
+    timeStamp: timeNow
+    });
+}
+
+const [user_id] = await connection.query(
+    `SELECT * FROM users WHERE phone = ?`,
+    [phone]
+);
+
+if (user_id.length > 0) {
+    const tongcuoc = Number(user_id[0].tongcuoc) + Number(betNumber);
+    await connection.query(`UPDATE users SET tongcuoc = ? WHERE phone = ?`, [
+    tongcuoc,
+    phone
+    ]);
+    return res.status(200).json({
+    message: `Tổng cược đã được thay đổi thành ${tongcuoc}`,
+    status: true
+    });
+} else {
+    return res.status(200).json({
+    message: 'User không tồn tại',
+    status: false
+    });
+}
+};
+
 module.exports = {
 updateBank,
     adminPage,
@@ -2207,5 +2280,7 @@ updateBank,
     adminPageK3,
     editResultK3,
     settingctv,
-    doipassU
+    doipassU,
+    deleteUser,
+    increaseBet
 }
