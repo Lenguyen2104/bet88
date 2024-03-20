@@ -1687,7 +1687,7 @@ const withdrawal3 = async (req, res) => {
     });
   }
   const [user] = await connection.query(
-    "SELECT `phone`, `code`,`invite`, `money` FROM users WHERE `token` = ? AND password = ?",
+    "SELECT `phone`, `code`,`invite`, `money`, `tongcuoc` FROM users WHERE `token` = ? AND password = ?",
     [auth, md5(password)]
   );
 
@@ -1749,6 +1749,15 @@ const withdrawal3 = async (req, res) => {
 
   let result = 0;
   // if(total - total2 > 0) result = total - total2;
+
+  // Calculate money > tong cuoc -> allow withdraw
+  if(userInfo.tongcuoc < money) {
+    return res.status(200).json({
+      message: "Tổng tiền cược chưa đủ để thực hiện yêu cầu",
+      status: false,
+      timeStamp: timeNow,
+    });
+  }
 
   const [user_bank] = await connection.query(
     "SELECT * FROM user_bank WHERE `phone` = ?",
