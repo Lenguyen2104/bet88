@@ -1611,7 +1611,7 @@ const infoUserBank = async (req, res) => {
     });
   }
   const [user] = await connection.query(
-    "SELECT `phone`, `code`,`invite`, `money` FROM users WHERE `token` = ? ",
+    "SELECT `phone`, `code`,`invite`, `money`, `tongcuoc` FROM users WHERE `token` = ? ",
     [auth]
   );
   let userInfo = user[0];
