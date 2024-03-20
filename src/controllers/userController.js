@@ -1665,10 +1665,36 @@ const infoUserBank = async (req, res) => {
     "SELECT * FROM user_bank WHERE phone = ? ",
     [userInfo.phone]
   );
+
+  let totalMoney = 0;
+
+  const resultk3 = await connection.query(`SELECT SUM(money) AS money FROM result_k3 WHERE phone = ?`, [userInfo.phone]);
+  if (resultk3[0].length > 0 && resultk3[0][0].money) {
+    totalMoney = totalMoney + Number(resultk3[0][0].money);
+  }
+
+  const resultd5 = await connection.query(`SELECT SUM(money) AS money FROM result_5d WHERE phone = ?`, [userInfo.phone]);
+  if (resultd5[0].length > 0 && resultd5[0][0].money) {
+    totalMoney = totalMoney + Number(resultd5[0][0].money);
+  }
+
+  const resultm1 = await connection.query(`SELECT SUM(money) AS money FROM minutes_1 WHERE phone = ?`, [userInfo.phone]);
+  if (resultm1[0].length > 0 && resultm1[0][0].money) {
+    totalMoney = totalMoney + Number(resultm1[0][0].money);
+  }
+
+  let leftAmount = userInfo.tongcuoc - totalMoney;
+  const mergedUser = {
+    ...user,
+    betbet: leftAmount
+  };
+
+
+
   return res.status(200).json({
     message: "Nhận thành công",
     datas: userBank,
-    userInfo: user,
+    userInfo: mergedUser,
     result: result,
     status: true,
     timeStamp: timeNow,
