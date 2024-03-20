@@ -7819,7 +7819,7 @@
           $(".money").text(user.money + ".00 ₫");
           console.log(user);
           $(".bankBox .box .item:eq(1) div:eq(1)").text(
-            `2.Tổng tiền cược ${response.result}.00 ₫`
+            `2.Tổng tiền cược ${response.userInfo[0].tongcuoc}.00 ₫`
           );
           if (!response.datas[0]) return;
           let data = response.datas[0];
