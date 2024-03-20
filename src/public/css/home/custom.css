@@ -342,3 +342,7 @@
     width: 100%;
     height: auto;
 }
+
+.van-sidebar-item--select:before {
+    background-color: inherit;
+}
