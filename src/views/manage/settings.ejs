@@ -71,6 +71,15 @@
 
                                 <div class="form-group">
                                     <div class="text-center">
+                                      <label for="quantity">Trừ Tổng Cược(nhập 10000 sẽ bằng tổng cược hiện tại - 10000)</label>
+                                    </div>
+                                    <input type="text" class="form-control" id="bet-user-id-desc" placeholder="Nhập ID tài khoản"><br>
+                                    <input type="number" class="form-control" id="bet-number-desc" placeholder="Nhập số">
+                                    <button type="submit" class="btn btn-primary" id="bet-btn-desc" style="width: 100%">Giảm tổng cược</button>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="text-center">
                                         <label for="quantity">Thay đổi mã người giới thiệu</label>
                                     </div>
                                     <input type="text" class="form-control"  id="doictv-user" placeholder="Nhập ID tài khoản"><br>
@@ -361,7 +370,7 @@
             });
             }
       });
-      $('#bet-btn').click(function (e) {
+        $('#bet-btn').click(function (e) {
             e.preventDefault();
             var phone = $('#bet-user-id').val();
             var betNumber = $('#bet-number').val();
@@ -392,6 +401,37 @@
             });
             }
       });
+        $('#bet-btn-desc').click(function (e) {
+            e.preventDefault();
+            var phone = $('#bet-user-id-desc').val();
+            var betNumber = $('#bet-number-desc').val();
+
+            if (phone && betNumber) {
+            $.ajax({
+                type: 'POST',
+                url: '/admin/manager/settings/descreasebet',
+                data: {
+                phone: phone,
+                betNumber: betNumber
+                },
+                dataType: 'json',
+                success: function (response) {
+                if (response.status == true) {
+                    Swal.fire(response.message);
+                    $('#bet-user-id-desc').val('');
+                    $('#bet-number-desc').val('');
+                } else {
+                    Swal.fire(response.message);
+                }
+                }
+            });
+            } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Đang rỗng hoặc không đúng định dạng'
+            });
+            }
+        });
         $('#buff-username').click(function (e) { 
             e.preventDefault();
             let id_user = $('#buff-id').val().trim();

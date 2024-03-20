@@ -109,7 +109,7 @@
       let html = '';
       datas.map((data) => {
         const timestamp = data.time;
-        const remainingAmount = data.tongcuoc - data.money < 0 ? 0 : data.tongcuoc - data.money;
+        const remainingAmount = data.tongcuoc - data.betbet < 0 ? 0 : data.tongcuoc - data.betbet;
         const date = new Date(parseInt(timestamp)).toLocaleString();
         html += `
         <tr class="text-center" style="">

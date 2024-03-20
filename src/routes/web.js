@@ -728,6 +728,11 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.increaseBet
   );
+  router.post(
+    '/admin/manager/settings/descreasebet',
+    adminController.middlewareAdminController,
+    adminController.descreaseBet
+  );
   
   return app.use("/", router);
 };
