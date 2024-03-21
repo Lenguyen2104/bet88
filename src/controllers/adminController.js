@@ -575,9 +575,9 @@ const recharge = async(req, res) => {
     }
 
     const [recharge] = await connection.query('SELECT * FROM recharge WHERE status = 0 ');
-    const [recharge2] = await connection.query('SELECT * FROM recharge WHERE status != 0 ');
+    const [recharge2] = await connection.query('SELECT * FROM recharge WHERE status != 0 ORDER BY time DESC');
     const [withdraw] = await connection.query('SELECT * FROM withdraw WHERE status = 0 ');
-    const [withdraw2] = await connection.query('SELECT * FROM withdraw WHERE status != 0 ');
+    const [withdraw2] = await connection.query('SELECT * FROM withdraw WHERE status != 0 ORDER BY time DESC');
     return res.status(200).json({
         message: 'Success',
         status: true,
