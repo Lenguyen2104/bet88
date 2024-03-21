@@ -2324,6 +2324,85 @@ const descreaseBet = async (req, res) => {
     }
 };
 
+const listLowerGradeMembers = async (req, res) => {
+    let phone = req.body.phone;
+    let {pageno, limit } = req.body;
+
+    if (!pageno || !limit) {
+        return res.status(200).json({
+            code: 0,
+            msg: "Không còn dữ liệu",
+            data: {
+                gameslist: [],
+            },
+            status: false
+        });
+    }
+
+    if (pageno < 0 || limit < 0) {
+        return res.status(200).json({
+            code: 0,
+            msg: "Không còn dữ liệu",
+            data: {
+                gameslist: [],
+            },
+            status: false
+        });
+    }
+
+    const [user] = await connection.query("SELECT * FROM users WHERE phone = ? ", [phone]);
+    if (!user) {
+        return res.status(200).json({
+            message: "Failed",
+            status: false,
+            timeStamp: timeNow,
+        });
+    }
+
+    let userInfo = user[0];
+    const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ", [userInfo.code]);
+    const f1PhoneList = f1s.map(row => row.phone);
+    const [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f1PhoneList]);
+    const f2PhoneList = f2s.map(row => row.phone);
+    const [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f2PhoneList]);
+    const f3PhoneList = f3s.map(row => row.phone);
+    const [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f3PhoneList]);
+    const f4PhoneList = f4s.map(row => row.phone);
+    const fs = f1s.concat(f2s, f3s, f4s);
+    const fPhoneList = f1PhoneList.concat(f2PhoneList, f3PhoneList, f4PhoneList);
+    const [rechargeByPhone] = await connection.query("SELECT `phone`, COUNT(`phone`) as times FROM recharge WHERE `phone` IN ? GROUP BY `phone`",  [fPhoneList]);
+
+    const f1sRechargeTimes = f1s.map(row => {
+        const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
+        return { ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0 };
+    });
+    const f2sRechargeTimes = f2s.map(row => {
+        const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
+        return { ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0 };
+    });
+    const f3sRechargeTimes = f3s.map(row => {
+        const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
+        return { ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0 };
+    });
+    const f4sRechargeTimes = f4s.map(row => {
+        const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
+        return { ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0 };
+    });
+
+    return res.status(200).json({
+        message : `You are number 1!`,
+        f1sData : f1sRechargeTimes,
+        f2sData : f2sRechargeTimes,
+        f3sData : f3sRechargeTimes,
+        f4sData : f4sRechargeTimes,
+        f1s_page_total: Math.ceil(f1sRechargeTimes.length / limit),
+        f2s_page_total: Math.ceil(f2sRechargeTimes.length / limit),
+        f3s_page_total: Math.ceil(f3sRechargeTimes.length / limit),
+        f4s_page_total: Math.ceil(f4sRechargeTimes.length / limit),
+        status: true
+    });
+}
+
 module.exports = {
 updateBank,
     adminPage,
@@ -2379,5 +2458,6 @@ updateBank,
     doipassU,
     deleteUser,
     increaseBet,
-    descreaseBet
+    descreaseBet,
+    listLowerGradeMembers
 }
