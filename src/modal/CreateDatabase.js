@@ -12,9 +12,9 @@ const CreateWingo = async(req, res) => {
 
     for (let i = 0; i < arr.length; i++) {
         const sql = "INSERT INTO wingo SET period = ?, game = ?, amount = 6, status = 1, time = ?";
-        await connection.execute(sql, ['2022070110000', arr[i], timeNow]);
+        await connection.execute(sql, ['2024032210000', arr[i], timeNow]);
         const sql_1 = "INSERT INTO wingo SET period = ?, game = ?, amount = 0, status = 0, time = ?";
-        await connection.execute(sql_1, ['2022070110001', arr[i], timeNow]);
+        await connection.execute(sql_1, ['2024032210000', arr[i], timeNow]);
     }
     console.log("Create Success Database Wingo.");
 }
@@ -27,9 +27,9 @@ const Create5D = async(req, res) => {
 
     for (let i = 0; i < arr.length; i++) {
         const sql = "INSERT INTO 5d SET period = ?, result = ?, game = ?, status = 1, time = ?";
-        await connection.execute(sql, ['2022070110000', '23521', arr[i], timeNow]);
+        await connection.execute(sql, ['2024032210000', '23521', arr[i], timeNow]);
         const sql_1 = "INSERT INTO 5d SET period = ?, result = ?, game = ?, status = 0, time = ?";
-        await connection.execute(sql_1, ['2022070110001', '0', arr[i], timeNow]);
+        await connection.execute(sql_1, ['2024032210000', '0', arr[i], timeNow]);
     }
     console.log("Create Success Database 5D.");
 }
@@ -43,9 +43,9 @@ const CreateK3 = async(req, res) => {
 
     for (let i = 0; i < arr.length; i++) {
         const sql = "INSERT INTO k3 SET period = ?, result = ?, game = ?, status = 1, time = ?";
-        await connection.execute(sql, ['2022070110000', '235', arr[i], timeNow]);
+        await connection.execute(sql, ['2024032210000', '235', arr[i], timeNow]);
         const sql_1 = "INSERT INTO k3 SET period = ?, result = ?, game = ?, status = 0, time = ?";
-        await connection.execute(sql_1, ['2022070110001', '0', arr[i], timeNow]);
+        await connection.execute(sql_1, ['2024032210000', '0', arr[i], timeNow]);
     }
     console.log("Create Success Database k3.");
     console.log("Vui lòng nhấm tổ hợp phím ctrl + C và nhập npm start để chạy server.");
