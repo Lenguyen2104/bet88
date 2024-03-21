@@ -28,6 +28,7 @@
                             <div class="col-sm-6">
                                 <h1>Thông tin</h1>
                             </div>
+                            
                         </div>
                     </div>
                     <!-- /.container-fluid -->
@@ -69,16 +70,16 @@
                                                 <b>Hoa hồng hôm nay</b> <a class="float-right" id="roses_today">0</a>
                                             </li>
                                             <li class="list-group-item">
-                                                <b>F1</b> <a class="float-right" id="f1">0</a>
+                                                <b>F1</b> <a class="float-right" id="f1" style="cursor: pointer;">0</a>
                                             </li>
                                             <li class="list-group-item">
-                                                <b>F2</b> <a class="float-right" id="f2">0</a>
+                                                <b>F2</b> <a class="float-right" id="f2" style="cursor: pointer;">0</a>
                                             </li>
                                             <li class="list-group-item">
-                                                <b>F3</b> <a class="float-right" id="f3">0</a>
+                                                <b>F3</b> <a class="float-right" id="f3" style="cursor: pointer;">0</a>
                                             </li>
                                             <li class="list-group-item">
-                                                <b>F4</b> <a class="float-right" id="f4">0</a>
+                                                <b>F4</b> <a class="float-right" id="f4" style="cursor: pointer;">0</a>
                                             </li>
                                             <li class="list-group-item">
                                                 <b>Tổng mời</b> <a class="float-right" id="total_mem">0</a>
@@ -154,20 +155,36 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-md-9" style="overflow: auto">
-                                <!-- Table Recharge -->
-                                <%- include('table/listRecharge.ejs') %>
-                                <!-- END TABLE -->
-                                <!-- Table Withdraw -->
-                                <%- include('table/listWithdraw.ejs') %>
-                                <!-- END TABLE -->
-                                <!-- Table Withdraw -->
-                                <%- include('table/listRedenvelope.ejs') %>
-                                <!-- END TABLE -->
-                                <!-- Table Withdraw -->
-                                <%- include('table/listBet.ejs') %>
-                                <!-- END TABLE -->
+                            
+                            <div class="col-md-9" style="overflow: auto;">
+                                <i id="back-btn" class="fa fa-arrow-left" aria-hidden="true" style="width: 30px; height: 30px; font-size: 20px; cursor: pointer; opacity: 0; position: fixed;"></i>
+                                <div id="LF1" style="opacity: 0; position: fixed;">
+                                    <%- include('table/FList.ejs') %>
+                                </div>
+                                <div id="LF2" style="opacity: 0; position: fixed;">
+                                    <%- include('table/FList2.ejs') %>
+                                </div>
+                                <div id="LF3" style="opacity: 0; position: fixed;">
+                                    <%- include('table/FList3.ejs') %>
+                                </div>
+                                <div id="LF4" style="opacity: 0; position: fixed;">
+                                    <%- include('table/FList4.ejs') %>
+                                </div>
+                        
+                                <div id="tables">
+                                    <!-- Table Recharge -->
+                                    <%- include('table/listRecharge.ejs') %>
+                                    <!-- END TABLE -->
+                                    <!-- Table Withdraw -->
+                                    <%- include('table/listWithdraw.ejs') %>
+                                    <!-- END TABLE -->
+                                    <!-- Table Withdraw -->
+                                    <%- include('table/listRedenvelope.ejs') %>
+                                    <!-- END TABLE -->
+                                    <!-- Table Withdraw -->
+                                    <%- include('table/listBet.ejs') %>
+                                    <!-- END TABLE -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -889,6 +906,35 @@
                 }
             });
         });
+        </script>
+        <!-- F LIST -->
+        <script>
+            const handleClick = (showList, hideList) => {
+                for(let i = 0; i < showList.length;i++) {
+                    $(showList[i]).css('opacity', '1');
+                    $(showList[i]).css('position', 'relative');    
+                }
+                for(let i = 0; i < hideList.length;i++) {
+                    $(hideList[i]).css('opacity', '0');
+                    $(hideList[i]).css('position', 'fixed');
+                }
+            }
+
+            $('#f1').click(function(e) {
+                handleClick(["#LF1", "#back-btn"], ["#LF2", "#LF3", "#LF4", "#tables"]);
+            })
+            $('#f2').click(function(e) {
+                handleClick(["#LF2", "#back-btn"], ["#LF1", "#LF3", "#LF4", "#tables"]);
+            })
+            $('#f3').click(function(e) {
+                handleClick(["#LF3", "#back-btn"], ["#LF1", "#LF2", "#LF4", "#tables"]);
+            })
+            $('#f4').click(function(e) {
+                handleClick(["#LF4", "#back-btn"], ["#LF1", "#LF2", "#LF3", "#tables"]);
+            })
+            $("#back-btn").click(function(e) {
+                handleClick(["#tables"], ["#LF1", "#LF2", "#LF3", "#LF4", "#back-btn"]);
+            })
         </script>
     </body>
 </html>

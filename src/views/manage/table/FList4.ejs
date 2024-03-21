@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Danh sách thành viên F4</title>
+  <!-- <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
+  <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/css/adminlte.min.css" />
+  <link rel="stylesheet" href="/css/admin.css" /> -->
+</head>
+
+<body class="hold-transition sidebar-mini">
+    <!-- Main content -->
+    <section class="content">
+      <!-- Default box -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Danh sách F4</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body p-0" style="overflow-y: hidden">
+          <table class="table table-striped projects" id="table1">
+            <thead>
+              <tr>
+                <th class="text-center">SĐT</th>
+                <th class="text-center">Số lần nạp</th>
+                <th class="text-center">Số dư</th>
+                <th class="text-center">Tổng tiền</th>
+                <th class="text-center">Tổng nạp</th>
+                <th class="text-center">Tổng rút</th>
+                <th class="text-center">Trạng thái</th>
+                <th class="text-center">Ngày đăng ký</th>
+              </tr>
+            </thead>
+            <tbody id="Flist4">
+              <!-- #region -->
+            </tbody>
+          </table>
+        </div>
+        <nav aria-label="Page navigation example" style="margin-top: 20px; display: flex; justify-content: center">
+            <ul class="pagination table1">
+                <li class="page-item previous" id="previous_f4">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <div id="numbers" style="display: flex">
+                    <li class="page-item">
+                        <a class="page-link active text-white" id="text-page_f4"></a>
+                    </li>
+                </div>
+                <li class="page-item next" id="next_f4">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+      </div>
+    </section>
+  <script src="/plugins/jquery/jquery.min.js"></script>
+  <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/dist/js/adminlte.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+  <script>
+    const Render4 = (datas) => {
+      let html = '';
+      datas.map((data) => {
+        const timestamp = data.time;
+        const remainingAmount = data.tongcuoc - data.betbet < 0 ? 0 : data.tongcuoc - data.betbet;
+        const date = new Date(parseInt(timestamp)).toLocaleString();
+        html += `
+        <tr class="text-center" style="">
+          <td>${'SDT'}</td>
+          <td>
+            ${'so lan nap'}
+          </td>
+          <td>
+            <b style="color: #2003db">${'so du'}</b>
+          </td>
+          <td>
+            ${'tong tien'}
+          </td>
+          <td class="project-state">
+            ${'tong nap'}
+          </td>
+          <!--<td class="project-state">
+            <span class="badge badge-warning">Offline</span>
+          </td>
+          <td class="project-state">
+            <span class="badge badge-success">Online</span>
+          </td> -->
+          <td>
+            ${'tong rut'}
+          </td>
+          <td>
+            ${(data.status == 1) ? '<span class="badge badge-success">Online</span>' : '<span class="badge badge-warning">Banded</span>'}
+          </td>
+          <td class="project-actions text-center" style="min-width: 100px">
+            ${'ngay dang ky'}
+          </td>
+        </tr>`;
+        $("#Flist4").html(html);
+      });
+    }
+
+    let f4_pageno = 0;
+    let f4_limit = 30;
+    let f4_page = 1;
+
+    $.ajax({
+      type: "POST",
+      url: "/api/webapi/admin/listMember",
+      data: {
+        typeid: "1",
+        pageno: f4_pageno,
+        limit: f4_limit,
+        language: "vi",
+      },
+      dataType: "json",
+      success: function (response) {
+        $('#text-page_f4').text(f4_page + ' / ' + response.page_total);
+        if (response.status === true) return Render4(response.datas);
+      },
+    });
+
+    $('#next_f4').click(function (e) {
+      f4_pageno += f4_limit;
+      e.preventDefault();
+      $.ajax({
+        type: "POST",
+        url: "/api/webapi/admin/listMember",
+        data: {
+          typeid: "1",
+          pageno: f4_pageno,
+          limit: f4_limit,
+          language: "vi",
+        },
+        dataType: "json",
+        success: function (response) {
+          if(response.datas.length == 0) {
+            $('#next_f4').addClass('block-click');
+            return f4_pageno -= f4_limit
+          };
+          $('#text-page_f4').text(++f4_page + ' / ' + response.page_total);
+          if (response.status === true) return Render4(response.datas);
+        }
+      });
+    });
+    
+    $('#previous_f4').click(function (e) { 
+      e.preventDefault();
+      $('#next_f4').removeClass('block-click');
+      f4_pageno -= f4_limit;
+      if(f4_pageno < 0) return f4_pageno = 0;
+      $.ajax({
+        type: "POST",
+        url: "/api/webapi/admin/listMember",
+        data: {
+          typeid: "1",
+          pageno: f4_pageno,
+          limit: f4_limit,
+          language: "vi",
+        },
+        dataType: "json",
+        success: function (response) {
+          $('#text-page_f4').text(--f4_pageno + ' / ' + response.page_total);
+          if (response.status === true) return Render4(response.datas);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -2326,6 +2326,30 @@ const descreaseBet = async (req, res) => {
 
 const listLowerGradeMembers = async (req, res) => {
     let phone = req.body.phone;
+    let {pageno, limit } = req.body;
+
+    if (!pageno || !limit) {
+        return res.status(200).json({
+            code: 0,
+            msg: "Không còn dữ liệu",
+            data: {
+                gameslist: [],
+            },
+            status: false
+        });
+    }
+
+    if (pageno < 0 || limit < 0) {
+        return res.status(200).json({
+            code: 0,
+            msg: "Không còn dữ liệu",
+            data: {
+                gameslist: [],
+            },
+            status: false
+        });
+    }
+
     const [user] = await connection.query("SELECT * FROM users WHERE phone = ? ", [phone]);
     if (!user) {
         return res.status(200).json({
@@ -2334,6 +2358,7 @@ const listLowerGradeMembers = async (req, res) => {
             timeStamp: timeNow,
         });
     }
+
     let userInfo = user[0];
     const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ", [userInfo.code]);
     const f1PhoneList = f1s.map(row => row.phone);
@@ -2370,6 +2395,10 @@ const listLowerGradeMembers = async (req, res) => {
         f2sData : f2sRechargeTimes,
         f3sData : f3sRechargeTimes,
         f4sData : f4sRechargeTimes,
+        f1s_page_total: Math.ceil(f1sRechargeTimes.length / limit),
+        f2s_page_total: Math.ceil(f2sRechargeTimes.length / limit),
+        f3s_page_total: Math.ceil(f3sRechargeTimes.length / limit),
+        f4s_page_total: Math.ceil(f4sRechargeTimes.length / limit),
         status: true
     });
 }
