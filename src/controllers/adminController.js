@@ -1,77 +1,77 @@
 ﻿import connection from "../config/connectDB";
-import jwt from 'jsonwebtoken'
 import md5 from "md5";
+
 require('dotenv').config();
 
 let timeNow = Date.now();
 
 const adminPage = async(req, res) => {
-    return res.render("manage/index.ejs"); 
+    return res.render("manage/index.ejs");
 }
 
 const adminPage3 = async(req, res) => {
-    return res.render("manage/a-index-bet/index3.ejs"); 
+    return res.render("manage/a-index-bet/index3.ejs");
 }
 
 const adminPage5 = async(req, res) => {
-    return res.render("manage/a-index-bet/index5.ejs"); 
+    return res.render("manage/a-index-bet/index5.ejs");
 }
 
 const adminPage10 = async(req, res) => {
-    return res.render("manage/a-index-bet/index10.ejs"); 
+    return res.render("manage/a-index-bet/index10.ejs");
 }
 
 const adminPage5d = async(req, res) => {
-    return res.render("manage/5d.ejs"); 
+    return res.render("manage/5d.ejs");
 }
 
 const adminPageK3 = async(req, res) => {
-    return res.render("manage/k3.ejs"); 
+    return res.render("manage/k3.ejs");
 }
 
 const ctvProfilePage = async(req, res) => {
     var phone = req.params.phone;
-    return res.render("manage/profileCTV.ejs", {phone}); 
+    return res.render("manage/profileCTV.ejs", {phone});
 }
 
 const giftPage = async(req, res) => {
-    return res.render("manage/giftPage.ejs"); 
+    return res.render("manage/giftPage.ejs");
 }
 
 const membersPage = async(req, res) => {
-    return res.render("manage/members.ejs"); 
+    return res.render("manage/members.ejs");
 }
 
 const ctvPage = async(req, res) => {
-    return res.render("manage/ctv.ejs"); 
+    return res.render("manage/ctv.ejs");
 }
 
 const infoMember = async(req, res) => {
     let phone = req.params.id;
-    return res.render("manage/profileMember.ejs", {phone}); 
+    return res.render("manage/profileMember.ejs", {phone});
 }
 
 const statistical = async(req, res) => {
-    return res.render("manage/statistical.ejs"); 
+    return res.render("manage/statistical.ejs");
 }
 
 const rechargePage = async(req, res) => {
-    return res.render("manage/recharge.ejs"); 
+    return res.render("manage/recharge.ejs");
 }
 
 const rechargeRecord = async(req, res) => {
-    return res.render("manage/rechargeRecord.ejs"); 
+    return res.render("manage/rechargeRecord.ejs");
 }
 
 const withdraw = async(req, res) => {
-    return res.render("manage/withdraw.ejs"); 
+    return res.render("manage/withdraw.ejs");
 }
 
 const withdrawRecord = async(req, res) => {
-    return res.render("manage/withdrawRecord.ejs"); 
+    return res.render("manage/withdrawRecord.ejs");
 }
 const settings = async(req, res) => {
-    return res.render("manage/settings.ejs"); 
+    return res.render("manage/settings.ejs");
 }
 
 
@@ -116,7 +116,7 @@ const totalJoin = async(req, res) => {
     if(typeid == '2') game = 'wingo3';
     if(typeid == '3') game = 'wingo5';
     if(typeid == '4') game = 'wingo10';
-    
+
     const [rows] = await connection.query('SELECT * FROM users WHERE `token` = ? ', [auth]);
 
     if (rows.length > 0) {
@@ -270,22 +270,22 @@ function formateT2(params) {
 function timerJoin2(params = '') {
     let date = '';
     if (params) {
-      date = new Date(Number(params));
+        date = new Date(Number(params));
     } else {
-      date = Date.now();
-      date = new Date(Number(date));
+        date = Date.now();
+        date = new Date(Number(date));
     }
     let years = formateT2(date.getFullYear());
     let months = formateT2(date.getMonth() + 1);
     let days = formateT2(date.getDate());
-    
+
     return years + "-" + months + "-" + days;
 }
 
 const statistical2 = async(req, res) => {
     let dateCheck = ''+req.body.date;
     //console.log(dateCheck);
-    
+
     const [wingo] = await connection.query('SELECT SUM(`get`) as total FROM minutes_1 WHERE status = 1 AND today = ? ', [dateCheck]);
     const [wingo2] = await connection.query(`SELECT SUM(money) as total FROM minutes_1 WHERE status = 2 AND today = ? `, [dateCheck]);
     const [k3] = await connection.query('SELECT SUM(`get`) as total FROM result_k3 WHERE status = 1 AND today = ? ', [dateCheck]);
@@ -299,35 +299,35 @@ const statistical2 = async(req, res) => {
 
     const [recharge_today] = await connection.query(`SELECT SUM(money) as total FROM recharge WHERE status = 1 AND today = ?`, [dateCheck]);
     const [withdraw_today] = await connection.query(`SELECT SUM(money) as total FROM withdraw WHERE status = 1 AND today = ?`, [dateCheck]);
-    
+
     var win = 0;
     var loss = 0;
-    
+
     if(wingo[0].total != null){
         let w1 = parseInt(wingo[0].total);
         win += w1;
-        
+
     }
     if(wingo2[0].total != null){
         let w2 = parseInt(wingo2[0].total);
         loss += w2;
-    } 
+    }
     if(k3[0].total != null){
         let kw = parseInt(k3[0].total);
         win += kw;
-    } 
+    }
     if(k32[0].total != null){
         let kl = parseInt(k32[0].total);
         loss += kl;
-    } 
+    }
     if(k5[0].total != null){
         let dw = parseInt(k5[0].total);
         win += dw;
-    } 
+    }
     if(k52[0].total != null){
         let dl = parseInt(k52[0].total);
         loss += dl;
-    } 
+    }
 
     let usersOnline = users[0].total;
     let usersOffline = users2[0].total;
@@ -385,7 +385,7 @@ const changeAdmin = async(req, res) => {
                 timeStamp: timeNow,
             });
             break;
-        case 'change-win_rate': 
+        case 'change-win_rate':
             await connection.query(`UPDATE admin SET ${bs} = ? `, [value]);
             return res.status(200).json({
                 message: 'Editing win rate successfully',
@@ -393,7 +393,7 @@ const changeAdmin = async(req, res) => {
                 timeStamp: timeNow,
             });
             break;
-    
+
         default:
             return res.status(200).json({
                 message: 'Failed',
@@ -413,22 +413,22 @@ function formateT(params) {
 function timerJoin(params = '') {
     let date = '';
     if (params) {
-      date = new Date(Number(params));
+        date = new Date(Number(params));
     } else {
-      date = Date.now();
-      date = new Date(Number(date));
+        date = Date.now();
+        date = new Date(Number(date));
     }
     let years = formateT(date.getFullYear());
     let months = formateT(date.getMonth() + 1);
     let days = formateT(date.getDate());
     let weeks = formateT(date.getDay());
-  
+
     let hours = formateT(date.getHours());
     let minutes = formateT(date.getMinutes());
     let seconds = formateT(date.getSeconds());
     // return years + '-' + months + '-' + days + ' ' + hours + '-' + minutes + '-' + seconds;
     return years + " - " + months + " - " + days;
-  }
+}
 
 
 const userInfo = async(req, res) => {
@@ -437,7 +437,7 @@ const userInfo = async(req, res) => {
     if (!phone) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -447,7 +447,7 @@ const userInfo = async(req, res) => {
     if (user.length == 0) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -455,7 +455,7 @@ const userInfo = async(req, res) => {
     // cấp dưới trực tiếp all
     const [f1s] = await connection.query('SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ', [userInfo.code]);
 
-    // cấp dưới trực tiếp hôm nay 
+    // cấp dưới trực tiếp hôm nay
     let f1_today = 0;
     for (let i = 0; i < f1s.length; i++) {
         const f1_time = f1s[i].time; // Mã giới thiệu f1
@@ -465,7 +465,7 @@ const userInfo = async(req, res) => {
         }
     }
 
-    // tất cả cấp dưới hôm nay 
+    // tất cả cấp dưới hôm nay
     let f_all_today = 0;
     for (let i = 0; i < f1s.length; i++) {
         const f1_code = f1s[i].code; // Mã giới thiệu f1
@@ -498,7 +498,7 @@ const userInfo = async(req, res) => {
             }
         }
     }
-    
+
     // Tổng số f2
     let f2 = 0;
     for (let i = 0; i < f1s.length; i++) {
@@ -506,7 +506,7 @@ const userInfo = async(req, res) => {
         const [f2s] = await connection.query('SELECT `phone`, `code`,`invite` FROM users WHERE `invite` = ? ', [f1_code]);
         f2 += f2s.length;
     }
-    
+
     // Tổng số f3
     let f3 = 0;
     for (let i = 0; i < f1s.length; i++) {
@@ -518,7 +518,7 @@ const userInfo = async(req, res) => {
             if(f3s.length > 0) f3 += f3s.length;
         }
     }
-    
+
     // Tổng số f4
     let f4 = 0;
     for (let i = 0; i < f1s.length; i++) {
@@ -627,12 +627,12 @@ const rechargeDuyet = async(req, res) => {
         } catch (error) {
             console.log(error);
         }
-       
+
         const [invite] = await connection.query('SELECT `invite`, `code` FROM `users` WHERE `phone`= ? LIMIT 1', [info[0].phone]);
         const [ctv] = await connection.query('SELECT `phone`, `code` FROM `users` WHERE `code`= ? LIMIT 1', [invite[0].invite]);
         const [check] = await connection.query('SELECT `napdau` FROM `users` WHERE `phone`= ?', [info[0].phone]);
         const amount = info[0].money;
-        
+
         if (check[0].napdau == 0) {
             var time = new Date().getTime();
             //thuc hien cong tien nap dau tien cho nguoi gioi thieu
@@ -654,14 +654,14 @@ const rechargeDuyet = async(req, res) => {
             }else if(amount >= 100000000){
                 hoahong = 5000000;
             }
-            
+
             await connection.query(`UPDATE users SET money = money + ?, total_money = total_money + ?, roses_today = roses_today + ?, roses_f = roses_f + ? WHERE phone = ? `, [hoahong, hoahong, hoahong, hoahong, ctv[0]?.phone]);
             let sql = 'INSERT INTO `roses` SET `phone` = ?, `f1` = ?, `code` = ?, `invite` = ?, `time` = ?, `chitiet` = ?';
             await connection.query(sql, [info[0].phone, hoahong, invite[0].code, ctv[0].code, time, 'Nạp Tiền']);
             await connection.query(`UPDATE users SET napdau = 1, tongcuoc = tongcuoc + ? WHERE phone = ?`, [ Number(info[0].money), info[0].phone ]);
-            
 
-        } 
+
+        }
         return res.status(200).json({
             message: 'Xác nhận đơn thành công',
             status: true,
@@ -694,7 +694,7 @@ const handlWithdraw = async(req, res) => {
     let type = req.body.type;
     if (!auth || !id || !type) {
         return res.status(200).json({
-            message: 'Failed', 
+            message: 'Failed',
             status: false,
             timeStamp: timeNow,
         });
@@ -817,16 +817,16 @@ const createBonus = async(req, res) => {
     function timerJoin(params = '') {
         let date = '';
         if (params) {
-          date = new Date(Number(params));
+            date = new Date(Number(params));
         } else {
-          date = Date.now();
-          date = new Date(Number(date));
+            date = Date.now();
+            date = new Date(Number(date));
         }
         let years = formateT(date.getFullYear());
         let months = formateT(date.getMonth() + 1);
         let days = formateT(date.getDate());
         let weeks = formateT(date.getDay());
-      
+
         let hours = formateT(date.getHours());
         let minutes = formateT(date.getMinutes());
         let seconds = formateT(date.getSeconds());
@@ -853,7 +853,7 @@ const createBonus = async(req, res) => {
     if (user.length == 0) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -870,7 +870,7 @@ const createBonus = async(req, res) => {
             message: '成功的改变',
             status: true,
         });
-    } 
+    }
 
     if (type == 'two') {
         let select = req.body.select;
@@ -883,8 +883,8 @@ const createBonus = async(req, res) => {
             message: '成功的改变',
             status: true,
         });
-    } 
-  
+    }
+
     if (type == 'one') {
         let select = req.body.select;
         let phone = req.body.phone;
@@ -892,10 +892,10 @@ const createBonus = async(req, res) => {
         if(user.length == 0) {
             return res.status(200).json({
                 message: 'Failed',
-                status: false, 
+                status: false,
                 timeStamp: timeNow,
             });
-        } 
+        }
         if (select == '1') {
             await connection.query(`UPDATE point_list SET money = money + ? WHERE level = 2 and phone = ?`, [money, phone]);
         } else {
@@ -914,10 +914,10 @@ const createBonus = async(req, res) => {
         if(user.length == 0) {
             return res.status(200).json({
                 message: '帐号不存在',
-                status: false, 
+                status: false,
                 timeStamp: timeNow,
             });
-        } 
+        }
         if (select == '1') {
             await connection.query(`UPDATE point_list SET money_us = money_us + ? WHERE level = 2 and phone = ?`, [money, phone]);
         } else {
@@ -1083,7 +1083,7 @@ const timeCreate = () => {
     const time = d.getTime();
     return time;
 }
- 
+
 
 
 const register = async(req, res) => {
@@ -1118,8 +1118,8 @@ const register = async(req, res) => {
                 status: false
             });
         } else {
-            const sql = `INSERT INTO users SET 
-            id_user = ?,
+            const sql = `INSERT INTO users SET
+                id_user = ?,
             phone = ?,
             name_user = ?,
             password = ?,
@@ -1174,7 +1174,7 @@ const profileUser = async(req, res) => {
 
 const infoCtv = async(req, res) => {
     const phone = req.body.phone;
-     
+
     const [user] = await connection.query('SELECT * FROM users WHERE phone = ? ', [phone]);
 
     if (user.length == 0) {
@@ -1187,7 +1187,7 @@ const infoCtv = async(req, res) => {
     // cấp dưới trực tiếp all
     const [f1s] = await connection.query('SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ', [userInfo.code]);
 
-    // cấp dưới trực tiếp hôm nay 
+    // cấp dưới trực tiếp hôm nay
     let f1_today = 0;
     for (let i = 0; i < f1s.length; i++) {
         const f1_time = f1s[i].time; // Mã giới thiệu f1
@@ -1197,7 +1197,7 @@ const infoCtv = async(req, res) => {
         }
     }
 
-    // tất cả cấp dưới hôm nay 
+    // tất cả cấp dưới hôm nay
     let f_all_today = 0;
     for (let i = 0; i < f1s.length; i++) {
         const f1_code = f1s[i].code; // Mã giới thiệu f1
@@ -1230,7 +1230,7 @@ const infoCtv = async(req, res) => {
             }
         }
     }
-    
+
     // Tổng số f2
     let f2 = 0;
     for (let i = 0; i < f1s.length; i++) {
@@ -1238,7 +1238,7 @@ const infoCtv = async(req, res) => {
         const [f2s] = await connection.query('SELECT `phone`, `code`,`invite` FROM users WHERE `invite` = ? ', [f1_code]);
         f2 += f2s.length;
     }
-    
+
     // Tổng số f3
     let f3 = 0;
     for (let i = 0; i < f1s.length; i++) {
@@ -1250,7 +1250,7 @@ const infoCtv = async(req, res) => {
             if(f3s.length > 0) f3 += f3s.length;
         }
     }
-    
+
     // Tổng số f4
     let f4 = 0;
     for (let i = 0; i < f1s.length; i++) {
@@ -1343,7 +1343,7 @@ const infoCtv = async(req, res) => {
     let list_withdraw_news = [];
     for (let i = 0; i < list_mem.length; i++) {
         let phone = list_mem[i].phone;
-		console.log('before err');
+        console.log('before err');
         const [recharge_today] = await connection.query('SELECT `id`, `status`, `type`,`phone`, `money`, `time` FROM recharge WHERE phone = ? AND status = 1 ', [phone]);
         const [withdraw_today] = await connection.query('SELECT `id`, `status`,`phone`, `money`, `time` FROM withdraw WHERE phone = ? AND status = 1 ', [phone]);
         for (let i = 0; i < recharge_today.length; i++) {
@@ -1360,7 +1360,7 @@ const infoCtv = async(req, res) => {
                 list_withdraw_news.push(withdraw_today[i]);
             }
         }
-		console.log('after err');
+        console.log('after err');
     }
 
     const [redenvelopes_used] = await connection.query('SELECT * FROM redenvelopes_used WHERE phone = ? ', [phone]);
@@ -1387,7 +1387,7 @@ const infoCtv = async(req, res) => {
     return res.status(200).json({
         message: 'Success',
         status: true,
-        datas: user,    
+        datas: user,
         f1: f1s.length,
         f2: f2,
         f3: f3,
@@ -1411,27 +1411,27 @@ const infoCtv = async(req, res) => {
 const infoCtv2 = async(req, res) => {
     const phone = req.body.phone;
     const timeDate = req.body.timeDate;
-     
+
     function timerJoin(params = '') {
         let date = '';
         if (params) {
-          date = new Date(Number(params));
+            date = new Date(Number(params));
         } else {
-          date = Date.now();
-          date = new Date(Number(date));
+            date = Date.now();
+            date = new Date(Number(date));
         }
         let years = formateT(date.getFullYear());
         let months = formateT(date.getMonth() + 1);
         let days = formateT(date.getDate());
         let weeks = formateT(date.getDay());
-      
+
         let hours = formateT(date.getHours());
         let minutes = formateT(date.getMinutes());
         let seconds = formateT(date.getSeconds());
         // return years + '-' + months + '-' + days + ' ' + hours + '-' + minutes + '-' + seconds;
         return years + "-" + months + "-" + days;
     }
-    
+
     const [user] = await connection.query('SELECT * FROM users WHERE phone = ? ', [phone]);
 
     if (user.length == 0) {
@@ -1537,7 +1537,7 @@ const listRechargeMem = async(req, res) => {
     if (!phone) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1548,7 +1548,7 @@ const listRechargeMem = async(req, res) => {
     if (user.length == 0 || auths.length == 0) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1596,7 +1596,7 @@ const listCapduoi = async(req, res) => {
     if (!phone) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1607,7 +1607,7 @@ const listCapduoi = async(req, res) => {
     if (user.length == 0 || auths.length == 0) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1655,7 +1655,7 @@ const listCapduoi = async(req, res) => {
     if (!phone) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1671,15 +1671,15 @@ const listCapduoi = async(req, res) => {
     if(f1s.length > 0) dataT = dataT.concat(f1s);
 
     // Tổng số f2
-    
+
     for (let i = 0; i < f1s.length; i++) {
         const f1_code = f1s[i].code; // Mã giới thiệu f1
         const [f2s] = await connection.query('SELECT * FROM users WHERE `invite` = ? ', [f1_code]);
         if(f2s.length > 0) dataT = dataT.concat(f2s);
     }
-    
+
     // Tổng số f3
-    
+
     for (let i = 0; i < f1s.length; i++) {
         const f1_code = f1s[i].code; // Mã giới thiệu f1
         const [f2s] = await connection.query('SELECT * FROM users WHERE `invite` = ? ', [f1_code]);
@@ -1689,7 +1689,7 @@ const listCapduoi = async(req, res) => {
             if(f3s.length > 0) dataT = dataT.concat(f3s);
         }
     }
-    
+
     // Tổng số f4
     let f4 = 0;
     for (let i = 0; i < f1s.length; i++) {
@@ -1709,7 +1709,7 @@ const listCapduoi = async(req, res) => {
     if (user.length == 0 || auths.length == 0) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1769,7 +1769,7 @@ const listWithdrawMem = async(req, res) => {
     if (user.length == 0 || auths.length == 0) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1815,7 +1815,7 @@ const listRedenvelope = async(req, res) => {
     if (!phone) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1826,7 +1826,7 @@ const listRedenvelope = async(req, res) => {
     if (user.length == 0 || auths.length == 0) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1872,7 +1872,7 @@ const listBet = async(req, res) => {
     if (!phone) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1883,7 +1883,7 @@ const listBet = async(req, res) => {
     if (user.length == 0 || auths.length == 0) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1928,7 +1928,7 @@ const listBetk3 = async(req, res) => {
     if (!phone) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1939,7 +1939,7 @@ const listBetk3 = async(req, res) => {
     if (user.length == 0 || auths.length == 0) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1986,7 +1986,7 @@ const listBetk5 = async(req, res) => {
     if (!phone) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -1997,7 +1997,7 @@ const listBetk5 = async(req, res) => {
     if (user.length == 0 || auths.length == 0) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
@@ -2187,139 +2187,139 @@ const updateBank = async(req,res)=>{
     if (user.length == 0) {
         return res.status(200).json({
             message: 'Failed',
-            status: false, 
+            status: false,
             timeStamp: timeNow,
         });
     }
     const [user_update] = await  connection.query('SELECT * FROM user_bank WHERE phone = ? ', [req.body.phone])
     if(user_update.length==0){
         await connection.query('INSERT INTO user_bank SET name_bank = ?, name_user = ?, stk = ?, phone = ?, time = ?',[req.body.name_bank1, req.body.name_bank, req.body.stk,req.body.phone, timeNow]);
-return res.status(200).json({
+        return res.status(200).json({
             message: 'Done',
-            status: true, 
+            status: true,
             timeStamp: timeNow
-    })
+        })
     }
     await connection.query('UPDATE user_bank SET name_bank = ?, name_user = ?, stk = ? WHERE phone = ?',[req.body.name_bank1, req.body.name_bank, req.body.stk,req.body.phone]);
     return res.status(200).json({
-            message: 'Done',
-            status: true, 
-            timeStamp: timeNow
+        message: 'Done',
+        status: true,
+        timeStamp: timeNow
     })
 }
 
 const deleteUser = async (req, res) => {
     let phone = req.body.phone;
-  
+
     if (!phone) {
-      return res.status(200).json({
-        message: 'Vui lòng nhập dữ liệu',
-        status: false,
-        timeStamp: timeNow
-      });
+        return res.status(200).json({
+            message: 'Vui lòng nhập dữ liệu',
+            status: false,
+            timeStamp: timeNow
+        });
     }
-  
+
     const [user_id] = await connection.query(
-      `SELECT * FROM users WHERE phone = ?`,
-      [phone]
+        `SELECT * FROM users WHERE phone = ?`,
+        [phone]
     );
-  
+
     if (user_id.length > 0) {
-      await connection.query(`DELETE FROM users WHERE phone = ?`, [phone]);
-      return res.status(200).json({
-        message: 'Xoá thành công',
-        status: true
-      });
+        await connection.query(`DELETE FROM users WHERE phone = ?`, [phone]);
+        return res.status(200).json({
+            message: 'Xoá thành công',
+            status: true
+        });
     } else {
-      return res.status(200).json({
-        message: 'User không tồn tại',
-        status: false
-      });
+        return res.status(200).json({
+            message: 'User không tồn tại',
+            status: false
+        });
     }
 };
 
 const increaseBet = async (req, res) => {
-let phone = req.body.phone;
-let betNumber = req.body.betNumber;
+    let phone = req.body.phone;
+    let betNumber = req.body.betNumber;
 
-if (!phone && !betNumber) {
-    return res.status(200).json({
-    message: 'Vui lòng nhập dữ liệu',
-    status: false,
-    timeStamp: timeNow
-    });
-}
+    if (!phone && !betNumber) {
+        return res.status(200).json({
+            message: 'Vui lòng nhập dữ liệu',
+            status: false,
+            timeStamp: timeNow
+        });
+    }
 
-if (betNumber < 0) {
-    return res.status(200).json({
-    message: 'Số nhập vào phải lớn hơn 0',
-    status: false,
-    timeStamp: timeNow
-    });
-}
+    if (betNumber < 0) {
+        return res.status(200).json({
+            message: 'Số nhập vào phải lớn hơn 0',
+            status: false,
+            timeStamp: timeNow
+        });
+    }
 
-const [user_id] = await connection.query(
-    `SELECT * FROM users WHERE phone = ?`,
-    [phone]
-);
+    const [user_id] = await connection.query(
+        `SELECT * FROM users WHERE phone = ?`,
+        [phone]
+    );
 
-if (user_id.length > 0) {
-    const tongcuoc = Number(user_id[0].tongcuoc) + Number(betNumber);
-    await connection.query(`UPDATE users SET tongcuoc = ? WHERE phone = ?`, [
-    tongcuoc,
-    phone
-    ]);
-    return res.status(200).json({
-    message: `Tổng cược đã được thay đổi thành ${tongcuoc}`,
-    status: true
-    });
-} else {
-    return res.status(200).json({
-    message: 'User không tồn tại',
-    status: false
-    });
-}
+    if (user_id.length > 0) {
+        const tongcuoc = Number(user_id[0].tongcuoc) + Number(betNumber);
+        await connection.query(`UPDATE users SET tongcuoc = ? WHERE phone = ?`, [
+            tongcuoc,
+            phone
+        ]);
+        return res.status(200).json({
+            message: `Tổng cược đã được thay đổi thành ${tongcuoc}`,
+            status: true
+        });
+    } else {
+        return res.status(200).json({
+            message: 'User không tồn tại',
+            status: false
+        });
+    }
 };
 
 const descreaseBet = async (req, res) => {
     let phone = req.body.phone;
     let betNumber = req.body.betNumber;
-    
+
     if (!phone && !betNumber) {
         return res.status(200).json({
-        message: 'Vui lòng nhập dữ liệu',
-        status: false,
-        timeStamp: timeNow
+            message: 'Vui lòng nhập dữ liệu',
+            status: false,
+            timeStamp: timeNow
         });
     }
-    
+
     if (betNumber < 0) {
         return res.status(200).json({
-        message: 'Số nhập vào phải lớn hơn 0',
-        status: false,
-        timeStamp: timeNow
+            message: 'Số nhập vào phải lớn hơn 0',
+            status: false,
+            timeStamp: timeNow
         });
     }
-    
+
     const [user_id] = await connection.query(
         `SELECT * FROM users WHERE phone = ?`,
         [phone]
     );
-    
+
     if (user_id.length > 0) {
         const tongcuoc = Number(user_id[0].tongcuoc) - Number(betNumber);
         await connection.query(`UPDATE users SET tongcuoc = ? WHERE phone = ?`, [
-        tongcuoc,
-        phone
+            tongcuoc,
+            phone
         ]);
         return res.status(200).json({
-        message: `Tổng cược đã được thay đổi thành ${tongcuoc}`,
-        status: true
+            message: `Tổng cược đã được thay đổi thành ${tongcuoc}`,
+            status: true
         });
     } else {
         return res.status(200).json({
-        message: 'User không tồn tại',
-        status: false
+            message: 'User không tồn tại',
+            status: false
         });
     }
 };
@@ -2327,7 +2327,7 @@ const descreaseBet = async (req, res) => {
 const listLowerGradeMembers = async (req, res) => {
     let phone = req.body.phone;
     let {pageno, limit } = req.body;
-
+    console.log(phone, "phone");
     if (!pageno || !limit) {
         return res.status(200).json({
             code: 0,
@@ -2359,42 +2359,170 @@ const listLowerGradeMembers = async (req, res) => {
         });
     }
 
-    let userInfo = user[0];
-    const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ", [userInfo.code]);
-    const f1PhoneList = f1s.map(row => row.phone);
-    const [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f1PhoneList]);
-    const f2PhoneList = f2s.map(row => row.phone);
-    const [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f2PhoneList]);
-    const f3PhoneList = f3s.map(row => row.phone);
-    const [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f3PhoneList]);
-    const f4PhoneList = f4s.map(row => row.phone);
-    const fs = f1s.concat(f2s, f3s, f4s);
-    const fPhoneList = f1PhoneList.concat(f2PhoneList, f3PhoneList, f4PhoneList);
-    const [rechargeByPhone] = await connection.query("SELECT `phone`, COUNT(`phone`) as times FROM recharge WHERE `phone` IN ? GROUP BY `phone`",  [fPhoneList]);
+    // let userInfo = user[0];
+    // console.log(userInfo.code, "userInfo.code");
+    // const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ", [userInfo.code]);
+    // const f1PhoneList = f1s.map(row => row.phone);
+    // const f1PhoneListString = f1PhoneList.join(","); // Chuyển đổi thành chuỗi giá trị
+    // console.log(f1s, "f1s");
+    // console.log(f1PhoneList, "f1PhoneList");
+    // console.log(f1PhoneListString, "f1PhoneListString");
+    // const [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f1PhoneListString]);
+    // const f2PhoneList = f2s.map(row => row.phone);
+    // const f2PhoneListString = f1PhoneList.join(","); // Chuyển đổi thành chuỗi giá trị
+    // const [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f2PhoneListString]);
+    // const f3PhoneList = f3s.map(row => row.phone);
+    // const f3PhoneListString = f1PhoneList.join(","); // Chuyển đổi thành chuỗi giá trị
+    // const [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f3PhoneListString]);
+    // const f4PhoneList = f4s.map(row => row.phone);
+    // const f4PhoneListString = f1PhoneList.join(","); // Chuyển đổi thành chuỗi giá trị
+    // const [fs] = f1s.concat([f2s], [f3s], [f4s]);
+    // const fPhoneList = f1PhoneList.concat(f2PhoneList, f3PhoneList, f4PhoneList);
+    // const [rechargeByPhone] = await connection.query("SELECT `phone`, COUNT(`phone`) as times FROM recharge WHERE `phone` IN ? GROUP BY `phone`",  [fPhoneList]);
 
-    const f1sRechargeTimes = f1s.map(row => {
-        const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
-        return { ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0 };
-    });
-    const f2sRechargeTimes = f2s.map(row => {
-        const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
-        return { ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0 };
-    });
-    const f3sRechargeTimes = f3s.map(row => {
-        const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
-        return { ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0 };
-    });
-    const f4sRechargeTimes = f4s.map(row => {
-        const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
-        return { ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0 };
-    });
+    // let userInfo = user[0];
+    // const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ", [userInfo.code]);
+    // const f1PhoneList = f1s.map(row => row.phone).filter(phone => phone !== '');
+    //
+    // if (f1PhoneList.length > 0) {
+    //     const f1PhoneListString = f1PhoneList.join(",");
+    //
+    //     const [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f1PhoneListString]);
+    //     const f2PhoneList = f2s.map(row => row.phone).filter(phone => phone !== '');
+    //     if (f2PhoneList.length > 0) {
+    //         const f2PhoneListString = f2PhoneList.join(",");
+    //
+    //         const [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f2PhoneListString]);
+    //         const f3PhoneList = f3s.map(row => row.phone).filter(phone => phone !== '');
+    //         if (f3PhoneList.length > 0) {
+    //             const f3PhoneListString = f3PhoneList.join(",");
+    //
+    //             const [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f3PhoneListString]);
+    //             const f4PhoneList = f4s.map(row => row.phone).filter(phone => phone !== '');
+    //             if (f4PhoneList.length > 0) {
+    //                 const f4PhoneListString = f4PhoneList.join(",");
+    //
+    //
+    //             } else {
+    //
+    //             }
+    //         } else {
+    //
+    //         }
+    //     } else {
+    //
+    //     }
+    // } else {
+    //
+    // }
+    let userInfo = user[0];
+    console.log([userInfo.code], "userInfo.code");
+    const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time`, `status`, `money` as surplus, `total_money` as total_amount FROM users WHERE `invite` = ? ", [userInfo.code]);
+    const f1CodeList = f1s.map(row => row.code).filter(code => code !== '');
+    const f1PhoneList = f1s.map(row => row.phone).filter(code => code !== '');
+
+    let f2s = [];
+    let f3s = [];
+    let f4s = [];
+    let f2CodeList = [];
+    let f3CodeList = [];
+    let f2PhoneList = [];
+    let f3PhoneList = [];
+    let f4PhoneList = [];
+
+    if (f1s.length > 0) {
+        [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time`, `status`, `money` as surplus, `total_money` as total_amount FROM users WHERE `invite` IN (?) ", [f1CodeList]);
+        f2CodeList = f2s.map(row => row.code).filter(code => code !== '');
+        f2PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
+        if (f2s.length > 0) {
+            [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time`, `status`, `money` as surplus, `total_money` as total_amount FROM users WHERE `invite` IN (?) ", [f2CodeList]);
+            f3CodeList = f3s.map(row => row.code).filter(code => code !== '');
+            f3PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
+            if (f3s.length > 0) {
+                [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time`, `status`, `money` as surplus, `total_money` as total_amount FROM users WHERE `invite` IN (?) ", [f3CodeList]);
+                f3PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
+            }
+        }
+    }
+    let f1sRechargeTimes = [];
+    let f2sRechargeTimes = [];
+    let f3sRechargeTimes = [];
+    let f4sRechargeTimes = [];
+    let f1sRechargeTimesPage = [];
+    let f2sRechargeTimesPage = [];
+    let f3sRechargeTimesPage = [];
+    let f4sRechargeTimesPage = [];
+
+    if (f1PhoneList.length > 0 || f2PhoneList.length > 0 || f3PhoneList.length > 0 || f4PhoneList.length > 0) {
+        const fPhoneList = f1PhoneList.concat(f2PhoneList, f3PhoneList, f4PhoneList);
+        console.log(fPhoneList, "fPhoneList")
+        const [rechargeByPhone] = await connection.query("SELECT `phone`, COUNT(`phone`) as times, SUM(money) as rechargeSum FROM recharge WHERE `status` = 1 AND `phone` IN (?) GROUP BY `phone`", [fPhoneList]);
+        const [withdrawByPhone] = await connection.query("SELECT `phone`, SUM(money) as withdrawSum FROM withdraw WHERE `status` = 1 AND `phone` IN (?) GROUP BY `phone`", [fPhoneList]);
+        console.log(rechargeByPhone, "rechargeByPhone")
+        console.log(withdrawByPhone, "withdrawByPhone")
+        f1sRechargeTimes = f1s.map(row => {
+            const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
+            const matchingWithdraw = withdrawByPhone.find(item => item.phone === row.phone);
+            return {
+                ...row,
+                rechargeCount: matchingRecharge ? matchingRecharge.times : 0,
+                total_recharge: matchingRecharge ? matchingRecharge.rechargeSum : 0,
+                total_withdrawal: matchingWithdraw ? matchingWithdraw.withdrawSum : 0
+            };
+        });
+        f2sRechargeTimes = f2s.map(row => {
+            const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
+            const matchingWithdraw = withdrawByPhone.find(item => item.phone === row.phone);
+            return {
+                ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0,
+                total_recharge: matchingRecharge ? matchingRecharge.rechargeSum : 0,
+                total_withdrawal: matchingWithdraw ? matchingWithdraw.withdrawSum : 0
+            };
+        });
+        f3sRechargeTimes = f3s.map(row => {
+            const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
+            const matchingWithdraw = withdrawByPhone.find(item => item.phone === row.phone);
+            return {
+                ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0,
+                total_recharge: matchingRecharge ? matchingRecharge.rechargeSum : 0,
+                total_withdrawal: matchingWithdraw ? matchingWithdraw.withdrawSum : 0
+            };
+        });
+        f4sRechargeTimes = f4s.map(row => {
+            const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
+            const matchingWithdraw = withdrawByPhone.find(item => item.phone === row.phone);
+            return {
+                ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0,
+                total_recharge: matchingRecharge ? matchingRecharge.rechargeSum : 0,
+                total_withdrawal: matchingWithdraw ? matchingWithdraw.withdrawSum : 0
+            };
+        });
+        const startIndex = Math.max((pageno - 1) * limit, 0);
+        const endIndex = Number(startIndex) + Number(limit);
+
+        console.log(startIndex, "startIndex")
+        console.log(endIndex, "endIndex")
+        f1sRechargeTimesPage = f1sRechargeTimes.slice(startIndex, endIndex);
+        console.log(f1sRechargeTimesPage.length, "f1sRechargeTimesPage")
+        f2sRechargeTimesPage = f2sRechargeTimes.slice(startIndex, endIndex);
+        console.log(f2sRechargeTimesPage.length, "f2sRechargeTimesPage")
+        f3sRechargeTimesPage = f3sRechargeTimes.slice(startIndex, endIndex);
+        console.log(f3sRechargeTimesPage.length, "f3sRechargeTimesPage")
+        f4sRechargeTimesPage = f4sRechargeTimes.slice(startIndex, endIndex);
+        console.log(f4sRechargeTimesPage.length, "f4sRechargeTimesPage")
+        console.log("done");
+    }
 
     return res.status(200).json({
-        message : `You are number 1!`,
-        f1sData : f1sRechargeTimes,
-        f2sData : f2sRechargeTimes,
-        f3sData : f3sRechargeTimes,
-        f4sData : f4sRechargeTimes,
+        // message : `You are number 1!`,
+        // f1sData : f1sRechargeTimes,
+        // f2sData : f2sRechargeTimes,
+        // f3sData : f3sRechargeTimes,
+        // f4sData : f4sRechargeTimes,
+        f1sData : f1sRechargeTimesPage,
+        f2sData : f2sRechargeTimesPage,
+        f3sData : f3sRechargeTimesPage,
+        f4sData : f4sRechargeTimesPage,
         f1s_page_total: Math.ceil(f1sRechargeTimes.length / limit),
         f2s_page_total: Math.ceil(f2sRechargeTimes.length / limit),
         f3s_page_total: Math.ceil(f3sRechargeTimes.length / limit),
@@ -2404,7 +2532,7 @@ const listLowerGradeMembers = async (req, res) => {
 }
 
 module.exports = {
-updateBank,
+    updateBank,
     adminPage,
     adminPage3,
     adminPage5,
