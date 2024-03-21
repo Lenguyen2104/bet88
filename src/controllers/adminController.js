@@ -2327,7 +2327,7 @@ const descreaseBet = async (req, res) => {
 const listLowerGradeMembers = async (req, res) => {
     let phone = req.body.phone;
     let {pageno, limit } = req.body;
-
+    console.log(phone, "phone");
     if (!pageno || !limit) {
         return res.status(200).json({
             code: 0,
@@ -2359,19 +2359,99 @@ const listLowerGradeMembers = async (req, res) => {
         });
     }
 
-    let userInfo = user[0];
-    const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ", [userInfo.code]);
-    const f1PhoneList = f1s.map(row => row.phone);
-    const [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f1PhoneList]);
-    const f2PhoneList = f2s.map(row => row.phone);
-    const [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f2PhoneList]);
-    const f3PhoneList = f3s.map(row => row.phone);
-    const [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f3PhoneList]);
-    const f4PhoneList = f4s.map(row => row.phone);
-    const fs = f1s.concat(f2s, f3s, f4s);
-    const fPhoneList = f1PhoneList.concat(f2PhoneList, f3PhoneList, f4PhoneList);
-    const [rechargeByPhone] = await connection.query("SELECT `phone`, COUNT(`phone`) as times FROM recharge WHERE `phone` IN ? GROUP BY `phone`",  [fPhoneList]);
+    // let userInfo = user[0];
+    // console.log(userInfo.code, "userInfo.code");
+    // const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ", [userInfo.code]);
+    // const f1PhoneList = f1s.map(row => row.phone);
+    // const f1PhoneListString = f1PhoneList.join(","); // Chuyển đổi thành chuỗi giá trị
+    // console.log(f1s, "f1s");
+    // console.log(f1PhoneList, "f1PhoneList");
+    // console.log(f1PhoneListString, "f1PhoneListString");
+    // const [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f1PhoneListString]);
+    // const f2PhoneList = f2s.map(row => row.phone);
+    // const f2PhoneListString = f1PhoneList.join(","); // Chuyển đổi thành chuỗi giá trị
+    // const [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f2PhoneListString]);
+    // const f3PhoneList = f3s.map(row => row.phone);
+    // const f3PhoneListString = f1PhoneList.join(","); // Chuyển đổi thành chuỗi giá trị
+    // const [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN ? ", [f3PhoneListString]);
+    // const f4PhoneList = f4s.map(row => row.phone);
+    // const f4PhoneListString = f1PhoneList.join(","); // Chuyển đổi thành chuỗi giá trị
+    // const [fs] = f1s.concat([f2s], [f3s], [f4s]);
+    // const fPhoneList = f1PhoneList.concat(f2PhoneList, f3PhoneList, f4PhoneList);
+    // const [rechargeByPhone] = await connection.query("SELECT `phone`, COUNT(`phone`) as times FROM recharge WHERE `phone` IN ? GROUP BY `phone`",  [fPhoneList]);
 
+    // let userInfo = user[0];
+    // const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ", [userInfo.code]);
+    // const f1PhoneList = f1s.map(row => row.phone).filter(phone => phone !== '');
+    //
+    // if (f1PhoneList.length > 0) {
+    //     const f1PhoneListString = f1PhoneList.join(",");
+    //
+    //     const [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f1PhoneListString]);
+    //     const f2PhoneList = f2s.map(row => row.phone).filter(phone => phone !== '');
+    //     if (f2PhoneList.length > 0) {
+    //         const f2PhoneListString = f2PhoneList.join(",");
+    //
+    //         const [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f2PhoneListString]);
+    //         const f3PhoneList = f3s.map(row => row.phone).filter(phone => phone !== '');
+    //         if (f3PhoneList.length > 0) {
+    //             const f3PhoneListString = f3PhoneList.join(",");
+    //
+    //             const [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f3PhoneListString]);
+    //             const f4PhoneList = f4s.map(row => row.phone).filter(phone => phone !== '');
+    //             if (f4PhoneList.length > 0) {
+    //                 const f4PhoneListString = f4PhoneList.join(",");
+    //
+    //
+    //             } else {
+    //
+    //             }
+    //         } else {
+    //
+    //         }
+    //     } else {
+    //
+    //     }
+    // } else {
+    //
+    // }
+    let userInfo = user[0];
+    console.log([userInfo.code], "userInfo.code");
+    const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ", [userInfo.code]);
+    const f1PhoneList = f1s.map(row => row.code).filter(code => code !== '');
+    const f1PhoneListString = f1PhoneList.join(",");
+    console.log(f1s, "f1s")
+    console.log(f1PhoneListString, "f1PhoneListString")
+
+    let f2s = [];
+    let f3s = [];
+    let f4s = [];
+    let f2PhoneList = [];
+    let f3PhoneList = [];
+    let f4PhoneList = [];
+
+    if (f1s.length > 0) {
+        console.log("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f1PhoneListString]);
+         [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f1PhoneList]);
+         f2PhoneList = f2s.map(row => row.code).filter(code => code !== '');
+        console.log(f2s, "f2s")
+        console.log(f2PhoneList, "f2PhoneList")
+        if (f2s.length > 0) {
+             [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f2PhoneList]);
+             f3PhoneList = f3s.map(row => row.code).filter(code => code !== '');
+            console.log(f3s, "f3s")
+            console.log(f3PhoneList, "f3PhoneList")
+            if (f3s.length > 0) {
+                 [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f3PhoneList]);
+                 f4PhoneList = f4s.map(row => row.code).filter(code => code !== '');
+                console.log(f4s, "f4s")
+                console.log(f4PhoneList, "f4PhoneList")
+            }
+        }
+    }
+
+    const fPhoneList = f1PhoneList.concat(f2PhoneList, f3PhoneList, f4PhoneList);
+    const [rechargeByPhone] = await connection.query("SELECT `phone`, COUNT(`phone`) as times FROM recharge WHERE `phone` IN (?) GROUP BY `phone`",  [fPhoneList]);
     const f1sRechargeTimes = f1s.map(row => {
         const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
         return { ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0 };
@@ -2388,7 +2468,11 @@ const listLowerGradeMembers = async (req, res) => {
         const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
         return { ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0 };
     });
-
+    console.log("done");
+    console.log(f1sRechargeTimes, "f1sRechargeTimes");
+    console.log(f2sRechargeTimes, "f2sRechargeTimes");
+    console.log(f3sRechargeTimes, "f3sRechargeTimes");
+    console.log(f4sRechargeTimes, "f4sRechargeTimes");
     return res.status(200).json({
         message : `You are number 1!`,
         f1sData : f1sRechargeTimes,
