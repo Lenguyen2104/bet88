@@ -733,6 +733,12 @@ const initWebRouter = (app) => {
     adminController.middlewareAdminController,
     adminController.descreaseBet
   );
+
+  router.post(
+      "/api/webapi/admin/listF1",
+      adminController.middlewareAdminController,
+      adminController.listLowerGradeMembers
+  );
   
   return app.use("/", router);
 };
