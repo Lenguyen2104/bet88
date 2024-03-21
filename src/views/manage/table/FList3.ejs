@@ -71,41 +71,49 @@
   <script src="/dist/js/adminlte.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
   <script>
+      let url3 = window.location.pathname;
+      let phones3 = url3.split("/");
+      let phone3 = phones3[phones3.length - 1];
+
+      const convertDateTime3 = (timestamp) => {
+        const date = new Date(+timestamp);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear());
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        return formattedDate;
+      }
+
     const Render3 = (datas) => {
       let html = '';
       datas.map((data) => {
-        const timestamp = data.time;
-        const remainingAmount = data.tongcuoc - data.betbet < 0 ? 0 : data.tongcuoc - data.betbet;
-        const date = new Date(parseInt(timestamp)).toLocaleString();
         html += `
         <tr class="text-center" style="">
-          <td>${'SDT'}</td>
+          <td>${data.phone}</td>
           <td>
-            ${'so lan nap'}
+            ${data.rechargeCount}
           </td>
           <td>
-            <b style="color: #2003db">${'so du'}</b>
+            <b style="color: #2003db">${data.surplus}</b>
           </td>
           <td>
-            ${'tong tien'}
+            ${data.total_amount}
           </td>
           <td class="project-state">
-            ${'tong nap'}
+            ${data.total_recharge}
           </td>
-          <!--<td class="project-state">
-            <span class="badge badge-warning">Offline</span>
-          </td>
-          <td class="project-state">
-            <span class="badge badge-success">Online</span>
-          </td> -->
           <td>
-            ${'tong rut'}
+            ${data.total_withdrawal}
           </td>
           <td>
             ${(data.status == 1) ? '<span class="badge badge-success">Online</span>' : '<span class="badge badge-warning">Banded</span>'}
           </td>
           <td class="project-actions text-center" style="min-width: 100px">
-            ${'ngay dang ky'}
+            ${convertDateTime3(data.time)}
           </td>
         </tr>`;
         $("#Flist3").html(html);
@@ -118,17 +126,18 @@
 
     $.ajax({
       type: "POST",
-      url: "/api/webapi/admin/listMember",
+      url: "/api/webapi/admin/listF1",
       data: {
         typeid: "1",
         pageno: f3_pageno,
         limit: f3_limit,
         language: "vi",
+        phone: phone3
       },
       dataType: "json",
       success: function (response) {
-        $('#text-page_f3').text(f3_page + ' / ' + response.page_total);
-        if (response.status === true) return Render3(response.datas);
+        $('#text-page_f3').text(f3_page + ' / ' + response.f3s_page_total);
+        if (response.status === true) return Render3(response.f3sData);
       },
     });
 
@@ -137,21 +146,22 @@
       e.preventDefault();
       $.ajax({
         type: "POST",
-        url: "/api/webapi/admin/listMember",
+        url: "/api/webapi/admin/listF1",
         data: {
           typeid: "1",
           pageno: f3_pageno,
           limit: f3_limit,
           language: "vi",
+          phone: phone3
         },
         dataType: "json",
         success: function (response) {
-          if(response.datas.length == 0) {
+          if(response.f3sData.length == 0) {
             $('#next_f3').addClass('block-click');
             return f3_pageno -= f3_limit
           };
-          $('#text-page_f3').text(++f3_page + ' / ' + response.page_total);
-          if (response.status === true) return Render3(response.datas);
+          $('#text-page_f3').text(++f3_page + ' / ' + response.f3s_page_total);
+          if (response.status === true) return Render3(response.f3sData);
         }
       });
     });
@@ -163,17 +173,18 @@
       if(f3_pageno < 0) return f3_pageno = 0;
       $.ajax({
         type: "POST",
-        url: "/api/webapi/admin/listMember",
+        url: "/api/webapi/admin/listF1",
         data: {
           typeid: "1",
           pageno: f3_pageno,
           limit: f3_limit,
           language: "vi",
+          phone: phone3
         },
         dataType: "json",
         success: function (response) {
-          $('#text-page_f3').text(--f3_pageno + ' / ' + response.page_total);
-          if (response.status === true) return Render3(response.datas);
+          $('#text-page_f3').text(--f3_pageno + ' / ' + response.f3s_page_total);
+          if (response.status === true) return Render3(response.f3sData);
         }
       });
     });

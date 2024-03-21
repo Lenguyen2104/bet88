@@ -301,10 +301,10 @@
                     $("#invite").text(response.ng_moi.phone);
                     $("#daily").text(response.daily);
 
-                    $("#f1").text(response.f1 + " thành viên");
-                    $("#f2").text(response.f2 + " thành viên");
-                    $("#f3").text(response.f3 + " thành viên");
-                    $("#f4").text(response.f4 + " thành viên");
+                    // $("#f1").text(response.f1 + " thành viên");
+                    // $("#f2").text(response.f2 + " thành viên");
+                    // $("#f3").text(response.f3 + " thành viên");
+                    // $("#f4").text(response.f4 + " thành viên");
                     $("#total_mem").text(response.f1 + response.f2 + response.f3 + response.f4);
                     $("#ip").text(user.ip_address);
                     $("#level").text(user.level == 1 ? "ADMIN" : user.level == 2 ? "CTV" : "USER");
@@ -325,6 +325,21 @@
                     }
                 },
             });
+
+            $.ajax({
+                type: "POST",
+                url: "/api/webapi/admin/listF1",
+                data: {
+                    phone: phone,
+                },
+                dataType: "json",
+                success: function (response) {
+                    $("#f1").text(response.f1sData.length + " thành viên");
+                    $("#f2").text(response.f2sData.length + " thành viên");
+                    $("#f3").text(response.f3sData.length + " thành viên");
+                    $("#f4").text(response.f4sData.length + " thành viên");
+                },
+            })
 
             // $('.updateBank').click(function(e) {
             //     e.preventDefault();
