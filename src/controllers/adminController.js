@@ -2417,7 +2417,7 @@ const listLowerGradeMembers = async (req, res) => {
     // }
     let userInfo = user[0];
     console.log([userInfo.code], "userInfo.code");
-    const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ", [userInfo.code]);
+    const [f1s] = await connection.query("SELECT `phone`, `code`,`invite`, `time`, `status`, `money` as surplus, `total_money` as total_amount FROM users WHERE `invite` = ? ", [userInfo.code]);
     const f1CodeList = f1s.map(row => row.code).filter(code => code !== '');
     const f1PhoneList = f1s.map(row => row.phone).filter(code => code !== '');
 
@@ -2431,15 +2431,15 @@ const listLowerGradeMembers = async (req, res) => {
     let f4PhoneList = [];
 
     if (f1s.length > 0) {
-         [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f1CodeList]);
+         [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time`, `status`, `money` as surplus, `total_money` as total_amount FROM users WHERE `invite` IN (?) ", [f1CodeList]);
          f2CodeList = f2s.map(row => row.code).filter(code => code !== '');
          f2PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
         if (f2s.length > 0) {
-             [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f2CodeList]);
+             [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time`, `status`, `money` as surplus, `total_money` as total_amount FROM users WHERE `invite` IN (?) ", [f2CodeList]);
             f3CodeList = f3s.map(row => row.code).filter(code => code !== '');
             f3PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
             if (f3s.length > 0) {
-                 [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` IN (?) ", [f3CodeList]);
+                 [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time`, `status`, `money` as surplus, `total_money` as total_amount FROM users WHERE `invite` IN (?) ", [f3CodeList]);
                  f3PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
             }
         }
@@ -2448,36 +2448,81 @@ const listLowerGradeMembers = async (req, res) => {
     let f2sRechargeTimes = [];
     let f3sRechargeTimes = [];
     let f4sRechargeTimes = [];
+    let f1sRechargeTimesPage = [];
+    let f2sRechargeTimesPage = [];
+    let f3sRechargeTimesPage = [];
+    let f4sRechargeTimesPage = [];
 
     if (f1PhoneList.length > 0 || f2PhoneList.length > 0 || f3PhoneList.length > 0 || f4PhoneList.length > 0) {
         const fPhoneList = f1PhoneList.concat(f2PhoneList, f3PhoneList, f4PhoneList);
         console.log(fPhoneList, "fPhoneList")
-        const [rechargeByPhone] = await connection.query("SELECT `phone`, COUNT(`phone`) as times, SUM(money) as rechargeSum FROM recharge WHERE `phone` IN (?) GROUP BY `phone`", [fPhoneList]);
+        const [rechargeByPhone] = await connection.query("SELECT `phone`, COUNT(`phone`) as times, SUM(money) as rechargeSum FROM recharge WHERE `status` = 1 AND `phone` IN (?) GROUP BY `phone`", [fPhoneList]);
+        const [withdrawByPhone] = await connection.query("SELECT `phone`, SUM(money) as withdrawSum FROM withdraw WHERE `status` = 1 AND `phone` IN (?) GROUP BY `phone`", [fPhoneList]);
         console.log(rechargeByPhone, "rechargeByPhone")
-         f1sRechargeTimes = f1s.map(row => {
+        console.log(withdrawByPhone, "withdrawByPhone")
+        f1sRechargeTimes = f1s.map(row => {
             const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
-            return {...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0};
+            const matchingWithdraw = withdrawByPhone.find(item => item.phone === row.phone);
+            return {
+                ...row,
+                rechargeCount: matchingRecharge ? matchingRecharge.times : 0,
+                total_recharge: matchingRecharge ? matchingRecharge.rechargeSum : 0,
+                total_withdrawal: matchingWithdraw ? matchingWithdraw.withdrawSum : 0
+            };
         });
-         f2sRechargeTimes = f2s.map(row => {
+        f2sRechargeTimes = f2s.map(row => {
             const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
-            return {...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0};
+            const matchingWithdraw = withdrawByPhone.find(item => item.phone === row.phone);
+            return {
+                ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0,
+                total_recharge: matchingRecharge ? matchingRecharge.rechargeSum : 0,
+                total_withdrawal: matchingWithdraw ? matchingWithdraw.withdrawSum : 0
+            };
         });
-         f3sRechargeTimes = f3s.map(row => {
+        f3sRechargeTimes = f3s.map(row => {
             const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
-            return {...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0};
+            const matchingWithdraw = withdrawByPhone.find(item => item.phone === row.phone);
+            return {
+                ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0,
+                total_recharge: matchingRecharge ? matchingRecharge.rechargeSum : 0,
+                total_withdrawal: matchingWithdraw ? matchingWithdraw.withdrawSum : 0
+            };
         });
-         f4sRechargeTimes = f4s.map(row => {
+        f4sRechargeTimes = f4s.map(row => {
             const matchingRecharge = rechargeByPhone.find(item => item.phone === row.phone);
-            return {...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0};
+            const matchingWithdraw = withdrawByPhone.find(item => item.phone === row.phone);
+            return {
+                ...row, rechargeCount: matchingRecharge ? matchingRecharge.times : 0,
+                total_recharge: matchingRecharge ? matchingRecharge.rechargeSum : 0,
+                total_withdrawal: matchingWithdraw ? matchingWithdraw.withdrawSum : 0
+            };
         });
+        const startIndex = Math.max((pageno - 1) * limit, 0);
+        const endIndex = Number(startIndex) + Number(limit);
+
+        console.log(startIndex, "startIndex")
+        console.log(endIndex, "endIndex")
+        f1sRechargeTimesPage = f1sRechargeTimes.slice(startIndex, endIndex);
+        console.log(f1sRechargeTimesPage.length, "f1sRechargeTimesPage")
+        f2sRechargeTimesPage = f2sRechargeTimes.slice(startIndex, endIndex);
+        console.log(f2sRechargeTimesPage.length, "f2sRechargeTimesPage")
+        f3sRechargeTimesPage = f3sRechargeTimes.slice(startIndex, endIndex);
+        console.log(f3sRechargeTimesPage.length, "f3sRechargeTimesPage")
+        f4sRechargeTimesPage = f4sRechargeTimes.slice(startIndex, endIndex);
+        console.log(f4sRechargeTimesPage.length, "f4sRechargeTimesPage")
         console.log("done");
     }
+
     return res.status(200).json({
-        message : `You are number 1!`,
-        f1sData : f1sRechargeTimes,
-        f2sData : f2sRechargeTimes,
-        f3sData : f3sRechargeTimes,
-        f4sData : f4sRechargeTimes,
+        // message : `You are number 1!`,
+        // f1sData : f1sRechargeTimes,
+        // f2sData : f2sRechargeTimes,
+        // f3sData : f3sRechargeTimes,
+        // f4sData : f4sRechargeTimes,
+        f1sData : f1sRechargeTimesPage,
+        f2sData : f2sRechargeTimesPage,
+        f3sData : f3sRechargeTimesPage,
+        f4sData : f4sRechargeTimesPage,
         f1s_page_total: Math.ceil(f1sRechargeTimes.length / limit),
         f2s_page_total: Math.ceil(f2sRechargeTimes.length / limit),
         f3s_page_total: Math.ceil(f3sRechargeTimes.length / limit),
