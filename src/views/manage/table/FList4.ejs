@@ -120,9 +120,9 @@
         });
     }
 
-    let f4_pageno = 0;
+    let f4_pageno = 1;
     let f4_limit = 30;
-    let f4_page = 1;
+    let total_page_4 = 1;
 
     $.ajax({
         type: "POST",
@@ -136,13 +136,17 @@
         },
         dataType: "json",
         success: function (response) {
-            $('#text-page_f4').text(f4_page + ' / ' + response.f4s_page_total);
+            total_page_4 = response.f4s_page_total;
+            $('#text-page_f4').text(f4_pageno + ' / ' + response.f4s_page_total);
             if (response.status === true) return Render4(response.f4sData);
         },
     });
 
     $('#next_f4').click(function (e) {
-        f4_pageno += f4_limit;
+        f4_pageno += 1;
+        if(f4_pageno > total_page_4) {
+            f4_pageno = total_page_4;
+        }
         e.preventDefault();
         $.ajax({
             type: "POST",
@@ -156,11 +160,10 @@
             },
             dataType: "json",
             success: function (response) {
-                if(response.f4sData.length == 0) {
+                if(f4_pageno === response.f4s_page_total) {
                     $('#next_f4').addClass('block-click');
-                    return f4_pageno -= f4_limit
-                };
-                $('#text-page_f4').text(++f4_page + ' / ' + response.f4s_page_total);
+                }
+                $('#text-page_f4').text(f4_pageno + ' / ' + response.f4s_page_total);
                 if (response.status === true) return Render4(response.f4sData);
             }
         });
@@ -169,8 +172,8 @@
     $('#previous_f4').click(function (e) {
         e.preventDefault();
         $('#next_f4').removeClass('block-click');
-        f4_pageno -= f4_limit;
-        if(f4_pageno < 0) return f4_pageno = 0;
+        f4_pageno -= 1;
+        if(f4_pageno < 1) return f4_pageno = 1;
         $.ajax({
             type: "POST",
             url: "/api/webapi/admin/listF1",
@@ -183,7 +186,7 @@
             },
             dataType: "json",
             success: function (response) {
-                $('#text-page_f4').text(--f4_pageno + ' / ' + response.f4s_page_total);
+                $('#text-page_f4').text(f4_pageno + ' / ' + response.f4s_page_total);
                 if (response.status === true) return Render4(response.f4sData);
             }
         });

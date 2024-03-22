@@ -60,7 +60,7 @@
                     </li>
                 </div>
                 <li class="page-item next" id="next_f3">
-                    <a class="page-link" href="#">Next</a>
+                    <a class="page-link" href="#" tabindex="-1">Next</a>
                 </li>
             </ul>
         </nav>
@@ -120,9 +120,9 @@
         });
     }
 
-    let f3_pageno = 0;
+    let f3_pageno = 1;
     let f3_limit = 30;
-    let f3_page = 1;
+    let total_page_3 = 1;
 
     $.ajax({
         type: "POST",
@@ -136,13 +136,17 @@
         },
         dataType: "json",
         success: function (response) {
-            $('#text-page_f3').text(f3_page + ' / ' + response.f3s_page_total);
+            total_page_3 = response.f3s_page_total;
+            $('#text-page_f3').text(f3_pageno + ' / ' + response.f3s_page_total);
             if (response.status === true) return Render3(response.f3sData);
         },
     });
 
     $('#next_f3').click(function (e) {
-        f3_pageno += f3_limit;
+        f3_pageno += 1;
+        if(f3_pageno > total_page_3) {
+            f3_pageno = total_page_3;
+        }
         e.preventDefault();
         $.ajax({
             type: "POST",
@@ -156,11 +160,10 @@
             },
             dataType: "json",
             success: function (response) {
-                if(response.f3sData.length == 0) {
+                if(f3_pageno === response.f3s_page_total) {
                     $('#next_f3').addClass('block-click');
-                    return f3_pageno -= f3_limit
-                };
-                $('#text-page_f3').text(++f3_page + ' / ' + response.f3s_page_total);
+                }
+                $('#text-page_f3').text(f3_pageno + ' / ' + response.f3s_page_total);
                 if (response.status === true) return Render3(response.f3sData);
             }
         });
@@ -169,8 +172,8 @@
     $('#previous_f3').click(function (e) {
         e.preventDefault();
         $('#next_f3').removeClass('block-click');
-        f3_pageno -= f3_limit;
-        if(f3_pageno < 0) return f3_pageno = 0;
+        f3_pageno -= 1;
+        if(f3_pageno < 1) return f3_pageno = 1;
         $.ajax({
             type: "POST",
             url: "/api/webapi/admin/listF1",
@@ -183,7 +186,7 @@
             },
             dataType: "json",
             success: function (response) {
-                $('#text-page_f3').text(--f3_pageno + ' / ' + response.f3s_page_total);
+                $('#text-page_f3').text(f3_pageno + ' / ' + response.f3s_page_total);
                 if (response.status === true) return Render3(response.f3sData);
             }
         });

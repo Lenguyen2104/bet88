@@ -2433,14 +2433,14 @@ const listLowerGradeMembers = async (req, res) => {
     if (f1s.length > 0) {
         [f2s] = await connection.query("SELECT `phone`, `code`,`invite`, `time`, `status`, `money` as surplus, `total_money` as total_amount FROM users WHERE `invite` IN (?) ", [f1CodeList]);
         f2CodeList = f2s.map(row => row.code).filter(code => code !== '');
-        f2PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
+        f2PhoneList = f2s.map(row => row.phone).filter(code => code !== '');
         if (f2s.length > 0) {
             [f3s] = await connection.query("SELECT `phone`, `code`,`invite`, `time`, `status`, `money` as surplus, `total_money` as total_amount FROM users WHERE `invite` IN (?) ", [f2CodeList]);
             f3CodeList = f3s.map(row => row.code).filter(code => code !== '');
-            f3PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
+            f3PhoneList = f3s.map(row => row.phone).filter(code => code !== '');
             if (f3s.length > 0) {
                 [f4s] = await connection.query("SELECT `phone`, `code`,`invite`, `time`, `status`, `money` as surplus, `total_money` as total_amount FROM users WHERE `invite` IN (?) ", [f3CodeList]);
-                f3PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
+                f4PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
             }
         }
     }

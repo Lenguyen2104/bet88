@@ -120,9 +120,10 @@
         });
     }
 
-    let f1_pageno = 0;
+    let f1_pageno = 1;
     let f1_limit = 30;
-    let f1_page = 1;
+    let total_page_1 = 1;
+
 
     $.ajax({
         type: "POST",
@@ -136,13 +137,17 @@
         },
         dataType: "json",
         success: function (response) {
-            $('#text-page_f1').text(f1_page + ' / ' + response.f1s_page_total);
+            total_page_1 = response.f1s_page_total;
+            $('#text-page_f1').text(f1_pageno + ' / ' + response.f1s_page_total);
             if (response.status === true) return Render1(response.f1sData);
         },
     });
 
     $('#next_f1').click(function (e) {
-        f1_pageno += f1_limit;
+        f1_pageno += 1;
+        if(f1_pageno > total_page_1) {
+            f1_pageno = total_page_1;
+        }
         e.preventDefault();
         $.ajax({
             type: "POST",
@@ -156,11 +161,10 @@
             },
             dataType: "json",
             success: function (response) {
-                if(response.f1sData.length == 0) {
-                    $('#next_f1').addClass('block-click');
-                    return f1_pageno -= f1_limit
-                };
-                $('#text-page_f1').text(++f1_page + ' / ' + response.f1s_page_total);
+                if(f1_pageno === response.f1s_page_total) {
+                  $('#next_f1').addClass('block-click');
+                }
+                $('#text-page_f1').text(f1_pageno + ' / ' + response.f1s_page_total);
                 if (response.status === true) return Render1(response.f1sData);
             }
         });
@@ -169,8 +173,8 @@
     $('#previous_f1').click(function (e) {
         e.preventDefault();
         $('#next_f1').removeClass('block-click');
-        f1_pageno -= f1_limit;
-        if(f1_pageno < 0) return f1_pageno = 0;
+        f1_pageno -= 1;
+        if(f1_pageno < 1) return f1_pageno = 1;
         $.ajax({
             type: "POST",
             url: "/api/webapi/admin/listF1",
@@ -183,7 +187,7 @@
             },
             dataType: "json",
             success: function (response) {
-                $('#text-page').text(--f1_pageno + ' / ' + response.f1s_page_total);
+                $('#text-page').text(f1_pageno + ' / ' + response.f1s_page_total);
                 if (response.status === true) return Render1(response.f1sData);
             }
         });

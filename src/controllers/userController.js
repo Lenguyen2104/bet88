@@ -1984,14 +1984,79 @@ const search = async (req, res) => {
     });
   }
   let userInfo = user[0];
+  const [resultk3] = await connection.query(`SELECT SUM(money) AS money
+                                             FROM result_k3
+                                             WHERE phone = ?`, [user.phone]);
+  const [result5d] = await connection.query(`SELECT SUM(money) AS money
+                                             FROM result_5d
+                                             WHERE phone = ?`, [user.phone]);
+  const [resultwingo] = await connection.query(`SELECT SUM(money) AS money
+                                                FROM minutes_1
+                                                WHERE phone = ?`, [user.phone]);
+
+  const betbet = (resultk3[0].money || 0) + (result5d[0].money || 0) + (resultwingo[0].money || 0);
+  user.betbet = betbet;
+
   if (userInfo.level == 1) {
     const [users] = await connection.query(
       `SELECT * FROM users WHERE phone = ? ORDER BY id DESC `,
       [phone]
     );
+
+    const resultsk3 = [];
+    for (const user of users) {
+      const [result] = await connection.query(`SELECT SUM(money) AS money FROM result_k3 WHERE phone = ?`, [user.phone]);
+      resultsk3.push({phone: user.phone, money: result[0].money || 0});
+    }
+    const resultsd5 = [];
+    for (const user of users) {
+      const [result] = await connection.query(`SELECT SUM(money) AS money FROM result_5d WHERE phone = ?`, [user.phone]);
+      resultsd5.push({phone: user.phone, money: result[0].money || 0});
+    }
+    const resultsm1 = [];
+    for (const user of users) {
+      const [result] = await connection.query(`SELECT SUM(money) AS money FROM minutes_1 WHERE phone = ?`, [user.phone]);
+      resultsm1.push({phone: user.phone, money: result[0].money || 0});
+    }
+
+    const mergedArray = [];
+    for (const item of resultsk3) {
+      const existingItem = mergedArray.find((el) => el.phone === item.phone);
+      if (existingItem) {
+        existingItem.money = Number(existingItem.money) +Number(item.money);
+      } else {
+        mergedArray.push({ ...item });
+      }
+    }
+
+    for (const item of resultsd5) {
+      const existingItem = mergedArray.find((el) => el.phone === item.phone);
+      if (existingItem) {
+        existingItem.money = Number(existingItem.money) +Number(item.money);
+      } else {
+        mergedArray.push({ ...item });
+      }
+    }
+
+    for (const item of resultsm1) {
+      const existingItem = mergedArray.find((el) => el.phone === item.phone);
+      if (existingItem) {
+        existingItem.money = Number(existingItem.money) +Number(item.money);
+      } else {
+        mergedArray.push({ ...item });
+      }
+    }
+
+    const mergedUsers = users.map(user => {
+      const mergedItem = mergedArray.find(item => item.phone === user.phone);
+      return {
+        ...user,
+        betbet: mergedItem ? mergedItem.money : 0
+      };
+    });
     return res.status(200).json({
       message: "Nhận thành công",
-      datas: users,
+      datas: mergedUsers,
       status: true,
       timeStamp: timeNow,
     });
@@ -2009,9 +2074,61 @@ const search = async (req, res) => {
       });
     } else {
       if (users[0].ctv == userInfo.phone) {
+
+        const resultsk3 = [];
+        for (const user of users) {
+          const [result] = await connection.query(`SELECT SUM(money) AS money FROM result_k3 WHERE phone = ?`, [user.phone]);
+          resultsk3.push({phone: user.phone, money: result[0].money || 0});
+        }
+        const resultsd5 = [];
+        for (const user of users) {
+          const [result] = await connection.query(`SELECT SUM(money) AS money FROM result_5d WHERE phone = ?`, [user.phone]);
+          resultsd5.push({phone: user.phone, money: result[0].money || 0});
+        }
+        const resultsm1 = [];
+        for (const user of users) {
+          const [result] = await connection.query(`SELECT SUM(money) AS money FROM minutes_1 WHERE phone = ?`, [user.phone]);
+          resultsm1.push({phone: user.phone, money: result[0].money || 0});
+        }
+
+        const mergedArray = [];
+        for (const item of resultsk3) {
+          const existingItem = mergedArray.find((el) => el.phone === item.phone);
+          if (existingItem) {
+            existingItem.money = Number(existingItem.money) +Number(item.money);
+          } else {
+            mergedArray.push({ ...item });
+          }
+        }
+
+        for (const item of resultsd5) {
+          const existingItem = mergedArray.find((el) => el.phone === item.phone);
+          if (existingItem) {
+            existingItem.money = Number(existingItem.money) +Number(item.money);
+          } else {
+            mergedArray.push({ ...item });
+          }
+        }
+
+        for (const item of resultsm1) {
+          const existingItem = mergedArray.find((el) => el.phone === item.phone);
+          if (existingItem) {
+            existingItem.money = Number(existingItem.money) +Number(item.money);
+          } else {
+            mergedArray.push({ ...item });
+          }
+        }
+
+        const mergedUsers = users.map(user => {
+          const mergedItem = mergedArray.find(item => item.phone === user.phone);
+          return {
+            ...user,
+            betbet: mergedItem ? mergedItem.money : 0
+          };
+        });
         return res.status(200).json({
           message: "Nhận thành công",
-          datas: users,
+          datas: mergedUsers,
           status: true,
           timeStamp: timeNow,
         });
