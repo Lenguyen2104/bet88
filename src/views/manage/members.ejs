@@ -72,7 +72,7 @@
                 </tbody>
               </table>
             </div>
-            <nav aria-label="Page navigation example" style="margin-top: 20px; display: flex; justify-content: center">
+            <nav aria-label="Page navigation example" style="margin-top: 20px; display: flex; justify-content: center" id="paginate">
                 <ul class="pagination table1">
                     <li class="page-item previous" id="previous">
                         <a class="page-link" href="#" tabindex="-1">Previous</a>
@@ -96,17 +96,21 @@
   <script src="/dist/js/adminlte.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
   <script src="/js/admin/admin.js"></script> 
-  <script>
+  <!-- <script>
     $("#search").on("keyup", function() {
         var value = $(this).val().toLowerCase();
         $("tbody tr").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
         });
     });
-  </script>
+  </script> -->
   <script>
     const Render = (datas) => {
       let html = '';
+      if(datas.length === 0) {
+        $("tbody").html('');
+        return;
+      }
       datas.map((data) => {
         const timestamp = data.time;
         const remainingAmount = data.tongcuoc - data.betbet < 0 ? 0 : data.tongcuoc - data.betbet;
@@ -195,7 +199,6 @@
           });
         }
       });
-
     }
 
     let pageno = 0;
@@ -217,11 +220,29 @@
       },
     });
 
-    $('#search').keypress(function(event){
-      var keycode = (event.keyCode ? event.keyCode : event.which);
+    $("#search").on("keyup", function(event){
+      $('#paginate').css('opacity', '0');
       var value = $('#search').val().trim();
-      if(keycode == '13'){
+      if(value === '') {
+        $('#paginate').css('opacity', '1');
         $.ajax({
+            type: "POST",
+            url: "/api/webapi/admin/listMember",
+            data: {
+              typeid: "1",
+              pageno: pageno,
+              limit: limit,
+              language: "vi",
+            },
+          dataType: "json",
+          success: function (response) {
+            $('#text-page').text(page + ' / ' + response.page_total);
+            if (response.status === true) return Render(response.datas);
+          },
+        });
+        return;
+      }
+      $.ajax({
           type: "POST",
           url: "/api/webapi/search",
           data: {
@@ -232,9 +253,25 @@
             if (response.status === true) return Render(response.datas);
           }
         });
-      }
-
     });
+
+    // $('#search').keypress(function(event){
+    //   var keycode = (event.keyCode ? event.keyCode : event.which);
+    //   var value = $('#search').val().trim();
+    //   if(keycode == '13'){
+    //     $.ajax({
+    //       type: "POST",
+    //       url: "/api/webapi/search",
+    //       data: {
+    //         phone: value,
+    //       },
+    //       dataType: "json",
+    //       success: function (response) {
+    //         if (response.status === true) return Render(response.datas);
+    //       }
+    //     });
+    //   }
+    // });
 
     $('#next').click(function (e) {
       pageno += limit;
