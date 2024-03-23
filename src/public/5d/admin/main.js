@@ -169,11 +169,11 @@ function messNewJoin(data) {
     if (data.change == 1) return;
     if (data.game != game) return;
 
-    let bet = data.join; // tham gia game ví dụ a b c d e tổng
+    let bet = "( " + data.join.toUpperCase() + " )"; // tham gia game ví dụ a b c d e tổng
     let list_join = data.list_join.split(''); // là người dùng tham gia đặt cược
     let list_join2 = data.list_join; // là người dùng tham gia đặt cược
     let x = data.x; // là người dùng tham gia đặt cược
-
+    console.log('adadabsbdfb',data);
     let total_money = (Number(data.money) * Number(x)) * list_join.length;
     let money = formatMoney(total_money, ',');
     let result = '';
@@ -183,7 +183,7 @@ function messNewJoin(data) {
         </div>
         <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
         <div class="direct-chat-text" style="background-color: #1eb93d">
-        User: ${data.phone} -> Tham gia ${(isNumber(list_join2)) ? "( " + list_join2 + " )" : (list_join2 == 'b') ? 'Lớn' : (list_join2 == 's') ? 'Nhỏ' : (list_join2 == 'c') ? 'Chẵn' : 'Lẻ'} ${money} / Còn lại: ${formatMoney(data.conlai)}
+        User: ${data.phone} -> Tham gia ${bet} ${(isNumber(list_join2))   ? "( " + list_join2 + ' )' : (list_join2 == 'b') ? ' ( Lớn )' : (list_join2 == 's') ? '( Nhỏ )' : (list_join2 == 'c') ? '( Chẵn )' : '( Lẻ )' }  ${money} / Còn lại: ${formatMoney(data.conlai)}
         </div>
         `;
     $('.direct-chat-msg').append(result);

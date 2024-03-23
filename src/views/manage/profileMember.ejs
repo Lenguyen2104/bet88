@@ -756,13 +756,16 @@
                 `);
             return;
         }
+
         let html = "";
         datas.map((data) => {
+            console.log('adada',datas)
             html += `
                 <tr class="text-center" style="">
                     <td style="color: #e74c3c;font-weight: 600;min-width: 210px">${data.stage}</td>
                     <td><b style="color: #3498db">${data.status == 1 ? "+" : "-"} ${formatMoney(data.money)}</b></td>
-                    <td style="min-width: 210px;"><b>${data.game} phút</b></td>
+                    <td style="min-width: 100px;"><b>${data.game} phút</b></td>
+                    <td style="color: #e74c3c;font-weight: 600;">${data.join_bet.toUpperCase()}</td>
                     <td class="project-state"><span class="badge badge-${data.status == "1" ? "success" : "danger"}">${
                 data.status == "1" ? "win" : "loss"
             }</span></td>
