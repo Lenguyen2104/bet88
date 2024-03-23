@@ -89,7 +89,6 @@ function showListOrder3(list_orders, x) {
         "color",
         "#fff"
       );
-  
       $(".game-list .con-box:eq(1) .page-nav .arr:eq(0)").addClass("block-click");
       $(".game-list .con-box:eq(1) .page-nav .arr:eq(0)").removeClass("action");
       $(".game-list .con-box:eq(1) .page-nav .van-icon-arrow-left").css(
@@ -104,6 +103,21 @@ function showListOrder3(list_orders, x) {
         "color",
         "#fff"
       );
+
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").addClass("block-click");
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").removeClass("action");
+      $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-left").css(
+          "color",
+          "#7f7f7f"
+      );
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").removeClass(
+          "block-click"
+      );
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").addClass("action");
+      $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-right").css(
+          "color",
+          "#fff"
+      );
       $.ajax({
         type: "POST",
         url: "/api/webapi/GetMyEmerdList",
@@ -116,10 +130,30 @@ function showListOrder3(list_orders, x) {
         dataType: "json",
         success: function (response) {
           let data = response.data.gameslist;
-          $(".game-list .con-box:eq(1) .page-nav .number").text(
-            "1/" + `${(response.page) ? response.page : '1'}`
+          $(".game-list .con-box:eq(2) .page-nav .number").text(
+              "1/" + response.page
           );
-          showListOrder2(data, 1);
+          showListOrder2(data , 2)
+        },
+      });
+      $.ajax({
+        type: "POST",
+        url: "/api/webapi/GetNoaverageEmerdList",
+        data: {
+          typeid: "5",
+          pageno: "0",
+          pageto: "10",
+          language: "vi",
+        },
+        dataType: "json",
+        success: function (response) {
+          let data = response.data.gameslist;
+          $(".game-list .con-box:eq(1) .page-nav .number").text(
+              "1/" + response.page
+          );
+          ShowListBD(data, 1).then((e) => {
+            renderLines();
+          });
         },
       });
       $.ajax({
@@ -159,36 +193,30 @@ function showListOrder3(list_orders, x) {
   //         name: 'Longdz',
   //     });
   // });
-  
   var audio1 = new Audio("/audio/di1.da40b233.mp3");
   var audio2 = new Audio("/audio/di2.317de251.mp3");
-  
   var clicked = false;
-  
   function openAudio() {
     audio1.muted = true;
     audio1.play();
     audio2.muted = true;
     audio2.play();
   }
-  
   $("body").click(function (e) {
     e.preventDefault();
     if (clicked) return;
     openAudio();
     clicked = true;
   });
-  
   function playAudio1() {
     audio1.muted = false;
     audio1.play();
   }
-  
   function playAudio2() {
     audio2.muted = false;
     audio2.play();
   }
-  
+
   fetch("/api/webapi/GetUserInfo")
     .then((response) => response.json())
     .then((data) => {
@@ -231,7 +259,7 @@ function showListOrder3(list_orders, x) {
     $(".amount-box").attr("data-money", "1000");
     $(".foot .right span:eq(1)").text(1000 + ".00 ₫");
   });
-  
+
   function xlad(x, color) {
     $(".multiple-box .li").css({
       "background-color": "rgb(240, 240, 240)",
@@ -242,7 +270,7 @@ function showListOrder3(list_orders, x) {
       color: "rgb(255, 255, 255)",
     });
   }
-  
+
   function selectX(x, color) {
     switch (String(x)) {
       case "1":
@@ -271,7 +299,7 @@ function showListOrder3(list_orders, x) {
         break;
     }
   }
-  
+
   $(".stepper-box .plus").click(function (e) {
     e.preventDefault();
     let color = $(".foot .right").attr("style").split(":");
@@ -293,7 +321,7 @@ function showListOrder3(list_orders, x) {
     $(".stepper-box .digit-box input").val(value);
     totalMoney();
   });
-  
+
   $(".stepper-box .digit-box input").on("input", function () {
     let value = $(this).val();
     let color = $(".foot .right").attr("style").split(":");
@@ -314,7 +342,7 @@ function showListOrder3(list_orders, x) {
     selectX(value, color);
     totalMoney();
   });
-  
+
   $(".stepper-box .minus").click(function (e) {
     e.preventDefault();
     let color = $(".foot .right").attr("style").split(":");
@@ -332,11 +360,11 @@ function showListOrder3(list_orders, x) {
     $(".stepper-box .digit-box input").val(value);
     totalMoney();
   });
-  
+
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
-  
+
   function selectCss(color, bg, text) {
     $(".betting-mark").attr("class", "betting-mark");
     $(".color").css("color", bg);
@@ -347,7 +375,7 @@ function showListOrder3(list_orders, x) {
     $(".multiple-box .li:eq(0)").css("background-color", bg);
     $(".foot .right").css("background-color", bg);
   }
-  
+
   function totalMoney() {
     let value = $(".stepper-box .digit-box input").val().trim();
     let money = $(".amount-box").attr("data-money");
@@ -411,9 +439,9 @@ function showListOrder3(list_orders, x) {
           </div>
       </div>
       `);
-        
+
     });
-    
+
     $(`.game-list .con-box:eq(${x}) .hb`).html(htmls);
 }
 
@@ -456,7 +484,7 @@ $(document).on('click', '.tab', (e) => {
         })
     }, 10);
 }
-  
+
   function alertBox(join, addText) {
     $(".foot .right").attr("data-join", join);
     switch (join) {
@@ -508,12 +536,12 @@ $(document).on('click', '.tab', (e) => {
       });
     }
   }
-  
+
   $(".popup-join .info .txt").click(function (e) {
     e.preventDefault();
     $(".popup-qt").fadeIn();
   });
-  
+
   $(".betting-mark .amount-box .li").click(function (e) {
     e.preventDefault();
     let color = $(".foot .right").attr("style").split(":");
@@ -522,7 +550,7 @@ $(document).on('click', '.tab', (e) => {
       "background-color": "rgb(240, 240, 240)",
       color: "rgb(0, 0, 0)",
     });
-  
+
     $(this).css({
       "background-color": `${color}`,
       color: "rgb(255, 255, 255)",
@@ -558,12 +586,12 @@ $(document).on('click', '.tab', (e) => {
     $(".stepper-box .digit-box input").val(x);
     totalMoney();
   });
-  
+
   $(".popup-qt .van-button").click(function (e) {
     e.preventDefault();
     $(".popup-qt").fadeOut();
   });
-  
+
   $(".con-box button").click(function (e) {
     e.preventDefault();
     let addTop = $(this).attr("data-join"); // xanh - do - tim (x - d - t)
@@ -582,14 +610,14 @@ $(document).on('click', '.tab', (e) => {
     let addText = $(this).text(); // xanh - do - tim
     alertBox(addTop, addText);
   });
-  
+
   $(".random-box .c-row .item").click(function (e) {
     e.preventDefault();
     $(".random-box .c-row .item").css({
       "background-color": "rgb(240, 240, 240)",
       color: "rgb(0, 0, 0)",
     });
-  
+
     $(this).css({
       "background-color": "rgb(92, 186, 71)",
       color: "rgb(255, 255, 255)",
@@ -597,7 +625,7 @@ $(document).on('click', '.tab', (e) => {
     $(".random-box .c-row .item").removeClass("active");
     $(this).addClass("active");
   });
-  
+
   $(".random").click(async function (e) {
     e.preventDefault();
     let random = 0;
@@ -620,6 +648,8 @@ $(document).on('click', '.tab', (e) => {
     $(".game-list .li").removeClass("block-click");
     $(this).addClass("block-click");
     $(".game-list .con-box:eq(0)").css("display", "block");
+    page = 1;
+    pageno = 0;
     $.ajax({
       type: "POST",
       url: "/api/webapi/GetNoaverageEmerdList",
@@ -635,7 +665,7 @@ $(document).on('click', '.tab', (e) => {
         $(".time-box .info .number").text(response.period);
         $(".page-nav .number").text("1/" + response.page);
         $(".game-list .con-box:eq(0) .page-nav .number").text(
-          "1/" + response.page
+            page + "/" + `${(response.page) ? response.page : '1'}`
         );
         showListOrder(list_orders, 0);
       },
@@ -649,6 +679,8 @@ $(document).on('click', '.tab', (e) => {
     $(".game-list .li").removeClass("block-click");
     $(this).addClass("block-click");
     $(".game-list .con-box:eq(2)").css("display", "block");
+    page = 1;
+    pageno = 0;
     $.ajax({
       type: "POST",
       url: "/api/webapi/GetMyEmerdList",
@@ -662,7 +694,7 @@ $(document).on('click', '.tab', (e) => {
       success: function (response) {
         let data = response.data.gameslist;
         $(".game-list .con-box:eq(2) .page-nav .number").text(
-          "1/" + `${(response.page) ? response.page : '1'}`
+            page + "/" + `${(response.page) ? response.page : '1'}`
         );
         showListOrder2(data, 2);
       },
@@ -692,6 +724,8 @@ $(document).on('click', '.tab', (e) => {
     $(".game-list .li").removeClass("block-click");
     $(this).addClass("block-click");
     $(".game-list .con-box:eq(1)").css("display", "block");
+    page = 1;
+    pageno = 0;
     $.ajax({
       type: "POST",
       url: "/api/webapi/GetNoaverageEmerdList",
@@ -706,15 +740,15 @@ $(document).on('click', '.tab', (e) => {
         let list_orders = response.data.gameslist;
         $(".time-box .info .number").text(response.period);
         $(".game-list .con-box:eq(1) .page-nav .number").text(
-          "1/" + response.page
+            page + "/" + `${(response.page) ? response.page : '1'}`
         );
         ShowListBD(list_orders, 1).then((e) => {
           renderLines();
-      });   
+      });
     },
   });
   });
-  
+
   function alertMessJoin(msg) {
     $("body").append(
       `
@@ -758,7 +792,7 @@ $(document).on('click', '.tab', (e) => {
         socket.emit('data-server_2', { money: x * money, join, phone: response.phone, time: Date.now(), change: response.change, conlai: response.money, ctv: response.ctv });
       },
     });
-  
+
     setTimeout(() => {
       $(".van-overlay").fadeOut();
       $(".popup-join").css("transform", "translateY(600px)");
@@ -776,7 +810,7 @@ $(document).on('click', '.tab', (e) => {
       $(".foot .right").removeClass("block-click");
     }, 500);
   });
-  
+
   function showListOrder(list_orders, x) {
     if (list_orders.length == 0) {
       return $(`.game-list .con-box:eq(${x}) .hb`).html(
@@ -837,12 +871,12 @@ $(document).on('click', '.tab', (e) => {
     });
     $(`.game-list .con-box:eq(${x}) .hb`).html(htmls);
   }
-  
+
   const isNumber = (params) => {
     let pattern = /^[0-9]*\d$/;
     return pattern.test(params);
   };
-  
+
   function showListOrder2(list_orders, x) {
     if (list_orders.length == 0) {
       return $(`.game-list .con-box:eq(${x}) #history-order`).html(
@@ -1076,12 +1110,12 @@ $(document).on('click', '.tab', (e) => {
       showListOrder(list_orders, 0);
     },
   });
-  
+
   function formateT(params) {
     let result = params < 10 ? "0" + params : params;
     return result;
   }
-  
+
   function timerJoin(params = "") {
     let date = "";
     if (params) {
@@ -1092,7 +1126,7 @@ $(document).on('click', '.tab', (e) => {
     let years = formateT(date.getFullYear());
     let months = formateT(date.getMonth() + 1);
     let days = formateT(date.getDate());
-  
+
     let hours = formateT(date.getHours());
     let minutes = formateT(date.getMinutes());
     let seconds = formateT(date.getSeconds());
@@ -1110,7 +1144,7 @@ $(document).on('click', '.tab', (e) => {
       seconds
     );
   }
-  
+
   $.ajax({
     type: "POST",
     url: "/api/webapi/GetMyEmerdList",
@@ -1123,14 +1157,34 @@ $(document).on('click', '.tab', (e) => {
     dataType: "json",
     success: function (response) {
       let data = response.data.gameslist;
-      $(".game-list .con-box:eq(1) .page-nav .number").text("1/" + `${(response.page) ? response.page : '1'}`);
-      showListOrder2(data, 1);
+      $(".game-list .con-box:eq(2) .page-nav .number").text("1/" + response.page);
+      showListOrder2(data, 2);
     },
   });
-  
-  var pageno = 0;
-  var limit = 10;
-  var page = 1;
+
+$.ajax({
+  type: "POST",
+  url: "/api/webapi/GetNoaverageEmerdList",
+  data: {
+    typeid: "5",
+    pageno: "0",
+    pageto: "10",
+    language: "vi",
+  },
+  dataType: "json",
+  success: function (response) {
+    let data = response.data.gameslist;
+    $(".game-list .con-box:eq(1) .page-nav .number").text("1/" + response.page);
+    ShowListBD(data, 1).then((e) => {
+      renderLines();
+    });
+  },
+});
+
+
+var pageno = 0;
+var limit = 10;
+var page = 1;
   $(".game-list .con-box:eq(0) .page-nav .arr:eq(1)").click(function (e) {
     e.preventDefault();
     pageno += 10;
@@ -1239,7 +1293,7 @@ $(document).on('click', '.tab', (e) => {
       },
     });
   });
-  
+
   var pageno = 0;
   var limit = 10;
   var page = 1;
@@ -1249,7 +1303,7 @@ $(document).on('click', '.tab', (e) => {
     let pageto = limit;
     $.ajax({
       type: "POST",
-      url: "/api/webapi/GetMyEmerdList",
+      url: "/api/webapi/GetNoaverageEmerdList",
       data: {
         typeid: "5",
         pageno: pageno,
@@ -1284,11 +1338,13 @@ $(document).on('click', '.tab', (e) => {
         page += 1;
         console.log(page);
         $(".game-list .con-box:eq(1) .page-nav .number").text(
-          "1/" + `${(response.page) ? response.page : '1'}`
+            page +  "/" + response.page
         );
         let list_orders = response.data.gameslist;
         $(".time-box .info .number").text(response.period);
-        showListOrder2(list_orders, 1);
+        ShowListBD(list_orders, 1).then((e) => {
+          renderLines();
+        });
       },
     });
     setTimeout(() => {
@@ -1322,7 +1378,7 @@ $(document).on('click', '.tab', (e) => {
     let pageto = limit;
     $.ajax({
       type: "POST",
-      url: "/api/webapi/GetMyEmerdList",
+      url: "/api/webapi/GetNoaverageEmerdList",
       data: {
         typeid: "5",
         pageno: pageno,
@@ -1360,32 +1416,158 @@ $(document).on('click', '.tab', (e) => {
         }
         page -= 1;
         $(".game-list .con-box:eq(1) .page-nav .number").text(
-          "1/" + `${(response.page) ? response.page : '1'}`
+            page + "/" + response.page
         );
         let list_orders = response.data.gameslist;
         $(".time-box .info .number").text(response.period);
-        showListOrder2(list_orders, 1);
+        ShowListBD(list_orders, 1).then((e) => {
+          renderLines();
+        });
       },
     });
-    setTimeout(() => {
-      let check = true;
-      $("#history-order .item").click(function (e) {
-        e.preventDefault();
-        let parent = $(this).parent();
-        // let show = parent.children();
-        let myVar = parent.find(".details");
-        if (check) {
-          check = false;
-          myVar.fadeIn(0);
-        } else {
-          check = true;
-          myVar.fadeOut(0);
-        }
-      });
-    }, 1000);
   });
-  
-  window.onload = function() {
+$(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").click(function (e) {
+  e.preventDefault();
+  pageno += 10;
+  let pageto = limit;
+  $.ajax({
+    type: "POST",
+    url: "/api/webapi/GetMyEmerdList",
+    data: {
+      typeid: "5",
+      pageno: pageno,
+      pageto: pageto,
+      language: "vi",
+    },
+    dataType: "json",
+    success: function (response) {
+      if (response.status === false) {
+        pageno -= 10;
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").addClass(
+            "block-click"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").removeClass(
+            "action"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-right").css(
+            "color",
+            "#7f7f7f"
+        );
+        alertMessJoin(response.msg);
+        return false;
+      }
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").removeClass(
+          "block-click"
+      );
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").addClass("action");
+      $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-left").css(
+          "color",
+          "#fff"
+      );
+      page += 1;
+      $(".game-list .con-box:eq(2) .page-nav .number").text(
+          page +  "/" + `${(response.page)}`
+      );
+      let list_orders = response.data.gameslist;
+      $(".time-box .info .number").text(response.period);
+      showListOrder2(list_orders, 2)
+    },
+  });
+  setTimeout(() => {
+    let check = true;
+    $("#history-order .item").click(function (e) {
+      e.preventDefault();
+      let parent = $(this).parent();
+      // let show = parent.children();
+      let myVar = parent.find(".details");
+      if (check) {
+        check = false;
+        myVar.fadeIn(0);
+      } else {
+        check = true;
+        myVar.fadeOut(0);
+      }
+    });
+  }, 1000);
+});
+$(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").click(function (e) {
+  e.preventDefault();
+  $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").removeClass(
+      "block-click"
+  );
+  $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").addClass("action");
+  $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-right").css(
+      "color",
+      "#fff"
+  );
+  pageno -= 10;
+  let pageto = limit;
+  $.ajax({
+    type: "POST",
+    url: "/api/webapi/GetMyEmerdList",
+    data: {
+      typeid: "5",
+      pageno: pageno,
+      pageto: pageto,
+      language: "vi",
+    },
+    dataType: "json",
+    success: function (response) {
+      if (page - 1 <= 1) {
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").addClass(
+            "block-click"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").removeClass(
+            "action"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-left").css(
+            "color",
+            "#7f7f7f"
+        );
+      }
+      if (response.status === false) {
+        pageno = 0;
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").addClass(
+            "block-click"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").removeClass(
+            "action"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-left").css(
+            "color",
+            "#7f7f7f"
+        );
+        alertMessJoin(response.msg);
+        return false;
+      }
+      page -= 1;
+      $(".game-list .con-box:eq(2) .page-nav .number").text(
+          page + "/" + `${(response.page)}`
+      );
+      let list_orders = response.data.gameslist;
+      $(".time-box .info .number").text(response.period);
+      showListOrder2(list_orders, 2)
+    },
+  });
+  setTimeout(() => {
+    let check = true;
+    $("#history-order .item").click(function (e) {
+      e.preventDefault();
+      let parent = $(this).parent();
+      // let show = parent.children();
+      let myVar = parent.find(".details");
+      if (check) {
+        check = false;
+        myVar.fadeIn(0);
+      } else {
+        check = true;
+        myVar.fadeOut(0);
+      }
+    });
+  }, 1000);
+});
+
+window.onload = function() {
     function cownDownTimer() {
       var countDownDate = new Date("2030-07-16T23:59:59.9999999+01:00").getTime();
       setInterval(function() {
@@ -1440,7 +1622,7 @@ $(document).on('click', '.tab', (e) => {
           $(".stepper-box .digit-box input").val(1);
           $(".amount-box").attr("data-money", "1000");
           $(".foot .right span:eq(1)").text(1000 + ".00 ₫");
-  
+
           $(".box .mark-box ").css("display", "flex");
           $(".box .mark-box .item:eq(0)").text(seconds1);
           $(".box .mark-box .item:eq(1)").text(seconds2);
@@ -1449,7 +1631,7 @@ $(document).on('click', '.tab', (e) => {
         }
       }, 0);
     }
-  
+
     cownDownTimer();
     setTimeout(() => {
       let check = true;

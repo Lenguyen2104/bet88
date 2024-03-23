@@ -104,6 +104,21 @@ function showListOrder3(list_orders, x) {
         "color",
         "#fff"
       );
+
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").addClass("block-click");
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").removeClass("action");
+      $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-left").css(
+          "color",
+          "#7f7f7f"
+      );
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").removeClass(
+          "block-click"
+      );
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").addClass("action");
+      $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-right").css(
+          "color",
+          "#fff"
+      );
       $.ajax({
         type: "POST",
         url: "/api/webapi/GetMyEmerdList",
@@ -116,10 +131,30 @@ function showListOrder3(list_orders, x) {
         dataType: "json",
         success: function (response) {
           let data = response.data.gameslist;
-          $(".game-list .con-box:eq(1) .page-nav .number").text(
-            "1/" + `${(response.page) ? response.page : '1'}`
+          $(".game-list .con-box:eq(2) .page-nav .number").text(
+              "1/" + response.page
           );
-          showListOrder2(data, 1);
+          showListOrder2(data , 2)
+        },
+      });
+      $.ajax({
+        type: "POST",
+        url: "/api/webapi/GetNoaverageEmerdList",
+        data: {
+          typeid: "10",
+          pageno: "0",
+          pageto: "10",
+          language: "vi",
+        },
+        dataType: "json",
+        success: function (response) {
+          let data = response.data.gameslist;
+          $(".game-list .con-box:eq(1) .page-nav .number").text(
+              "1/" + response.page
+          );
+          ShowListBD(data, 1).then((e) => {
+            renderLines();
+          });
         },
       });
       $.ajax({
@@ -622,6 +657,8 @@ $(document).on('click', '.tab', (e) => {
     $(".game-list .li").removeClass("block-click");
     $(this).addClass("block-click");
     $(".game-list .con-box:eq(0)").css("display", "block");
+    page = 1;
+    pageno = 0;
     $.ajax({
       type: "POST",
       url: "/api/webapi/GetNoaverageEmerdList",
@@ -637,7 +674,7 @@ $(document).on('click', '.tab', (e) => {
         $(".time-box .info .number").text(response.period);
         $(".page-nav .number").text("1/" + response.page);
         $(".game-list .con-box:eq(0) .page-nav .number").text(
-          "1/" + response.page
+            page + "/" + `${(response.page) ? response.page : '1'}`
         );
         showListOrder(list_orders, 0);
       },
@@ -651,6 +688,8 @@ $(document).on('click', '.tab', (e) => {
     $(".game-list .li").removeClass("block-click");
     $(this).addClass("block-click");
     $(".game-list .con-box:eq(2)").css("display", "block");
+    page = 1;
+    pageno = 0;
     $.ajax({
       type: "POST",
       url: "/api/webapi/GetMyEmerdList",
@@ -664,7 +703,7 @@ $(document).on('click', '.tab', (e) => {
       success: function (response) {
         let data = response.data.gameslist;
         $(".game-list .con-box:eq(2) .page-nav .number").text(
-          "1/" + `${(response.page) ? response.page : '1'}`
+            page + "/" + `${(response.page) ? response.page : '1'}`
         );
         showListOrder2(data, 2);
       },
@@ -695,6 +734,8 @@ $(document).on('click', '.tab', (e) => {
     $(".game-list .li").removeClass("block-click");
     $(this).addClass("block-click");
     $(".game-list .con-box:eq(1)").css("display", "block");
+    page = 1;
+    pageno = 0;
     $.ajax({
       type: "POST",
       url: "/api/webapi/GetNoaverageEmerdList",
@@ -709,7 +750,7 @@ $(document).on('click', '.tab', (e) => {
         let list_orders = response.data.gameslist;
         $(".time-box .info .number").text(response.period);
         $(".game-list .con-box:eq(1) .page-nav .number").text(
-          "1/" + response.page
+            page + "/" + `${(response.page) ? response.page : '1'}`
         );
         ShowListBD(list_orders, 1).then((e) => {
           renderLines();
@@ -1126,10 +1167,29 @@ $(document).on('click', '.tab', (e) => {
     dataType: "json",
     success: function (response) {
       let data = response.data.gameslist;
-      $(".game-list .con-box:eq(1) .page-nav .number").text("1/" + `${(response.page) ? response.page : '1'}`);
-      showListOrder2(data, 1);
+      $(".game-list .con-box:eq(2) .page-nav .number").text("1/" + response.page);
+      showListOrder2(data, 2);
     },
   });
+
+$.ajax({
+  type: "POST",
+  url: "/api/webapi/GetNoaverageEmerdList",
+  data: {
+    typeid: "10",
+    pageno: "0",
+    pageto: "10",
+    language: "vi",
+  },
+  dataType: "json",
+  success: function (response) {
+    let data = response.data.gameslist;
+    $(".game-list .con-box:eq(1) .page-nav .number").text("1/" + response.page);
+    ShowListBD(data, 1).then((e) => {
+      renderLines();
+    });
+  },
+});
   
   var pageno = 0;
   var limit = 10;
@@ -1252,7 +1312,7 @@ $(document).on('click', '.tab', (e) => {
     let pageto = limit;
     $.ajax({
       type: "POST",
-      url: "/api/webapi/GetMyEmerdList",
+      url: "/api/webapi/GetNoaverageEmerdList",
       data: {
         typeid: "10",
         pageno: pageno,
@@ -1287,11 +1347,13 @@ $(document).on('click', '.tab', (e) => {
         page += 1;
         console.log(page);
         $(".game-list .con-box:eq(1) .page-nav .number").text(
-          "1/" + `${(response.page) ? response.page : '1'}`
+            page +  "/" + response.page
         );
         let list_orders = response.data.gameslist;
         $(".time-box .info .number").text(response.period);
-        showListOrder2(list_orders, 1);
+        ShowListBD(list_orders, 1).then((e) => {
+          renderLines();
+        });
       },
     });
     setTimeout(() => {
@@ -1325,7 +1387,7 @@ $(document).on('click', '.tab', (e) => {
     let pageto = limit;
     $.ajax({
       type: "POST",
-      url: "/api/webapi/GetMyEmerdList",
+      url: "/api/webapi/GetNoaverageEmerdList",
       data: {
         typeid: "10",
         pageno: pageno,
@@ -1363,31 +1425,156 @@ $(document).on('click', '.tab', (e) => {
         }
         page -= 1;
         $(".game-list .con-box:eq(1) .page-nav .number").text(
-          "1/" + `${(response.page) ? response.page : '1'}`
+            page + "/" + response.page
         );
         let list_orders = response.data.gameslist;
         $(".time-box .info .number").text(response.period);
-        showListOrder2(list_orders, 1);
+        ShowListBD(list_orders, 1).then((e) => {
+          renderLines();
+        });
       },
     });
-    setTimeout(() => {
-      let check = true;
-      $("#history-order .item").click(function (e) {
-        e.preventDefault();
-        let parent = $(this).parent();
-        // let show = parent.children();
-        let myVar = parent.find(".details");
-        if (check) {
-          check = false;
-          myVar.fadeIn(0);
-        } else {
-          check = true;
-          myVar.fadeOut(0);
-        }
-      });
-    }, 1000);
   });
-  
+$(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").click(function (e) {
+  e.preventDefault();
+  pageno += 10;
+  let pageto = limit;
+  $.ajax({
+    type: "POST",
+    url: "/api/webapi/GetMyEmerdList",
+    data: {
+      typeid: "10",
+      pageno: pageno,
+      pageto: pageto,
+      language: "vi",
+    },
+    dataType: "json",
+    success: function (response) {
+      if (response.status === false) {
+        pageno -= 10;
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").addClass(
+            "block-click"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").removeClass(
+            "action"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-right").css(
+            "color",
+            "#7f7f7f"
+        );
+        alertMessJoin(response.msg);
+        return false;
+      }
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").removeClass(
+          "block-click"
+      );
+      $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").addClass("action");
+      $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-left").css(
+          "color",
+          "#fff"
+      );
+      page += 1;
+      $(".game-list .con-box:eq(2) .page-nav .number").text(
+          page +  "/" + `${(response.page)}`
+      );
+      let list_orders = response.data.gameslist;
+      $(".time-box .info .number").text(response.period);
+      showListOrder2(list_orders, 2)
+    },
+  });
+  setTimeout(() => {
+    let check = true;
+    $("#history-order .item").click(function (e) {
+      e.preventDefault();
+      let parent = $(this).parent();
+      // let show = parent.children();
+      let myVar = parent.find(".details");
+      if (check) {
+        check = false;
+        myVar.fadeIn(0);
+      } else {
+        check = true;
+        myVar.fadeOut(0);
+      }
+    });
+  }, 1000);
+});
+$(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").click(function (e) {
+  e.preventDefault();
+  $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").removeClass(
+      "block-click"
+  );
+  $(".game-list .con-box:eq(2) .page-nav .arr:eq(1)").addClass("action");
+  $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-right").css(
+      "color",
+      "#fff"
+  );
+  pageno -= 10;
+  let pageto = limit;
+  $.ajax({
+    type: "POST",
+    url: "/api/webapi/GetMyEmerdList",
+    data: {
+      typeid: "10",
+      pageno: pageno,
+      pageto: pageto,
+      language: "vi",
+    },
+    dataType: "json",
+    success: function (response) {
+      if (page - 1 <= 1) {
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").addClass(
+            "block-click"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").removeClass(
+            "action"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-left").css(
+            "color",
+            "#7f7f7f"
+        );
+      }
+      if (response.status === false) {
+        pageno = 0;
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").addClass(
+            "block-click"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .arr:eq(0)").removeClass(
+            "action"
+        );
+        $(".game-list .con-box:eq(2) .page-nav .van-icon-arrow-left").css(
+            "color",
+            "#7f7f7f"
+        );
+        alertMessJoin(response.msg);
+        return false;
+      }
+      page -= 1;
+      $(".game-list .con-box:eq(2) .page-nav .number").text(
+          page + "/" + `${(response.page)}`
+      );
+      let list_orders = response.data.gameslist;
+      $(".time-box .info .number").text(response.period);
+      showListOrder2(list_orders, 2)
+    },
+  });
+  setTimeout(() => {
+    let check = true;
+    $("#history-order .item").click(function (e) {
+      e.preventDefault();
+      let parent = $(this).parent();
+      // let show = parent.children();
+      let myVar = parent.find(".details");
+      if (check) {
+        check = false;
+        myVar.fadeIn(0);
+      } else {
+        check = true;
+        myVar.fadeOut(0);
+      }
+    });
+  }, 1000);
+});
   window.onload = function() {
     function cownDownTimer() {
       var countDownDate = new Date("2030-07-16T23:59:59.9999999+01:00").getTime();
