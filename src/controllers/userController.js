@@ -535,7 +535,7 @@ const promotion = async (req, res) => {
   );
 
   const [rechargeLowerGrade] = await connection.query(
-    "SELECT * FROM `recharge` ORDER BY `recharge`.`today` ASC"
+    "SELECT * FROM `recharge` WHERE `status` = 1 ORDER BY `recharge`.`today` ASC "
   );
 
   // console.log(">>>>rechargeLowerGrade:", rechargeLowerGrade);
