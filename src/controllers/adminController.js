@@ -658,10 +658,9 @@ const rechargeDuyet = async(req, res) => {
             await connection.query(`UPDATE users SET money = money + ?, total_money = total_money + ?, roses_today = roses_today + ?, roses_f = roses_f + ? WHERE phone = ? `, [hoahong, hoahong, hoahong, hoahong, ctv[0]?.phone]);
             let sql = 'INSERT INTO `roses` SET `phone` = ?, `f1` = ?, `code` = ?, `invite` = ?, `time` = ?, `chitiet` = ?';
             await connection.query(sql, [info[0].phone, hoahong, invite[0].code, ctv[0].code, time, 'Nạp Tiền']);
-            await connection.query(`UPDATE users SET napdau = 1, tongcuoc = tongcuoc + ? WHERE phone = ?`, [ Number(info[0].money), info[0].phone ]);
-
-
+            await connection.query(`UPDATE users SET napdau = 1 WHERE phone = ?`, [ info[0].phone ]);
         }
+        await connection.query(`UPDATE users SET tongcuoc = tongcuoc + ? WHERE phone = ?`, [ Number(info[0].money), info[0].phone ]);
         return res.status(200).json({
             message: 'Xác nhận đơn thành công',
             status: true,
