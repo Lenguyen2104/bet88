@@ -137,7 +137,7 @@ const register = async(req, res) => {
             });
         } else {
             if (check_i.length == 1) {
-                if (check_ip.length <= 100) {
+                // if (check_ip.length <= 100) {
                     let ctv = '';
                     if (check_i[0].level == 2) {
                         ctv = check_i[0].phone;
@@ -151,12 +151,12 @@ const register = async(req, res) => {
                         message: 'Register Sucess',
                         status: true
                     });
-                } else {
-                    return res.status(200).json({
-                        message: 'Địa chỉ IP đã được đăng ký',
-                        status: false
-                    });
-                }
+                // } else {
+                //     return res.status(200).json({
+                //         message: 'Địa chỉ IP đã được đăng ký',
+                //         status: false
+                //     });
+                // }
             } else {
                 return res.status(200).json({
                     message: 'Mã người giới thiệu không tồn tại',
