@@ -1801,7 +1801,7 @@ const withdrawal3 = async (req, res) => {
     betbet: leftAmount
   };
 
-  if(userInfo.tongcuoc < money || leftAmount !== 0) {
+  if(leftAmount !== 0) {
     return res.status(200).json({
       message: "Tổng tiền cược chưa đủ để thực hiện yêu cầu",
       status: false,
