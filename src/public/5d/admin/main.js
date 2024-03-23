@@ -169,11 +169,16 @@ function messNewJoin(data) {
     if (data.change == 1) return;
     if (data.game != game) return;
 
-    let bet = "( " + data.join.toUpperCase() + " )"; // tham gia game ví dụ a b c d e tổng
+    let bet = "";
+    console.log(data.join, "TONG NE");
+    if (data.join == ('total')) {
+        bet = "( Tổng )";
+    } else {
+        bet = "( " + data.join.toUpperCase() + " )"; // tham gia game ví dụ a b c d e tổng
+    }
     let list_join = data.list_join.split(''); // là người dùng tham gia đặt cược
     let list_join2 = data.list_join; // là người dùng tham gia đặt cược
     let x = data.x; // là người dùng tham gia đặt cược
-    console.log('adadabsbdfb',data);
     let total_money = (Number(data.money) * Number(x)) * list_join.length;
     let money = formatMoney(total_money, ',');
     let result = '';
