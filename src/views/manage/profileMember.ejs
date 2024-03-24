@@ -765,11 +765,13 @@
                     <td style="color: #e74c3c;font-weight: 600;min-width: 210px">${data.stage}</td>
                     <td><b style="color: #3498db">${data.status == 1 ? "+" : "-"} ${formatMoney(data.money)}</b></td>
                     <td style="min-width: 100px;"><b>${data.game} phút</b></td>
-                    <td style="color: #e74c3c;font-weight: 600;">${data.join_bet.toUpperCase()}</td>
+                    <td style="color: #e74c3c;font-weight: 600;">${data.join_bet.toUpperCase() === 'TOTAL' ? 'Tổng' : data.join_bet.toUpperCase() }</td>
                     <td class="project-state"><span class="badge badge-${data.status == "1" ? "success" : "danger"}">${
                 data.status == "1" ? "win" : "loss"
             }</span></td>
-                    <td> ${data.bet}</td>
+                    <td> ${data.bet === 'b' ? 'Lớn': data.bet === 's' ? 'Nhỏ' :
+                    data.bet === 'c' ? 'Chẵn' :
+                        'Lẻ'}</td>
                     <td>${data.result}</td>
                     <!--<td style="min-width: 210px;"><b>${data.today}</b></td>-->
                     <td>${new Date(parseInt(data.time)).toLocaleString()}</td>
