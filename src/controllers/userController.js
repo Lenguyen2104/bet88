@@ -1818,7 +1818,7 @@ const withdrawal3 = async (req, res) => {
     [userInfo.phone]
   );
   if (user_bank.length != 0) {
-    //if (withdraw.length < 3) {
+    if (withdraw.length < 3) {
     if (userInfo.money - money >= 0) {
       if (result == 0) {
         let infoBank = user_bank[0];
@@ -1867,13 +1867,13 @@ const withdrawal3 = async (req, res) => {
         timeStamp: timeNow,
       });
     }
-    //} else {
-    //    return res.status(200).json({
-    //        message: 'Mỗi ngày bạn chỉ được thực hiện 3 lần rút tiền',
-    //        status: false,
-    //        timeStamp: timeNow,
-    //    });
-    //}
+    } else {
+       return res.status(200).json({
+           message: 'Mỗi ngày bạn chỉ được thực hiện 3 lần rút tiền',
+           status: false,
+           timeStamp: timeNow,
+       });
+    }
   } else {
     return res.status(200).json({
       message: "Vui lòng liên kết ngân hàng trước",

@@ -6893,7 +6893,7 @@
                       <div class="van-field__body">
                         <input
                           type="tel"
-                          value="100000"
+                          value="50000"
                           inputmode="numeric"
                           oninput="value=value.replace(/\D/g,'')"
                           placeholder="Vui lòng nhập số tiền"
@@ -6907,8 +6907,8 @@
                   data-v-67caa467=""
                   class="list m-t-10 c-row c-row-between c-flex-warp"
                 >
-                  <div data-v-67caa467="" data-money="100000" class="li action">
-                    <span data-v-67caa467="" class="number">100k</span>
+                  <div data-v-67caa467="" data-money="50000" class="li action">
+                    <span data-v-67caa467="" class="number">50k</span>
                   </div>
                   <div data-v-67caa467="" data-money="500000" class="li">
                     <span data-v-67caa467="" class="number">500K</span>
@@ -7168,7 +7168,7 @@
         $(this).addClass("block-click");
         let money = $("input").val().trim();
         let type = $(".pay-box:eq(0) .list").find(".action").attr("type");
-        if (money && money >= 100000 && money <= 10000000000) {
+        if (money && money >= 50000 && money <= 10000000000) {
           $.ajax({
             type: "POST",
             url: "/api/webapi/recharge",
@@ -7193,7 +7193,7 @@
           return true;
         }
         $(this).addClass("block-click");
-        alertMess("Phạm vi số tiền nạp : 100000~10000000000", $(this));
+        alertMess("Phạm vi số tiền nạp : 50000~10000000000", $(this));
       });
       $(".cancel").click(function (e) {
         e.preventDefault();
