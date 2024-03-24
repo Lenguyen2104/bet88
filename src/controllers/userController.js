@@ -1814,9 +1814,10 @@ const withdrawal3 = async (req, res) => {
     [userInfo.phone]
   );
   const [withdraw] = await connection.query(
-    "SELECT * FROM withdraw WHERE `phone` = ?",
+    "SELECT * FROM withdraw WHERE `phone` = ? AND `today` = CURDATE() ",
     [userInfo.phone]
   );
+  console.log(withdraw);
   if (user_bank.length != 0) {
     if (withdraw.length < 3) {
     if (userInfo.money - money >= 0) {
