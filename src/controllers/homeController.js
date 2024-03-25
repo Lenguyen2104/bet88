@@ -209,6 +209,197 @@ const keFuMenu = async (req, res) => {
 const myProfilePage = async (req, res) => {
   return res.render("member/myProfile.ejs");
 };
+const detailLowerGradeUser = async (req, res) => {
+  let id_lower_user = req.body.id_user;
+  console.log("id_lower_user", id_lower_user)
+  let date = req.body.selectedDate;
+  let lowerGrade = req.body.selectedValue;
+  let auth = req.cookies.auth;
+  console.log("dateeeeeeeeeeeeeeeeeeeeee", date)
+  let today = convertDateFormat(date);
+  if (!today || today.trim() === "") {
+    today = new Date().toISOString().split("T")[0];
+  }
+  const [user] = await connection.query('SELECT * FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
+  let id_user = user[0].id_user;
+  if (!user) {
+    return res.status(200).json({
+      message: "Failed",
+      status: false,
+      timeStamp: timeNow,
+    });
+  }
+  const [lowerUser] = await connection.query("SELECT * FROM users WHERE `id_user` = ? ", [id_lower_user]);
+  if (!lowerUser) {
+    return res.status(200).json({
+      message: "Failed",
+      status: false,
+      timeStamp: timeNow,
+    });
+  }
+
+  let phone = lowerUser[0].phone;
+  let first_recharge_amount = 0;
+  let total_recharge = 0;
+  let first_rose = 0;
+  let user_level = await calculateLowerGradeLevel(id_user, id_lower_user);
+  //Tính tiền nạp đầu
+  const [firstRecharge] = await connection.query("SELECT * FROM recharge WHERE `phone` = ? ORDER BY `time` ASC", [phone]);
+  if (firstRecharge && firstRecharge[0] && firstRecharge[0].money !== undefined) {
+  first_recharge_amount = firstRecharge[0].money || 0;
+
+  if (user[0].napdau == 1 && user_level === "F1") {
+    if (first_recharge_amount >= 100000 && first_recharge_amount < 500000) {
+      first_rose = 30000;
+    } else if (first_recharge_amount >= 500000 && first_recharge_amount < 1000000) {
+      first_rose = 100000;
+    } else if (first_recharge_amount >= 1000000 && first_recharge_amount < 5000000) {
+      first_rose = 150000;
+    } else if (first_recharge_amount >= 5000000 && first_recharge_amount < 10000000) {
+      first_rose = 500000;
+    } else if (first_recharge_amount >= 10000000 && first_recharge_amount < 30000000) {
+      first_rose = 1000000;
+    } else if (first_recharge_amount >= 30000000 && first_recharge_amount < 50000000) {
+      first_rose = 3000000;
+    } else if (first_recharge_amount >= 50000000 && first_recharge_amount < 100000000) {
+      first_rose = 3000000;
+    } else if (first_recharge_amount >= 100000000) {
+      first_rose = 5000000;
+    }
+  }}
+
+  //Tính tổng nạp today
+  const [todayRecharge] = await connection.query("SELECT SUM(money) as total_money FROM `recharge` WHERE `phone` = ? AND `today` = ? ", [phone, today]);
+  total_recharge = todayRecharge[0].total_money || 0;
+
+  //Tính tổng cược today
+  let totalBet = 0;
+
+  const resultk3 = await connection.query("SELECT SUM(money) AS money FROM result_k3 WHERE `phone` = ? AND `today` = ? ", [phone, today]);
+  if (resultk3[0].length > 0 && resultk3[0][0].money) {
+    totalBet = totalBet + Number(resultk3[0][0].money);
+  }
+
+  const resultd5 = await connection.query("SELECT SUM(money) AS money FROM result_5d WHERE `phone` = ? AND `today` = ? ", [phone, today]);
+  if (resultd5[0].length > 0 && resultd5[0][0].money) {
+    totalBet = totalBet + Number(resultd5[0][0].money);
+  }
+
+  const resultm1 = await connection.query("SELECT SUM(money) AS money FROM minutes_1 WHERE `phone` = ? AND `today` = ? ", [phone, today]);
+  if (resultm1[0].length > 0 && resultm1[0][0].money) {
+    totalBet = totalBet + Number(resultm1[0][0].money);
+  }
+  let total_bet_rose = 0;
+  const [level] = await connection.query('SELECT * FROM level ');
+  let level0 = level[0];
+  console.log("user_level", user_level)
+  if (user_level === "F1") {
+    total_bet_rose = (totalBet / 100) * level0.f1;
+    if (user_level === "F2") {
+      total_bet_rose = (totalBet / 100) * level0.f2;
+      if (user_level === "F3") {
+        total_bet_rose = (totalBet / 100) * level0.f3;
+        if (user_level === "F4") {
+          total_bet_rose = (totalBet / 100) * level0.f4;
+        }
+      }
+    }
+  }
+  console.log("first_recharge_amount", first_recharge_amount);
+  console.log("total_bet_amount", totalBet);
+  console.log("total_recharge", total_recharge);
+  console.log("total_bet_rose", total_bet_rose);
+  console.log("first_recharge_rose", first_rose);
+  console.log("grade_level", lowerGrade);
+  console.log("uid", id_lower_user);
+
+
+  return res.status(200).json({
+    message: `You are number 1!`,
+    first_recharge_amount: first_recharge_amount,
+    total_bet_amount: totalBet,
+    total_recharge: total_recharge,
+    total_bet_rose: total_bet_rose,
+    first_recharge_rose: first_rose,
+    grade_level: user_level,
+    uid: id_lower_user,
+    status: true
+  });
+};
+
+const calculateLowerGradeLevel = async (id_user, id_lower_user) => {
+  const [f0s] = await connection.query("SELECT * FROM `users` WHERE `id_user` = ? ", [id_user]);
+  const f0CodeList = f0s.map(row => row.code).filter(code => code !== '');
+  console.log("id_lower_user", id_lower_user);
+  let f1s = [];
+  let f2s = [];
+  let f3s = [];
+  let f1CodeList = [];
+  let f2CodeList = [];
+  let f3CodeList = [];
+  let f4CodeList = [];
+  let f1PhoneList = [];
+  let f2PhoneList = [];
+  let f3PhoneList = [];
+  let f4PhoneList = [];
+  let f1IdUserList = [];
+  let f2IdUserList = [];
+  let f3IdUserList = [];
+  let f4IdUserList = [];
+
+  if (f0s.length > 0) {
+    console.log("vao f1");
+    [f1s] = await connection.query("SELECT * FROM users WHERE `invite` IN (?) ", [f0CodeList]);
+    f1CodeList = f1s.map(row => row.code).filter(code => code !== '');
+    f1PhoneList = f2s.map(row => row.phone).filter(code => code !== '');
+    f1IdUserList = f1s.map(row => row.id_user).filter(code => code !== '');
+    if (f1IdUserList.includes(id_lower_user)) {
+      return "F1";
+    }
+    if (f1s.length > 0 && f1CodeList.length>0) {
+      console.log("vao f2");
+      [f2s] = await connection.query("SELECT * FROM users WHERE `invite` IN (?) ", [f1CodeList]);
+      f2CodeList = f2s.map(row => row.code).filter(code => code !== '');
+      f2PhoneList = f2s.map(row => row.phone).filter(code => code !== '');
+      f2IdUserList = f2s.map(row => row.id_user).filter(code => code !== '');
+      if (f2IdUserList.includes(id_lower_user)) {
+        return "F2";
+      }
+      if (f2s.length > 0 && f2CodeList.length>0) {
+        [f3s] = await connection.query("SELECT * FROM users WHERE `invite` IN (?) ", [f2CodeList]);
+        f3PhoneList = f3s.map(row => row.phone).filter(code => code !== '');
+        f3IdUserList = f3s.map(row => row.id_user).filter(code => code !== '');
+        if (f3IdUserList.includes(id_lower_user)) {
+          return "F3";
+        }
+        if (f3s.length > 0 && f3CodeList > 0) {
+          [f4s] = await connection.query("SELECT * FROM users WHERE `invite` IN (?) ", [f3CodeList]);
+          f4PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
+          f4IdUserList = f4s.map(row => row.id_user).filter(code => code !== '');
+          if (f4IdUserList.includes(id_lower_user)) {
+            return "F4";
+          }
+        }
+      }
+    }
+  }
+  return "";
+}
+
+function convertDateFormat(dateString) {
+  if (typeof dateString !== 'undefined' && dateString.length > 0) {
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+      console.log("vao day")
+      const day = parts[0];
+      const month = parts[1];
+      const year = parts[2];
+      return `${year}-${month}-${day}`;
+    }
+  }
+  return dateString;
+}
+
 
 module.exports = {
   homePage,
@@ -244,4 +435,5 @@ module.exports = {
   promotionCustomerCare,
   checkInDetail,
   checkAttendance,
+  detailLowerGradeUser
 };

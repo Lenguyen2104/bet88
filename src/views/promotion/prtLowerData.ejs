@@ -95,7 +95,7 @@ body {
     /* padding: 14px; */
   }
   .topnav input[type=text] {
-    border: 1px solid #ccc;  
+    border: 1px solid #ccc;
   }
 }
 
@@ -115,7 +115,7 @@ body {
         padding: 0.75rem;
         position: relative;
         width: 100%; */
-        
+
       }
       .pet-select-container {
         border-radius: 12px;
@@ -212,11 +212,11 @@ body {
                   <tr style="background-color: transparent;">
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;border-right: 1px solid #fff;">Số người nạp tiền</td>
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;">Số tiền nạp</td>
-                  </tr>            
+                  </tr>
                   <tr style="background-color: transparent; ">
                     <td data-v-7c8bbbf4="" id="num_bet_users" style="font-size: 16px; color:#b13c4c;font-weight: 600;padding-top: 8px;">0</td>
                     <td data-v-7c8bbbf4="" id="total_bet_amount" style="font-size: 16px; color:#b13c4c;font-weight: 600;padding-top: 8px;">0</td>
-                  </tr> 
+                  </tr>
                   <tr style="background-color: transparent;">
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;border-right: 1px solid #fff;">Số người cược</td>
                     <td style="font-size: 12px; color:#b13c4c;font-weight: 600;">Số tiền cược</td>
@@ -244,10 +244,10 @@ body {
           >
             Đội trực tiếp(0 Mọi người)
           </div>
-            
+
             <div data-v-0ff6946a="" class="table">
               <div data-v-0ff6946a="" class="hd van-row">
-                <div data-v-0ff6946a="" class="c-tc van-col van-col--4" 
+                <div data-v-0ff6946a="" class="c-tc van-col van-col--4"
                 style="
                 background-color: #fcc419;
                 font-weight: bold;
@@ -295,17 +295,16 @@ body {
                   TT
                 </div>
                 <div
-                  data-v-0ff6946a=""
-                  class="c-tc van-ellipsis van-col van-col--4"
-                  style="
-                background-color: #fcc419;
-                font-weight: bold;
-                font-size: 12px;
-                color: #fcc419;
-                border-top-right-radius: 8px;
-              "
+                    data-v-0ff6946a=""
+                    class="c-tc van-ellipsis van-col van-col--4"
+                    style="
+            background-color: #fcc419;
+            font-weight: bold;
+            font-size: 12px;
+            color: #fff;
+          "
                 >
-                  Chi tiết
+                  Thao tác
                 </div>
               </div>
               <div data-v-0ff6946a="" class="list">
@@ -318,10 +317,9 @@ body {
             </div>
           </div>
         </div>
+        <%- include('prtDetail.ejs') -%>
         </div>
         <!---->
-      </div>
-    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="/js/client.js"></script>
     <script>
@@ -334,11 +332,11 @@ body {
 
       // let selectedValue; // Biến được định nghĩa ở phạm vi toàn cục
       // $("#pet-select").on("change", function() {
-      //   selectedValue = $(this).val(); // Gán giá trị của $(this).val() cho selectedValue 
+      //   selectedValue = $(this).val(); // Gán giá trị của $(this).val() cho selectedValue
       //   var $items = $("#van-list .item");
       //   $items.hide();
       // switch(selectedValue) {
-      //     case "F1":  
+      //     case "F1":
       //         $items.filter(function() {
       //             return $(this).find('.van-col--6').text().trim().startsWith("Superadmin") || $(this).find('.van-col--6').text().trim() === "Superadmin" || $(this).find('.van-col--6').text().trim() === "1";
       //         }).show();
@@ -357,7 +355,7 @@ body {
       //   $(".nav .van-tabbar-item:eq(0) img").attr("src", "/images/home1.png");
       //   $(".nav .van-tabbar-item:eq(0) .name").removeClass("action");
       //   $(".nav .van-tabbar-item:eq(2) .name").addClass("action");
-      
+
       //   function MemRender(datas) {
       //     // console.log("🚀 ~ MemRender ~ datas:", datas)
       //     let html = "";
@@ -402,19 +400,19 @@ body {
       //       $("#total-mem").text(
       //         `Đội trực tiếp (${response.f1.length} người)`
       //       );
-            
+
       //       MemRender(response.f1);
       //     },
       //   });
-      
+
   $(document).ready(function() {
-    
+
     // SELECT DAY
     let selectedValue; // Biến được định nghĩa ở phạm vi toàn cục
     let selectedDate;
 
     $("#dateInput").on("change", function() {
-        selectedDate = $(this).val(); 
+        selectedDate = $(this).val();
     });
 
     $("#pet-select").on("change", function() {
@@ -422,7 +420,7 @@ body {
       var $items = $("#van-list .item");
       $items.hide();
       switch(selectedValue) {
-        case "F1":  
+        case "F1":
           $items.filter(function() {
             return $(this).find('.van-col--6').text().trim().startsWith("Superadmin") || $(this).find('.van-col--6').text().trim() === "Superadmin" || $(this).find('.van-col--6').text().trim() === "1";
           }).show();
@@ -443,20 +441,20 @@ body {
     $(".nav .van-tabbar-item:eq(2) .name").addClass("action");
 
     function DataFRender(data) {
-      
+
       let html = "";
       data.map((item) => {
         // console.log('data>>>>',item);
         html += `
           <div data-v-0ff6946a="" class="item">
             <div data-v-0ff6946a="" class="bd van-row">
-              <div data-v-0ff6946a="" style="font-weight: bold" class="c-tc van-col van-col--4">${item.id_user}</div>
+                <div data-v-0ff6946a="" id="id-user" value = '${item.id_user}' style="font-weight: bold" class=" c-tc van-col van-col--4">${item.id_user}</div>
               <div data-v-0ff6946a="" style="font-weight: bold" class="c-tc van-ellipsis van-col van-col--6">${item.name_user}</div>
               <div data-v-0ff6946a="" style="font-weight: bold" class="c-tc red van-col van-col--6">${item.roses_f}</div>
               <div data-v-0ff6946a="" style="font-weight: bold" class="c-tc van-col van-col--4">
                   <span data-v-0ff6946a="">${data.status == 1 ? "Mở" : "Đóng"}</span>
               </div>
-              <div data-v-0ff6946a="" style="font-weight: bold" class="van-col van-col--4 c-tc"></div>
+              <div data-v-0ff6946a="" style="font-weight: bold" class="btn-detail van-col van-col--4 c-tc">Chi tiết</div>
             </div>
             <div data-v-0ff6946a="" class="bdshow" style="display: none;">
                 <div data-v-0ff6946a="" class="c-row c-row-between">
@@ -470,8 +468,46 @@ body {
         `;
       });
       $("#van-list").html(html);
+
+      let value = "";
+      $('.btn-detail').click(function (e) {
+        e.preventDefault();
+        valueID= $(this).closest('.item').find('#id-user').attr('value');
+        fetchData(selectedValue,selectedDate)
+        console.log('id',value);
+        $.ajax({
+          type: "POST",
+          url : "/api/webapi/promotion/detailLowerGradeUser",
+          data : {selectedValue: selectedValue ,selectedDate: selectedDate , id_user: valueID},
+          dataType: "json",
+          success : function (response) {
+            $('.van-overlay').fadeIn();
+            $('#box-join').css('transform', 'translateY(0px)');
+            $('body').addClass('van-overflow-hidden');
+
+            $(".list-promotion .table-detail .total_bet_amount").text(response.total_bet_amount);
+            $(".list-promotion .table-detail .first_recharge_amount").text(response.first_recharge_amount);
+            $(".list-promotion .table-detail .total_recharge").text(response.total_recharge);
+            $(".list-promotion .table-detail .total_bet_rose").text(response.total_bet_rose        );
+            $(".list-promotion .table-detail .first_recharge_rose").text(response.first_recharge_rose);
+          }
+        })
+      });
     }
-    
+
+    function downAndHidden() {
+      $('.van-overlay').fadeOut();
+      $('#box-join').css('transform', 'translateY(1000px)');
+      $('body').removeClass('van-overflow-hidden');
+    }
+
+    $('.van-overlay, .btn-back-prtLower').click(function (e) {
+      e.preventDefault();
+      downAndHidden();
+    });
+
+
+
     function fetchData(selectedValue, selectedDate) {
       $.ajax({
         type: "POST",
@@ -479,10 +515,10 @@ body {
         data: { selectedValue: selectedValue, selectedDate: selectedDate },
         dataType: "json",
         success: function (response) {
-          
-          
+
+
           var swlength = 0
-          
+
           if (selectedValue == undefined || selectedValue == "FAll") {
             swlength = response.invite.select_f_all.length
           } else if (selectedValue == "F1") {
@@ -497,7 +533,7 @@ body {
             swlength = 0
           }  else {
             swlength = response.invite.select_f_all.length
-          } 
+          }
 
           $("#total-mem").text(
             `Đội trực tiếp (${swlength} người)`
@@ -572,9 +608,9 @@ body {
             }
 
           DataFRender(swDataF);
-          
+
           // var swDataF = response.invite.select_f_all
-          
+
           // if (selectedValue == undefined || selectedValue == "FAll") {
           //   swDataF = response.invite.select_f_all
           // } else if (selectedValue == "F1") {
@@ -587,12 +623,12 @@ body {
           //   swDataF = response.invite.select_f4
           // } else {
           //   swDataF = response.invite.select_f_all
-          // } 
+          // }
           // DataFRender(swDataF);
 
           var swSummaryF =  response.invite.summary.summary_f_all
           // console.log("🚀 ~ fetchData ~ swSummaryF:", swSummaryF)
-          
+
           switch(selectedValue) {
               case undefined:
                   swSummaryF = response.invite.summary.summary_f_all;
@@ -641,10 +677,8 @@ body {
         selectedDate = $(this).val(); // Loại bỏ từ khóa var
         fetchData(selectedValue, selectedDate); // Gọi fetchData với giá trị selectedDate
     });
-    
-  });
-    </script>
 
+  });
     </script>
     <link
     rel="stylesheet"
@@ -659,12 +693,20 @@ body {
     href="https://npmcdn.com/flatpickr/dist/themes/material_red.css"
   />
   <script>
-    const currentDate = new Date().toISOString().split("T")[0];
-    document.getElementById("dateInput").value = currentDate;
+    // const formattedDate = currentDate.split("-").reverse().join("-");
+    // console.log(formattedDate);
+    const currentDate = new Date();
+    const day = String(currentDate.getDate()).padStart(2, "0");
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const year = currentDate.getFullYear();
+    const formattedDefaultDate = `${day}-${month}-${year}`;
+    document.getElementById("dateInput").value = formattedDefaultDate;
     flatpickr("#dateInput", {
       dateFormat: "d-m-Y",
+      altFormat: "d-m-Y",
       locale: "vn",
       weekNumbers: true,
+      defaultDate: formattedDefaultDate,
     });
     function formatM(params) {
       if (isNaN(params) || params === null || params === undefined || params === 0) {
@@ -686,7 +728,7 @@ body {
         data: {},
         dataType: "json",
         success: function (response) {
-          
+
           $(".Loading").fadeOut(0);
           $(".num").text(response.invite.f1);
           $(".txt").text(response.invite.f1);
@@ -699,7 +741,7 @@ body {
           $("#money").text(
             formatM(response.invite.money)
           );
-          
+
           $("#roses_f1").text(
             formatM(response.invite.roses_f1)
           );
