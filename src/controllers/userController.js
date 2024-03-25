@@ -1666,27 +1666,9 @@ const infoUserBank = async (req, res) => {
     [userInfo.phone]
   );
 
-  let totalMoney = 0;
-
-  const resultk3 = await connection.query(`SELECT SUM(money) AS money FROM result_k3 WHERE phone = ?`, [userInfo.phone]);
-  if (resultk3[0].length > 0 && resultk3[0][0].money) {
-    totalMoney = totalMoney + Number(resultk3[0][0].money);
-  }
-
-  const resultd5 = await connection.query(`SELECT SUM(money) AS money FROM result_5d WHERE phone = ?`, [userInfo.phone]);
-  if (resultd5[0].length > 0 && resultd5[0][0].money) {
-    totalMoney = totalMoney + Number(resultd5[0][0].money);
-  }
-
-  const resultm1 = await connection.query(`SELECT SUM(money) AS money FROM minutes_1 WHERE phone = ?`, [userInfo.phone]);
-  if (resultm1[0].length > 0 && resultm1[0][0].money) {
-    totalMoney = totalMoney + Number(resultm1[0][0].money);
-  }
-
-  let leftAmount = userInfo.tongcuoc - totalMoney <= 0  ? 0 : userInfo.tongcuoc - totalMoney;
   const mergedUser = {
     ...user,
-    betbet: leftAmount
+    betbet: userInfo.tongcuoc
   };
 
 
@@ -1778,30 +1760,7 @@ const withdrawal3 = async (req, res) => {
 
   // Calculate money (tien rut) > tong cuoc (tien nap) -> allow withdraw
 
-  let totalMoney = 0;
-
-  const resultk3 = await connection.query(`SELECT SUM(money) AS money FROM result_k3 WHERE phone = ?`, [userInfo.phone]);
-  if (resultk3[0].length > 0 && resultk3[0][0].money) {
-    totalMoney = totalMoney + Number(resultk3[0][0].money);
-  }
-
-  const resultd5 = await connection.query(`SELECT SUM(money) AS money FROM result_5d WHERE phone = ?`, [userInfo.phone]);
-  if (resultd5[0].length > 0 && resultd5[0][0].money) {
-    totalMoney = totalMoney + Number(resultd5[0][0].money);
-  }
-
-  const resultm1 = await connection.query(`SELECT SUM(money) AS money FROM minutes_1 WHERE phone = ?`, [userInfo.phone]);
-  if (resultm1[0].length > 0 && resultm1[0][0].money) {
-    totalMoney = totalMoney + Number(resultm1[0][0].money);
-  }
-
-  let leftAmount = userInfo.tongcuoc - totalMoney <= 0 ? 0 : userInfo.tongcuoc - totalMoney;
-  const mergedUser = {
-    ...user,
-    betbet: leftAmount
-  };
-
-  if(leftAmount !== 0) {
+  if(userInfo.tongcuoc !== 0) {
     return res.status(200).json({
       message: "Tổng tiền cược chưa đủ để thực hiện yêu cầu",
       status: false,
