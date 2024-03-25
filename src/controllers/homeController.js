@@ -211,11 +211,8 @@ const myProfilePage = async (req, res) => {
 };
 const detailLowerGradeUser = async (req, res) => {
   let id_lower_user = req.body.id_user;
-  console.log("id_lower_user", id_lower_user)
   let date = req.body.selectedDate;
-  let lowerGrade = req.body.selectedValue;
   let auth = req.cookies.auth;
-  console.log("dateeeeeeeeeeeeeeeeeeeeee", date)
   let today = convertDateFormat(date);
   if (!today || today.trim() === "") {
     today = new Date().toISOString().split("T")[0];
@@ -292,7 +289,6 @@ const detailLowerGradeUser = async (req, res) => {
   let total_bet_rose = 0;
   const [level] = await connection.query('SELECT * FROM level ');
   let level0 = level[0];
-  console.log("user_level", user_level)
   if (user_level === "F1") {
     total_bet_rose = (totalBet / 100) * level0.f1;
     if (user_level === "F2") {
@@ -305,13 +301,13 @@ const detailLowerGradeUser = async (req, res) => {
       }
     }
   }
-  console.log("first_recharge_amount", first_recharge_amount);
-  console.log("total_bet_amount", totalBet);
-  console.log("total_recharge", total_recharge);
-  console.log("total_bet_rose", total_bet_rose);
-  console.log("first_recharge_rose", first_rose);
-  console.log("grade_level", lowerGrade);
-  console.log("uid", id_lower_user);
+  // console.log("first_recharge_amount", first_recharge_amount);
+  // console.log("total_bet_amount", totalBet);
+  // console.log("total_recharge", total_recharge);
+  // console.log("total_bet_rose", total_bet_rose);
+  // console.log("first_recharge_rose", first_rose);
+  // console.log("grade_level", user_level);
+  // console.log("uid", id_lower_user);
 
 
   return res.status(200).json({
@@ -330,51 +326,41 @@ const detailLowerGradeUser = async (req, res) => {
 const calculateLowerGradeLevel = async (id_user, id_lower_user) => {
   const [f0s] = await connection.query("SELECT * FROM `users` WHERE `id_user` = ? ", [id_user]);
   const f0CodeList = f0s.map(row => row.code).filter(code => code !== '');
-  console.log("id_lower_user", id_lower_user);
   let f1s = [];
   let f2s = [];
   let f3s = [];
+  let f4s = [];
   let f1CodeList = [];
   let f2CodeList = [];
   let f3CodeList = [];
-  let f4CodeList = [];
-  let f1PhoneList = [];
-  let f2PhoneList = [];
-  let f3PhoneList = [];
-  let f4PhoneList = [];
   let f1IdUserList = [];
   let f2IdUserList = [];
   let f3IdUserList = [];
   let f4IdUserList = [];
 
   if (f0s.length > 0) {
-    console.log("vao f1");
     [f1s] = await connection.query("SELECT * FROM users WHERE `invite` IN (?) ", [f0CodeList]);
     f1CodeList = f1s.map(row => row.code).filter(code => code !== '');
-    f1PhoneList = f2s.map(row => row.phone).filter(code => code !== '');
     f1IdUserList = f1s.map(row => row.id_user).filter(code => code !== '');
     if (f1IdUserList.includes(id_lower_user)) {
       return "F1";
     }
     if (f1s.length > 0 && f1CodeList.length>0) {
-      console.log("vao f2");
       [f2s] = await connection.query("SELECT * FROM users WHERE `invite` IN (?) ", [f1CodeList]);
       f2CodeList = f2s.map(row => row.code).filter(code => code !== '');
-      f2PhoneList = f2s.map(row => row.phone).filter(code => code !== '');
       f2IdUserList = f2s.map(row => row.id_user).filter(code => code !== '');
       if (f2IdUserList.includes(id_lower_user)) {
         return "F2";
       }
       if (f2s.length > 0 && f2CodeList.length>0) {
         [f3s] = await connection.query("SELECT * FROM users WHERE `invite` IN (?) ", [f2CodeList]);
-        f3PhoneList = f3s.map(row => row.phone).filter(code => code !== '');
+        f3CodeList = f3s.map(row => row.code).filter(code => code !== '');
         f3IdUserList = f3s.map(row => row.id_user).filter(code => code !== '');
         if (f3IdUserList.includes(id_lower_user)) {
           return "F3";
         }
-        if (f3s.length > 0 && f3CodeList > 0) {
+        if (f3s.length > 0 && f3CodeList.length > 0) {
           [f4s] = await connection.query("SELECT * FROM users WHERE `invite` IN (?) ", [f3CodeList]);
-          f4PhoneList = f4s.map(row => row.phone).filter(code => code !== '');
           f4IdUserList = f4s.map(row => row.id_user).filter(code => code !== '');
           if (f4IdUserList.includes(id_lower_user)) {
             return "F4";

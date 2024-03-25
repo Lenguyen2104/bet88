@@ -481,6 +481,7 @@ body {
           data : {selectedValue: selectedValue ,selectedDate: selectedDate , id_user: valueID},
           dataType: "json",
           success : function (response) {
+            console.log(response)
             $('.van-overlay').fadeIn();
             $('#box-join').css('transform', 'translateY(0px)');
             $('body').addClass('van-overflow-hidden');
@@ -488,8 +489,10 @@ body {
             $(".list-promotion .table-detail .total_bet_amount").text(response.total_bet_amount);
             $(".list-promotion .table-detail .first_recharge_amount").text(response.first_recharge_amount);
             $(".list-promotion .table-detail .total_recharge").text(response.total_recharge);
-            $(".list-promotion .table-detail .total_bet_rose").text(response.total_bet_rose        );
+            $(".list-promotion .table-detail .total_bet_rose").text(response.total_bet_rose);
             $(".list-promotion .table-detail .first_recharge_rose").text(response.first_recharge_rose);
+            $(".list-promotion .table-detail .first_recharge_rose").text(response.first_recharge_rose);
+            $(".list-promotion .foot .right").text(`${response.grade_level}: ${response.uid}`);
           }
         })
       });
