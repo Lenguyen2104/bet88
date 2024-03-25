@@ -347,7 +347,7 @@ const betK3 = async (req, res) => {
         f4,
         timeNow,
       ]);
-      let savedUser = await connection.execute('SELECT * FROM `user` WHERE `token` = ? ', [auth]);
+      let savedUser = await connection.execute('SELECT * FROM `users` WHERE `token` = ? ', [auth]);
       let tongcuoc = Number(savedUser[0].tongcuoc) - Number(money);
       await connection.execute('UPDATE `users` SET `tongcuoc` = ? WHERE `token` = ? ', [tongcuoc, auth]);
       return res.status(200).json({
