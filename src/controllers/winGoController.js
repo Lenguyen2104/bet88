@@ -217,6 +217,9 @@ const betWinGo = async (req, res) => {
         let ctv = idU.length > 0 ? idU[0].id_user : '0';
         const savedUser = await connection.execute('SELECT * FROM `users` WHERE `token` = ? ', [auth]);
         let tongcuoc = Number(savedUser[0][0].tongcuoc) - Number(money * x);
+        if (tongcuoc < 0) {
+            tongcuoc = 0;
+        }
         await connection.execute('UPDATE `users` SET `tongcuoc` = ? WHERE `token` = ? ', [tongcuoc, auth]);
         return res.status(200).json({
             message: 'Đặt cược thành công',
