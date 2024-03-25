@@ -185,7 +185,7 @@ const betK5D = async (req, res) => {
             const [idU] = await connection.query('SELECT `id_user` FROM users WHERE phone = ? LIMIT 1 ', [users[0].ctv]);
             let ctv = idU.length > 0 ? idU[0].id_user : '0';
             let savedUser = await connection.execute('SELECT * FROM `users` WHERE `token` = ? ', [auth]);
-            let tongcuoc = Number(savedUser[0].tongcuoc) - Number(money * x);
+            let tongcuoc = Number(savedUser[0][0].tongcuoc) - Number(money * x);
             await connection.execute('UPDATE `users` SET `tongcuoc` = ? WHERE `token` = ? ', [tongcuoc, auth]);
             return res.status(200).json({
                 message: 'Đặt cược thành công',
