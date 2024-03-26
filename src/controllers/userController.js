@@ -592,52 +592,6 @@ const promotion = async (req, res) => {
     }
   }
 
-  // tất cả cấp dưới hôm nay
-  // let f_all_today = 0;
-  // for (let i = 0; i < f1s.length; i++) {
-  //   const f1_code = f1s[i].code; // Mã giới thiệu f1
-  //   const f1_time = f1s[i].time; // time f1
-  //   let check_f1 = timerJoin(f1_time) == timerJoin() ? true : false;
-  //   if (check_f1) f_all_today += 1;
-  //   // tổng f1 mời đc hôm nay
-  //   const [f2s] = await connection.query(
-  //     "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
-  //     [f1_code]
-  //   );
-  //   for (let i = 0; i < f2s.length; i++) {
-  //     const f2_code = f2s[i].code; // Mã giới thiệu f2
-  //     const f2_time = f2s[i].time; // time f2
-  //     let check_f2 = timerJoin(f2_time) == timerJoin() ? true : false;
-  //     if (check_f2) f_all_today += 1;
-  //     // tổng f2 mời đc hôm nay
-  //     const [f3s] = await connection.query(
-  //       "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
-  //       [f2_code]
-  //     );
-  //     for (let i = 0; i < f3s.length; i++) {
-  //       const f3_code = f3s[i].code; // Mã giới thiệu f3
-  //       const f3_time = f3s[i].time; // time f3
-  //       let check_f3 = timerJoin(f3_time) == timerJoin() ? true : false;
-  //       if (check_f3) f_all_today += 1;
-  //       const [f4s] = await connection.query(
-  //         "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
-  //         [f3_code]
-  //       );
-  //       // // tổng f3 mời đc hôm nay
-  //       // for (let i = 0; i < f4s.length; i++) {
-  //       //   const f4_code = f4s[i].code; // Mã giới thiệu f4
-  //       //   const f4_time = f4s[i].time; // time f4
-  //       //   let check_f4 = timerJoin(f4_time) == timerJoin() ? true : false;
-  //       //   if (check_f4) f_all_today += 1;
-  //       //   const [f4s] = await connection.query(
-  //       //     "SELECT `phone`, `code`,`invite`, `time` FROM users WHERE `invite` = ? ",
-  //       //     [f4_code]
-  //       //   );
-  //       // }
-  //     }
-  //   }
-  // }
-
   let f_all_today = 0;
   for (let i = 0; i < f1s.length; i++) {
     const f1_code = f1s[i].code; // Mã giới thiệu f1
@@ -1024,105 +978,196 @@ const promotion = async (req, res) => {
 
   // console.log(">>>>", matchedItems);
 
-  function getSummaryData(dataArray) {
-    const currentDateDay = new Date().toISOString().slice(0, 10);
+  console.log([userInfo.code], "userInfo.code");
+  const [f1sl] = await connection.query("SELECT `phone`, `code` FROM users WHERE `invite` = ? ", [userInfo.code]);
+  const f1CodeList = f1sl.map(row => row.code).filter(code => code !== '');
+  const f1PhoneList = f1sl.map(row => row.phone).filter(code => code !== '');
 
-    const numDepositUsers = rechargeLowerGrade.filter((user) => {
-      return dataArray.some((newItem) => newItem.phone == user.phone);
-    });
+  let f2sl = [];
+  let f3sl = [];
+  let f4sl = [];
+  let f2CodeList = [];
+  let f3CodeList = [];
+  let f2PhoneList = [];
+  let f3PhoneList = [];
+  let f4PhoneList = [];
 
-    // const numDepositUsers = dataArray.filter((user) => user.money !== 0).length;
-    //BET
-
-    const matchedItemsBet = sumPersonBet.filter((item) =>
-      dataArray.some((user) => user.phone == item.phone)
-    );
-    const totalMoneyBet = matchedItemsBet.reduce(
-      (total, item) => total + item.money,
-      0
-    );
-    const filteredItemsBet = matchedItemsBet.filter(
-      (item, index, array) =>
-        array.findIndex((el) => el.phone === item.phone) === index
-    );
-    //BET
-
-    const totalDepositAmount = numDepositUsers.reduce(
-      (total, user) => total + user.money,
-      0
-    );
-
-    const numBetUsers = dataArray.filter((user) => user.tongcuoc !== 0).length;
-    const totalBetAmount = dataArray.reduce(
-      (total, user) => total + user.tongcuoc,
-      0
-    );
-
-    // Handling invalid time values
-    const numFirstDepositUsers = numDepositUsers.filter((user) => {
-      try {
-        return (
-          user.money !== 0 &&
-          new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
-            currentDateDay
-        );
-      } catch (error) {
-        return false;
+  if (f1sl.length > 0) {
+    [f2sl] = await connection.query("SELECT `phone`, `code` FROM users WHERE `invite` IN (?) ", [f1CodeList]);
+    f2CodeList = f2sl.map(row => row.code).filter(code => code !== '');
+    f2PhoneList = f2sl.map(row => row.phone).filter(code => code !== '');
+    if (f2sl.length > 0) {
+      [f3sl] = await connection.query("SELECT `phone`, `code` FROM users WHERE `invite` IN (?) ", [f2CodeList]);
+      f3CodeList = f3sl.map(row => row.code).filter(code => code !== '');
+      f3PhoneList = f2sl.map(row => row.phone).filter(code => code !== '');
+      if (f3sl.length > 0) {
+        [f4sl] = await connection.query("SELECT `phone`, `code` FROM users WHERE `invite` IN (?) ", [f3CodeList]);
+        f4PhoneList = f4sl.map(row => row.phone).filter(code => code !== '');
       }
-    });
-
-    const uniqueNumFirstDepositUsers = numFirstDepositUsers.filter(
-      (user, index, self) =>
-        index === self.findIndex((t) => t.phone === user.phone)
-    );
-
-    const totalFirstDepositAmount = numDepositUsers
-      .filter((user) => {
-        try {
-          return (
-            user.money !== 0 &&
-            new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
-              currentDateDay
-          );
-        } catch (error) {
-          return false;
-        }
-      })
-      .reduce((total, user) => total + user.money, 0);
-
-    // Handling invalid time values
-    const numFirstDepositUsersMyFirst = uniqueNumFirstDepositUsers.filter(
-      (user) => {
-        try {
-          return (
-            user.money !== 0 &&
-            new Date(parseInt(user.time)).toISOString().slice(0, 10) ===
-              currentDateDay
-          );
-        } catch (error) {
-          return false;
-        }
+    }
+  }
+  function convertDateFormat(dateString) {
+    if (typeof dateString !== 'undefined' && dateString.length > 0) {
+      const parts = dateString.split('-');
+      if (parts.length === 3) {
+        console.log("vao day")
+        const day = parts[0];
+        const month = parts[1];
+        const year = parts[2];
+        return `${year}-${month}-${day}`;
       }
-    );
+    }
+    return dateString;
+  }
+  let todayIsTheDay = req.body.selectedDate;
+  if (typeof todayIsTheDay === "undefined") {
+    todayIsTheDay = new Date().toISOString().slice(0, 10);
+  }
+  todayIsTheDay = convertDateFormat(todayIsTheDay);
+  async function renderSummaryData(phoneList, todayIsTheDay) {
+    let today = todayIsTheDay;
+    if(phoneList.length <= 0) {
+      return {
+        num_deposit_users: 0,
+        total_deposit_amount: 0,
+        num_bet_users: 0,
+        total_bet_amount: 0,
+        num_first_deposit_users: 0,
+        total_first_deposit_amount: 0,
+      };
+    }
+    const [first_recharge_list] = await connection.query("SELECT phone FROM `recharge` WHERE status = 1 AND phone IN (?) GROUP BY `phone` HAVING COUNT(*) = 1", [phoneList]);
+    const [only_recharge_today] = await connection.query("SELECT phone FROM `recharge` WHERE phone NOT IN (SELECT phone FROM recharge WHERE status = 1 AND today < ?) AND phone IN (?) GROUP BY phone", [today,phoneList]);
+    const combinedList = [...first_recharge_list, ...only_recharge_today].map(result => result.phone);
+    const uniquePhoneList = [...new Set(combinedList)];
+    let first_recharge_today_list = [];
+    if (uniquePhoneList.length > 0 ) {
+      [first_recharge_today_list] = await connection.query("SELECT DISTINCT phone FROM `recharge` WHERE status = 1 AND today = ? AND phone IN (?)", [today,uniquePhoneList]);
+    }
+    const [recharge_today_list] = await connection.query("SELECT DISTINCT phone FROM `recharge` WHERE status = 1 AND today = ? AND phone IN (?) ", [today,phoneList]);
+    const recharge_total = await connection.query("SELECT SUM(money) as money FROM `recharge` WHERE status = 1 AND today = ? AND phone IN (?) ", [today,phoneList]);
+    let total_recharge = 0;
+    if (recharge_total[0].length > 0 && recharge_total[0][0].money) {
+      total_recharge = Number(recharge_total[0][0].money);
+    }
+    let total_first_recharge = 0;
+    for (const phone of uniquePhoneList) {
+      const [first_recharge] = await connection.query("SELECT `phone`, `money` FROM `recharge` WHERE `today` = ? AND `phone` = (?) ORDER BY time ASC", [today,phone]);
+      if (first_recharge.length > 0 && first_recharge[0].money !== 0) {
+        total_first_recharge += first_recharge[0].money;
+      }
+    }
 
+    let totalBet = 0;
+    const resultk3 = await connection.query("SELECT SUM(money) AS money FROM result_k3 WHERE `today` = ? AND phone IN (?) ", [today,phoneList]);
+    if (resultk3[0].length > 0 && resultk3[0][0].money) {
+      totalBet = totalBet + Number(resultk3[0][0].money);
+    }
+    const resultd5 = await connection.query("SELECT SUM(money) AS money FROM result_5d WHERE `today` = ? AND phone IN (?) ", [today,phoneList]);
+    if (resultd5[0].length > 0 && resultd5[0][0].money) {
+      totalBet = totalBet + Number(resultd5[0][0].money);
+    }
+    const resultm1 = await connection.query("SELECT SUM(money) AS money FROM minutes_1 WHERE `today` = ? AND phone IN (?) ", [today,phoneList]);
+    if (resultm1[0].length > 0 && resultm1[0][0].money) {
+      totalBet = totalBet + Number(resultm1[0][0].money);
+    }
+
+    const [k3Phones] = await connection.query("SELECT DISTINCT phone FROM result_k3 WHERE `today` = ? AND phone IN (?) ", [today,phoneList]);
+    const [d5Phones] = await connection.query("SELECT DISTINCT phone FROM result_5d WHERE `today` = ? AND phone IN (?) ", [today,phoneList]);
+    const [wingoPhones] = await connection.query("SELECT DISTINCT phone FROM minutes_1 WHERE `today` = ? AND phone IN (?) ", [today,phoneList]);
+    const combinedPhones = [...k3Phones, ...d5Phones, ...wingoPhones].map(result => result.phone);
+    const phones = [...new Set(combinedPhones)];
+    // console.log("phones", phones.length);
+    // console.log("totalBet", totalBet);
+    // console.log("total_first_recharge", total_first_recharge);
+    // console.log("recharge_total", total_recharge);
+    // console.log("recharge_today_list", recharge_today_list.length);
+    // console.log("first_recharge_today_list", first_recharge_today_list ? first_recharge_today_list.length : 0);
     return {
-      num_deposit_users: uniqueNumFirstDepositUsers.length,
-      total_deposit_amount: totalDepositAmount,
-      num_bet_users: filteredItemsBet.length,
-      total_bet_amount: totalMoneyBet,
-      num_first_deposit_users: numFirstDepositUsersMyFirst.length,
-      total_first_deposit_amount: totalFirstDepositAmount,
+      num_deposit_users: recharge_today_list.length,
+      total_deposit_amount: total_recharge,
+      num_bet_users: phones.length,
+      total_bet_amount: totalBet,
+      num_first_deposit_users: first_recharge_today_list ? first_recharge_today_list.length : 0,
+      total_first_deposit_amount: total_first_recharge,
     };
   }
+  async function renderSummaryDataFall(todayIsTheDay) {
+    let grade_level = "";
+    let today = todayIsTheDay;
+    const [first_recharge_list] = await connection.query("SELECT phone FROM `recharge` WHERE status = 1 GROUP BY `phone` HAVING COUNT(*) = 1");
+    const [only_recharge_today] = await connection.query("SELECT phone FROM `recharge` WHERE phone NOT IN (SELECT phone FROM recharge WHERE status = 1 AND today < ?) GROUP BY phone", [today]);
+    const combinedList = [...first_recharge_list, ...only_recharge_today].map(result => result.phone);
+    const uniquePhoneList = [...new Set(combinedList)];
+    let first_recharge_today_list = [];
+    if (uniquePhoneList.length > 0 ) {
+      [first_recharge_today_list] = await connection.query("SELECT DISTINCT phone FROM `recharge` WHERE status = 1 AND today = ? AND phone IN (?)", [today,uniquePhoneList]);
+    }
+    const [recharge_today_list] = await connection.query("SELECT DISTINCT phone FROM `recharge` WHERE status = 1 AND today = ?" , [today]);
+    const recharge_total = await connection.query("SELECT SUM(money) as money FROM `recharge` WHERE status = 1 AND today = ?", [today]);
+    let total_recharge = 0;
+    if (recharge_total[0].length > 0 && recharge_total[0][0].money) {
+      total_recharge = Number(recharge_total[0][0].money);
+    }
+    let total_first_recharge = 0;
+    for (const phone of uniquePhoneList) {
+      const [first_recharge] = await connection.query("SELECT `phone`, `money` FROM `recharge` WHERE `today` = ? AND `phone` = ? ORDER BY time ASC", [today,phone]);
+      if (first_recharge.length > 0 && first_recharge[0].money !== 0) {
+        total_first_recharge += first_recharge[0].money;
+      }
+    }
 
+    let totalBet = 0;
+    const resultk3 = await connection.query("SELECT SUM(money) AS money FROM result_k3 WHERE `today` = ? ", [today]);
+    if (resultk3[0].length > 0 && resultk3[0][0].money) {
+      totalBet = totalBet + Number(resultk3[0][0].money);
+    }
+    const resultd5 = await connection.query("SELECT SUM(money) AS money FROM result_5d WHERE `today` = ? ", [today]);
+    if (resultd5[0].length > 0 && resultd5[0][0].money) {
+      totalBet = totalBet + Number(resultd5[0][0].money);
+    }
+    const resultm1 = await connection.query("SELECT SUM(money) AS money FROM minutes_1 WHERE `today` = ? ", [today]);
+    if (resultm1[0].length > 0 && resultm1[0][0].money) {
+      totalBet = totalBet + Number(resultm1[0][0].money);
+    }
+
+    const [k3Phones] = await connection.query("SELECT DISTINCT phone FROM result_k3 WHERE `today` = ?", [today]);
+    const [d5Phones] = await connection.query("SELECT DISTINCT phone FROM result_5d WHERE `today` = ?", [today]);
+    const [wingoPhones] = await connection.query("SELECT DISTINCT phone FROM minutes_1 WHERE `today` = ?", [today]);
+    const combinedPhones = [...k3Phones, ...d5Phones, ...wingoPhones].map(result => result.phone);
+    const phones = [...new Set(combinedPhones)];
+    // console.log("phones", phones.length);
+    // console.log("totalBet", totalBet);
+    // console.log("total_first_recharge", total_first_recharge);
+    // console.log("recharge_total", total_recharge);
+    // console.log("recharge_today_list", recharge_today_list.length);
+    // console.log("first_recharge_today_list", first_recharge_today_list.length);
+    return {
+      num_deposit_users: recharge_today_list.length,
+      total_deposit_amount: total_recharge,
+      num_bet_users: phones.length,
+      total_bet_amount: totalBet,
+      num_first_deposit_users: first_recharge_today_list.length,
+      total_first_deposit_amount: total_first_recharge,
+    };
+  }
   const summary_table = {
-    summary_f_all: [getSummaryData(uniqueData)],
-    summary_f_1: [getSummaryData(newArrayF1)],
-    summary_f_2: [getSummaryData(newArrayF2)],
-    summary_f_3: [getSummaryData(newArrayF3)],
-    summary_f_4: [getSummaryData(newArrayF4)],
-    summary_f_no_data: [getSummaryData([])],
+    summary_f_all: [await renderSummaryDataFall(todayIsTheDay)],
+    summary_f_1: [await renderSummaryData(f1PhoneList,todayIsTheDay)],
+    summary_f_2: [await renderSummaryData(f2PhoneList,todayIsTheDay)],
+    summary_f_3: [await renderSummaryData(f3PhoneList,todayIsTheDay)],
+    summary_f_4: [await renderSummaryData(f4PhoneList,todayIsTheDay)],
+    summary_f_no_data: [await renderSummaryDataFall(todayIsTheDay)],
   };
+  // const summary_table = {
+  //   abc : [renderSummaryData(req)],
+  //   summary_f_all: [getSummaryData(uniqueData)],
+  //   summary_f_1: [getSummaryData(newArrayF1)],
+  //   summary_f_2: [getSummaryData(newArrayF2)],
+  //   summary_f_3: [getSummaryData(newArrayF3)],
+  //   summary_f_4: [getSummaryData(newArrayF4)],
+  //   summary_f_no_data: [getSummaryData([])],
+  // };
 
   const filteredDataRechargeLowerGradeMatchingInvitedUsersF1 =
     rechargeLowerGrade.filter((item) =>

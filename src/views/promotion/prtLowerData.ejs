@@ -468,13 +468,11 @@ body {
         `;
       });
       $("#van-list").html(html);
-
-      let value = "";
+      
       $('.btn-detail').click(function (e) {
         e.preventDefault();
-        valueID= $(this).closest('.item').find('#id-user').attr('value');
-        fetchData(selectedValue,selectedDate)
-        console.log('id',value);
+        var valueID= $(this).closest('.item').find('#id-user').attr('value');
+        fetchData(selectedValue,selectedDate);
         $.ajax({
           type: "POST",
           url : "/api/webapi/promotion/detailLowerGradeUser",
@@ -512,6 +510,12 @@ body {
 
 
     function fetchData(selectedValue, selectedDate) {
+      if (selectedDate == undefined) {
+        selectedDate = $('#dateInput').val();
+      }
+      if (selectedValue == undefined) {
+        selectedValue = "FALL"
+      }
       $.ajax({
         type: "POST",
         url: "/api/webapi/promotion",
