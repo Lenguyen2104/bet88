@@ -978,7 +978,6 @@ const promotion = async (req, res) => {
 
   // console.log(">>>>", matchedItems);
 
-  console.log([userInfo.code], "userInfo.code");
   const [f1sl] = await connection.query("SELECT `phone`, `code` FROM users WHERE `invite` = ? ", [userInfo.code]);
   const f1CodeList = f1sl.map(row => row.code).filter(code => code !== '');
   const f1PhoneList = f1sl.map(row => row.phone).filter(code => code !== '');
@@ -1006,11 +1005,12 @@ const promotion = async (req, res) => {
       }
     }
   }
+  const mergedPhoneList = [...f1PhoneList, ...f2PhoneList, ...f3PhoneList, ...f4PhoneList];
+  const allPhones = Array.from(new Set(mergedPhoneList));
   function convertDateFormat(dateString) {
     if (typeof dateString !== 'undefined' && dateString.length > 0) {
       const parts = dateString.split('-');
       if (parts.length === 3) {
-        console.log("vao day")
         const day = parts[0];
         const month = parts[1];
         const year = parts[2];
@@ -1062,14 +1062,17 @@ const promotion = async (req, res) => {
     const resultk3 = await connection.query("SELECT SUM(money) AS money FROM result_k3 WHERE `today` = ? AND phone IN (?) ", [today,phoneList]);
     if (resultk3[0].length > 0 && resultk3[0][0].money) {
       totalBet = totalBet + Number(resultk3[0][0].money);
+      console.log("totalBet k3", totalBet);
     }
     const resultd5 = await connection.query("SELECT SUM(money) AS money FROM result_5d WHERE `today` = ? AND phone IN (?) ", [today,phoneList]);
     if (resultd5[0].length > 0 && resultd5[0][0].money) {
       totalBet = totalBet + Number(resultd5[0][0].money);
+      console.log("totalBet d5", totalBet);
     }
     const resultm1 = await connection.query("SELECT SUM(money) AS money FROM minutes_1 WHERE `today` = ? AND phone IN (?) ", [today,phoneList]);
     if (resultm1[0].length > 0 && resultm1[0][0].money) {
       totalBet = totalBet + Number(resultm1[0][0].money);
+      console.log("totalBet wg", totalBet);
     }
 
     const [k3Phones] = await connection.query("SELECT DISTINCT phone FROM result_k3 WHERE `today` = ? AND phone IN (?) ", [today,phoneList]);
@@ -1092,72 +1095,13 @@ const promotion = async (req, res) => {
       total_first_deposit_amount: total_first_recharge,
     };
   }
-  async function renderSummaryDataFall(todayIsTheDay) {
-    let grade_level = "";
-    let today = todayIsTheDay;
-    const [first_recharge_list] = await connection.query("SELECT phone FROM `recharge` WHERE status = 1 GROUP BY `phone` HAVING COUNT(*) = 1");
-    const [only_recharge_today] = await connection.query("SELECT phone FROM `recharge` WHERE phone NOT IN (SELECT phone FROM recharge WHERE status = 1 AND today < ?) GROUP BY phone", [today]);
-    const combinedList = [...first_recharge_list, ...only_recharge_today].map(result => result.phone);
-    const uniquePhoneList = [...new Set(combinedList)];
-    let first_recharge_today_list = [];
-    if (uniquePhoneList.length > 0 ) {
-      [first_recharge_today_list] = await connection.query("SELECT DISTINCT phone FROM `recharge` WHERE status = 1 AND today = ? AND phone IN (?)", [today,uniquePhoneList]);
-    }
-    const [recharge_today_list] = await connection.query("SELECT DISTINCT phone FROM `recharge` WHERE status = 1 AND today = ?" , [today]);
-    const recharge_total = await connection.query("SELECT SUM(money) as money FROM `recharge` WHERE status = 1 AND today = ?", [today]);
-    let total_recharge = 0;
-    if (recharge_total[0].length > 0 && recharge_total[0][0].money) {
-      total_recharge = Number(recharge_total[0][0].money);
-    }
-    let total_first_recharge = 0;
-    for (const phone of uniquePhoneList) {
-      const [first_recharge] = await connection.query("SELECT `phone`, `money` FROM `recharge` WHERE `today` = ? AND `phone` = ? ORDER BY time ASC", [today,phone]);
-      if (first_recharge.length > 0 && first_recharge[0].money !== 0) {
-        total_first_recharge += first_recharge[0].money;
-      }
-    }
-
-    let totalBet = 0;
-    const resultk3 = await connection.query("SELECT SUM(money) AS money FROM result_k3 WHERE `today` = ? ", [today]);
-    if (resultk3[0].length > 0 && resultk3[0][0].money) {
-      totalBet = totalBet + Number(resultk3[0][0].money);
-    }
-    const resultd5 = await connection.query("SELECT SUM(money) AS money FROM result_5d WHERE `today` = ? ", [today]);
-    if (resultd5[0].length > 0 && resultd5[0][0].money) {
-      totalBet = totalBet + Number(resultd5[0][0].money);
-    }
-    const resultm1 = await connection.query("SELECT SUM(money) AS money FROM minutes_1 WHERE `today` = ? ", [today]);
-    if (resultm1[0].length > 0 && resultm1[0][0].money) {
-      totalBet = totalBet + Number(resultm1[0][0].money);
-    }
-
-    const [k3Phones] = await connection.query("SELECT DISTINCT phone FROM result_k3 WHERE `today` = ?", [today]);
-    const [d5Phones] = await connection.query("SELECT DISTINCT phone FROM result_5d WHERE `today` = ?", [today]);
-    const [wingoPhones] = await connection.query("SELECT DISTINCT phone FROM minutes_1 WHERE `today` = ?", [today]);
-    const combinedPhones = [...k3Phones, ...d5Phones, ...wingoPhones].map(result => result.phone);
-    const phones = [...new Set(combinedPhones)];
-    // console.log("phones", phones.length);
-    // console.log("totalBet", totalBet);
-    // console.log("total_first_recharge", total_first_recharge);
-    // console.log("recharge_total", total_recharge);
-    // console.log("recharge_today_list", recharge_today_list.length);
-    // console.log("first_recharge_today_list", first_recharge_today_list.length);
-    return {
-      num_deposit_users: recharge_today_list.length,
-      total_deposit_amount: total_recharge,
-      num_bet_users: phones.length,
-      total_bet_amount: totalBet,
-      num_first_deposit_users: first_recharge_today_list.length,
-      total_first_deposit_amount: total_first_recharge,
-    };
-  }
   const summary_table = {
-    summary_f_all: [await renderSummaryDataFall(todayIsTheDay)],
+    summary_f_all: [await renderSummaryData(allPhones, todayIsTheDay)],
     summary_f_1: [await renderSummaryData(f1PhoneList,todayIsTheDay)],
     summary_f_2: [await renderSummaryData(f2PhoneList,todayIsTheDay)],
     summary_f_3: [await renderSummaryData(f3PhoneList,todayIsTheDay)],
     summary_f_4: [await renderSummaryData(f4PhoneList,todayIsTheDay)],
-    summary_f_no_data: [await renderSummaryDataFall(todayIsTheDay)],
+    summary_f_no_data: [await renderSummaryData(allPhones, todayIsTheDay)],
   };
   // const summary_table = {
   //   abc : [renderSummaryData(req)],
