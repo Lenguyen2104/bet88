@@ -396,10 +396,8 @@ const addK3 = async (game) => {
     let [k5D] = await connection.query(
       `SELECT period FROM k3 WHERE status = 0 AND game = ${game} ORDER BY id DESC LIMIT 1 `
     );
-    console.log([k5D], "dasdasdasdasdasd");
     const [setting] = await connection.query("SELECT * FROM `admin` ");
     let period = k5D[0].period;
-    console.log(k5D[0].period, "perioddasdasd");
 
     let nextResult = "";
     if (game == 1) nextResult = setting[0].k3d;
