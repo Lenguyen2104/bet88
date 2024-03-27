@@ -46,6 +46,10 @@ const checkAttendance = async (req, res) => {
   return res.render("checkIn/checkAttendance.ejs");
 };
 
+const present = async (req, res) => {
+  return res.render("checkIn/present.ejs");
+};
+
 const addBank = async (req, res) => {
   return res.render("wallet/addbank.ejs");
 };
@@ -421,5 +425,6 @@ module.exports = {
   promotionCustomerCare,
   checkInDetail,
   checkAttendance,
-  detailLowerGradeUser
+  detailLowerGradeUser,
+  present
 };

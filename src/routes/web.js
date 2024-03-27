@@ -41,6 +41,12 @@ const initWebRouter = (app) => {
     homeController.checkAttendance
   );
 
+  router.get(
+      "/checkIn/present",
+      middlewareController,
+      homeController.present
+  );
+
   router.get("/promotion", middlewareController, homeController.promotionPage);
   router.get(
     "/promotion/myTeam",
@@ -161,7 +167,8 @@ const initWebRouter = (app) => {
   // BET K3
   router.get("/k3", middlewareController, k3Controller.K3Page);
   router.post(
-    "/api/webapi/action/k3/join",
+    "" +
+      "/api/webapi/action/k3/join",
     middlewareController,
     k3Controller.betK3
   ); // register
