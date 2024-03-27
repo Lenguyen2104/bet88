@@ -2001,12 +2001,23 @@ const search = async (req, res) => {
 
   const betbet = (resultk3[0].money || 0) + (result5d[0].money || 0) + (resultwingo[0].money || 0);
   user.betbet = betbet;
-
   if (userInfo.level == 1) {
-    const [users] = await connection.query(
-      `SELECT * FROM users WHERE phone = ? ORDER BY id DESC `,
-      [phone]
+    let userSearch;
+    let [userPhone] = await connection.query(
+        `SELECT * FROM users WHERE phone = ? ORDER BY id DESC `,
+        [phone]
     );
+    let [userIds] = await connection.query(
+        `SELECT * FROM users WHERE id_user = ? ORDER BY id DESC `,
+        [phone]
+    );
+    if (userPhone.length === 0) {
+      userSearch = [userIds]
+    } else {
+      userSearch = [userPhone];
+    }
+
+    const [users] = userSearch;
 
     const resultsk3 = [];
     for (const user of users) {
